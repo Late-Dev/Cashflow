@@ -1,0 +1,29 @@
+version: "3.5"
+
+services:
+
+  backend:
+    build: ./backend
+    command: sh run_server.sh
+    ports:
+      - 8000:8000
+    environment:
+      MONGO_HOST: mongo
+      MONGO_USER: admin
+      MONGO_PASSWD: admin
+
+  mongo:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+    ports:
+      - 27017:27017
+
+  frontend:
+    build: ./frontend
+    ports:
+      - 8080:8080
+
+  bot:
+    build: ./bot
