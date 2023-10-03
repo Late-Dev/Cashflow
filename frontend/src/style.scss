@@ -67,3 +67,8 @@ button:active {
 }
 
 
+.card{
+  background-color: var(--tg-theme-bg-color, #fff);
+  padding: 2em;
+  border-radius: 1em;
+}
