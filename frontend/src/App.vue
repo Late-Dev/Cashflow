@@ -21,7 +21,7 @@ import CategoryChart from './components/CategoryChart/CategoryChart.vue'
 </script>
 
 <style scoped lang="scss">
-.app{
+.app {
 
   &__card {
     display: flex;
@@ -29,9 +29,8 @@ import CategoryChart from './components/CategoryChart/CategoryChart.vue'
     align-items: center;
   }
 
-  &__new-btn{
+  &__new-btn {
     margin-top: 1em;
   }
 }
-
 </style>

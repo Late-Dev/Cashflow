@@ -20,10 +20,25 @@ import {
 
 ChartJS.register(ArcElement, Colors)
 
-const data = ref<ChartData<"doughnut">>({ datasets: [{ data: [1, 2, 3, 4, 5] }] })
+const data = ref<ChartData<"doughnut">>({
+    datasets: [{
+        data: [1, 2, 3, 4, 5], label: 'asdasd'
+    }]
+})
 
 const options = ref({
+    options: {
+        // This chart will not respond to mousemove, etc
+        events: ['click'],
+        interaction: {
+            mode: 'dataset'
+        },
+    },
+    onClick: (e, b) => {
+        const clickIndex = b[0].index
 
+        console.log(data.value.datasets[0].data[clickIndex])
+    }
 })
 
 function generateRandomArray(num = 5, min = 0, max = 10) {
