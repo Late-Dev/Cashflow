@@ -1,4 +1,4 @@
-FROM oven/bun:latest AS build
+FROM oven/bun:canary AS build
 
 RUN bun install -g http-server
 WORKDIR /app
