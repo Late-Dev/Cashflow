@@ -10,15 +10,16 @@
     </div>
     <div class="row justify-between q-ma-sm">
       <div class="column">
-        <div class="row">
+        <div class="row text-bold">
           20 000 $
         </div>
-        <div class="row">
-          spent in August
+        <div class="row hint">
+          Spent in August
         </div>
       </div>
       <div class="column">
-        <q-checkbox class="checkbox" color="accent" v-model="barchart" checked-icon="pie_chart" unchecked-icon="leaderboard" indeterminate-icon="help" />
+        <q-checkbox class="checkbox" color="accent" v-model="barchart" :checked-icon="ionPieChartOutline"
+          :unchecked-icon="ionPodiumOutline" indeterminate-icon="help" />
       </div>
     </div>
     <div class="row justify-center">
@@ -30,6 +31,7 @@
 <script setup lang="ts">
 import CategoryChart from 'components/CategoryChart.vue';
 import { ref } from 'vue';
+import { ionPodiumOutline, ionPieChartOutline } from '@quasar/extras/ionicons-v7'
 
 const mode = ref<'expenses' | 'income'>('expenses')
 
@@ -61,12 +63,12 @@ const barchart = ref(false)
   }
 }
 
-.checkbox{
+.checkbox {
 
-  .q-checkbox__inner{
+  .q-checkbox__inner {
 
 
-    &::before{
+    &::before {
       border-radius: 6px !important;
 
     }

@@ -13,7 +13,7 @@
         <q-btn flat dense round icon="menu" aria-label="Menu" />
       </q-toolbar>
     </q-header>
-    
+
 
 
     <q-page-container class="tg-primary">
@@ -23,8 +23,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-
 
 
 </script>
