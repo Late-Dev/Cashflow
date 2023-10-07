@@ -1,15 +1,13 @@
-FROM oven/bun:canary AS build
+FROM node:18 AS build
 
-RUN bun install -g http-server
 WORKDIR /app
 
-COPY package.json ./
-COPY bun.lockb ./
+COPY package.json yarn.lock ./
 
-RUN bun install
+RUN yarn install
 COPY . ./
-RUN bun install
-RUN bun run build
+RUN yarn install
+RUN yarn run build
 
 
 FROM nginx:1.19.0 AS serve
