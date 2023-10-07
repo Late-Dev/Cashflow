@@ -1,9 +1,21 @@
 import os
 
 from fastapi import FastAPI
+from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
 
-from database import db
+from schema import CategorySchema, TransactionSchema, UserSchema, WalletSchema
+from database import (
+    add_category_data, 
+    add_transaction_data, 
+    add_user_data, 
+    add_wallet_data, 
+    db,
+    get_user_wallets_data,
+    get_wallet_categories_data, 
+    get_wallet_transactions_data
+)
+
 
 app = FastAPI()
 
@@ -36,3 +48,42 @@ app.add_middleware(
 @app.get("/")
 async def healthcheck():
     return "I am alive!"
+
+@app.get("/wallet_transactions/{id}")
+def get_wallet_transactions(id: int):
+    result = get_wallet_transactions_data(id)
+    return result
+
+@app.get("/wallet_categories/{id}")
+def get_wallet_categories(id: int):
+    result = get_wallet_categories_data(id)
+    return result
+
+@app.get("/user_wallets/{id}")
+def get_user_wallets(id: int):
+    result = get_user_wallets_data(id)
+    return result
+
+@app.post("/user")
+def add_user(user: UserSchema):
+    user = jsonable_encoder(user)
+    add_user_data(user)
+    return 'success'
+
+@app.post("/wallet")
+def add_wallet(wallet: WalletSchema):
+    wallet = jsonable_encoder(wallet)
+    add_wallet_data(wallet)
+    return 'success'
+
+@app.post("/category")
+def add_category(category: CategorySchema):
+    category = jsonable_encoder(category)
+    add_category_data(category)
+    return 'success'
+
+@app.post("/transaction")
+def add_transaction(transaction: TransactionSchema):
+    transaction = jsonable_encoder(transaction)
+    add_transaction_data(transaction)
+    return 'success'
