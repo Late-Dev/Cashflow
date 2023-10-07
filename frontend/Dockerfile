@@ -12,7 +12,7 @@ RUN yarn run build
 
 FROM nginx:1.19.0 AS serve
 WORKDIR /usr/share/nginx/html
-COPY --from=build /app/dist ./
+COPY --from=build /app/dist/spa ./
 
 EXPOSE 80
 
