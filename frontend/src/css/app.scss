@@ -1,10 +1,14 @@
+@import './variables.scss';
+@import './fonts/fonts.scss';
+@import './classes.scss';
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'SF UI Display';
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
-  color: var(--tg-theme-text-color);
+  color: var(--tg-theme-text-color, #000);
   background-color: var(--tg-theme-secondary-bg-color, #F3F2F8);
 
   font-synthesis: none;
