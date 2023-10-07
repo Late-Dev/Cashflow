@@ -1,7 +1,20 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from database import db
+
 app = FastAPI()
+
+db.bind(
+    provider='postgres', 
+    user=os.environ['POSTGRES_USER'], 
+    password=os.environ['POSTGRES_PASSWORD'], 
+    host='db',
+    database='cashflow'
+)
+db.generate_mapping(create_tables=True)
 
 origins = [
     "http://localhost",
