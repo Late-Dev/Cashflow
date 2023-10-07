@@ -43,6 +43,8 @@ services:
 
   bot:
     build: ./bot
+    environment:
+      TOKEN: ${TOKEN}
 
 networks:
   postgres:
