@@ -1,6 +1,6 @@
 <template>
   <div class="category-chart">
-    <div class="category-chart__sum">$100500</div>
+    <div class="category-chart__sum">August</div>
     <Doughnut :data="data" :options="options"></Doughnut>
   </div>
 </template>
@@ -17,6 +17,7 @@ const data = ref<ChartData<'doughnut'>>({
     {
       data: [1, 2, 3, 4, 5],
       label: 'asdasd',
+
     },
   ],
 });
@@ -28,7 +29,11 @@ const options = ref({
     interaction: {
       mode: 'dataset',
     },
+
   },
+  cutout: '85%',
+  borderRadius: 20,
+  offset: 20,
   onClick: (e, b) => {
     const clickIndex = b[0].index;
 
