@@ -34,6 +34,7 @@ const options = ref({
             mode: 'dataset'
         },
     },
+    //@ts-ignore
     onClick: (e, b) => {
         const clickIndex = b[0].index
 
