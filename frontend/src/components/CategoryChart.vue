@@ -34,7 +34,7 @@ const options = ref({
   cutout: '85%',
   borderRadius: 20,
   offset: 20,
-  onClick: (e, b) => {
+  onClick: (_: any, b: any) => {
     const clickIndex = b[0].index;
 
     console.log(data.value.datasets[0].data[clickIndex]);
