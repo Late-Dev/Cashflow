@@ -12,6 +12,8 @@ POSTGRES_PASSWORD=admin
 
 PGADMIN_DEFAULT_EMAIL=admin@admin.com
 PGADMIN_DEFAULT_PASSWORD=root
+
+TOKEN=<your telegram token>
 ```
 
 2. Run ```docker compose --env-file .env up```

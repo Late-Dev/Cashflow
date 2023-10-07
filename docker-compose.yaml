@@ -14,6 +14,7 @@ services:
       - postgres
     depends_on:
       - db
+    restart: always
 
   db:
     image: postgres
