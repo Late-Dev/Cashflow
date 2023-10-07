@@ -1,12 +1,25 @@
 <template>
   <q-page class="column">
     <div class="q-ma-sm">
-      <q-btn-toggle spread no-caps rounded class="toggle" v-model="mode" unelevated toggle-text-color="black" text-color="black"
-        toggle-color="primary" :options="[
+      <q-btn-toggle spread no-caps rounded class="toggle" v-model="mode" unelevated toggle-text-color="black"
+        text-color="black" toggle-color="primary" :options="[
           { label: 'Expenses', value: 'expenses' },
           { label: 'Income', value: 'income' },
 
         ]"></q-btn-toggle>
+    </div>
+    <div class="row justify-between q-ma-sm">
+      <div class="column">
+        <div class="row">
+          20 000 $
+        </div>
+        <div class="row">
+          spent in August
+        </div>
+      </div>
+      <div class="column">
+        <q-checkbox class="checkbox" color="accent" v-model="barchart" checked-icon="pie_chart" unchecked-icon="leaderboard" indeterminate-icon="help" />
+      </div>
     </div>
     <div class="row justify-center">
       <CategoryChart></CategoryChart>
@@ -20,6 +33,7 @@ import { ref } from 'vue';
 
 const mode = ref<'expenses' | 'income'>('expenses')
 
+const barchart = ref(false)
 </script>
 
 <style lang="scss">
@@ -40,10 +54,23 @@ const mode = ref<'expenses' | 'income'>('expenses')
     border-radius: 7px;
   }
 
-  .bg-primary{
+  .bg-primary {
     border-radius: 7px !important;
     box-shadow: 0px 3px 1px 0px rgba(0, 0, 0, 0.04), 0px 3px 8px 0px rgba(0, 0, 0, 0.12);
     font-weight: 500;
   }
+}
+
+.checkbox{
+
+  .q-checkbox__inner{
+
+
+    &::before{
+      border-radius: 6px !important;
+
+    }
+  }
+
 }
 </style>
