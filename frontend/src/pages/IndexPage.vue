@@ -25,8 +25,8 @@
         class="link-button button__new">New expense</q-btn>
     </div>
     <div class="column">
-      <div class="transactions__list">
-        <div class="row">August 20 </div>
+      <div class="transactions__item">
+        <div class="row transactions__date">August 20 </div>
         <TransactionBar />
       </div>
     </div>
@@ -82,7 +82,16 @@ const barchart = ref(false)
   font-size: 14px;
 }
 
-.transactions__list {
-  overflow: hidden;
+.transactions {
+  &__item {
+    overflow: hidden;
+    padding-left: 10px;
+  }
+
+  &__date {
+    font-size: 17px;
+    font-weight: 600;
+    padding-left: 5px;
+  }
 }
 </style>

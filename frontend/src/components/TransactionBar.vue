@@ -46,6 +46,11 @@ function handleSwipe({ ...newInfo }) {
   transition: transform .2s ease-in-out;
   transform: translateX(0);
 
+  cursor: pointer;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  user-select: none;
+
   &--settings {
     transform: translateX(-120px);
 
@@ -92,16 +97,16 @@ function handleSwipe({ ...newInfo }) {
     background: $negative;
   }
 
-  &__value{
+  &__value {
     font-size: 17px;
   }
 
-  &__name{
+  &__name {
     font-size: 17px;
     line-height: 22px;
   }
 
-  &__source{
+  &__source {
     color: $theme-hint;
     font-size: 14px;
     line-height: 18px;
