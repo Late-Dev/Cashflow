@@ -80,7 +80,7 @@ def get_user_wallets_data(id: int):
 
     if(len(wallets) < 1):
         add_user_data({'id': id})
-        add_wallet_data({'user_id': id, 'name': 'personal wallet', 'currency': "USD"})
+        add_wallet_data({'user_id': id, 'name': 'Personal wallet', 'currency': "USD"})
 
         wallets = [
             {

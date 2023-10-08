@@ -1,16 +1,14 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header class="tg-primary" v-if="false">
+    <q-header class="tg-primary">
       <q-toolbar>
-        <div>
-          Cancel
-        </div>
 
-        <q-toolbar-title class="text-center">
-          Vova's wallet
+
+        <q-toolbar-title>
+          {{ walletsStore.currentWallet?.name }}
         </q-toolbar-title>
 
-        <q-btn flat dense round icon="menu" aria-label="Menu" />
+        <q-btn flat dense round :icon="ionChevronForward" aria-label="Menu" />
       </q-toolbar>
     </q-header>
 
@@ -23,6 +21,8 @@
 </template>
 
 <script setup lang="ts">
-
+import { useWallets } from 'src/stores/wallets'
+import { ionChevronForward } from '@quasar/extras/ionicons-v7'
+const walletsStore = useWallets()
 
 </script>

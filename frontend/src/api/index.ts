@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import { useWebApp } from 'src/stores/webapp';
+import { ITransaction } from 'src/types';
 
 export const API_URL = process.env.API_URL;
 axios.defaults.baseURL = API_URL;
@@ -26,7 +27,12 @@ export function getWallets() {
   return axios.get('/user_wallets');
 }
 
-export function getTransactions(wallet_id: number) {
+export function getTransactions(wallet_id: number): Promise<
+  AxiosResponse<{
+    income: ITransaction;
+    outcome: ITransaction;
+  }>
+> {
   return axios.get(`/wallet_transactions/${wallet_id}`);
 }
 

@@ -24,8 +24,10 @@
     </div>
     <div class="row justify-center  q-mt-md">
       <q-btn @click="router.push({ name: 'new' })" :icon="ionAdd" :align="`center`" no-caps unelevated
-        class="link-button button__new">New {{ useTransactionStore.currentMode === 'expenses' ? 'expense' : 'income' }}</q-btn>
+        class="link-button button__new">New {{ transactionStore.currentMode === 'expenses' ? 'expense' : 'income'
+        }}</q-btn>
     </div>
+    {{ transactionStore.transactionsList }}
     <div class="column q-mt-md">
       <div class="transactions__item">
         <div class="row transactions__date">August 20 </div>
@@ -44,7 +46,7 @@ import ModeToggle from 'src/components/ModeToggle.vue';
 import TransactionBar from 'src/components/TransactionBar.vue';
 import { useTransaction } from 'src/stores/transactions';
 
-const useTransactionStore = useTransaction()
+const transactionStore = useTransaction()
 const router = useRouter()
 
 const barchart = ref(false)
