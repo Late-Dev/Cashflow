@@ -36,9 +36,12 @@ export const useWebApp = defineStore('webapp', () => {
   };
 
   const auth = async () => {
-    if (!webapp.initDataUnsafe.hash) return Promise.resolve('not logged in');
+    if (!webapp.initDataUnsafe.hash) {
+      webapp.showAlert('no hash!');
+      return;
+    }
     const response = await login(webapp.initDataUnsafe.hash, webapp.initData);
-
+    webapp.showAlert(response.data);
     return response.data;
   };
 
