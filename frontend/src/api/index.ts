@@ -1,16 +1,18 @@
 import axios, { AxiosResponse } from 'axios';
+import { useWebApp } from 'src/stores/webapp';
 
 export const API_URL = process.env.API_URL;
 axios.defaults.baseURL = API_URL;
 
 axios.interceptors.request.use((request) => {
-  // if (request.url == '/login/') {
-  //   return request;
-  // }
-  // const jwt = useJWT();
-  // if (request.headers && jwt.jwt) {
-  //   request.headers.Authorization = `Bearer ${jwt.jwt}`;
-  // }
+  if (request.url == '/login') {
+    return request;
+  }
+  const webappStore = useWebApp();
+
+  if (request.headers && webappStore.token) {
+    request.headers.Authorization = `Bearer ${webappStore.token}`;
+  }
 
   return request;
 });
@@ -19,9 +21,9 @@ export function login(hash_str: string, initData: string) {
   return axios.post('/login', { hash_str, initData });
 }
 
-export function getWallets(user_id: number) {
+export function getWallets() {
   // not needed after authentication update
-  return axios.get(`/user_wallets/${user_id}`);
+  return axios.get('/user_wallets');
 }
 
 export function getTransactions(wallet_id: number) {

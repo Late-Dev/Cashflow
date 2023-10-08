@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia';
 import { login } from 'src/api';
 import { TelegramWebApps } from 'telegram-webapps-types-new';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-
+import { useWallets } from './wallets';
 declare global {
   interface Window {
     Telegram: TelegramWebApps.SDK;
@@ -12,6 +13,8 @@ declare global {
 export const useWebApp = defineStore('webapp', () => {
   const webapp = window.Telegram.WebApp;
   const router = useRouter();
+
+  const walletsStore = useWallets();
   // webapp.enableClosingConfirmation();
 
   webapp.BackButton.onClick(() => {
@@ -35,21 +38,27 @@ export const useWebApp = defineStore('webapp', () => {
     webapp.MainButton.hide();
   };
   async function auth() {
-    // if (!webapp.initDataUnsafe.hash) {
-    //   webapp.showAlert('no hash!');
-    //   return;
-    // }
-    // webapp.showAlert('webapp.initData');
-    const response = await login(webapp.initDataUnsafe.hash, webapp.initData)
-      .then(() => {
-        webapp.showAlert('has response.data ');
-      })
-      .catch((e) => {
-        webapp.showAlert(e.config.data);
-      });
-    webapp.showAlert('response.data');
-    return response;
+    if (!webapp.initDataUnsafe.hash) {
+      webapp.showAlert('no hash!');
+      return;
+    }
+    await login(webapp.initDataUnsafe.hash, webapp.initData).then(
+      (response) => {
+        token.value = response.data.jwt_token;
+      }
+    );
+    await walletsStore.loadWallets();
   }
 
-  return { webapp, showBack, hideBack, showMainButton, hideMainButton, auth };
+  const token = ref();
+
+  return {
+    webapp,
+    showBack,
+    hideBack,
+    showMainButton,
+    hideMainButton,
+    auth,
+    token,
+  };
 });

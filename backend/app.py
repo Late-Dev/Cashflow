@@ -124,14 +124,14 @@ async def healthcheck():
 @app.post("/login")
 async def login(schema: AuthenticationRequestSchema) -> AuthenticationResponseSchema:
     BOT_TOKEN = os.getenv("TOKEN", None)
-    is_valid = validate_initData(schema.hash_str, schema.initData, BOT_TOKEN)
+    is_valid, user_id = validate_initData(schema.hash_str, schema.initData, BOT_TOKEN)
 
     if is_valid:
         jwt_token = create_access_token(
                 SECRET_KEY,
                 ALGORITHM,
                 ACCESS_TOKEN_EXPIRE_MINUTES,
-                data={}
+                data={ 'id': user_id }
         )
 
         return {'jwt_token': jwt_token}
@@ -155,7 +155,7 @@ def get_wallet_categories(id: int, data = Depends(val_jwt)):
 
 @app.get("/user_wallets")
 def get_user_wallets(data = Depends(val_jwt)):
-    id = data.id
+    id = data.get('id')
     result = get_user_wallets_data(id)
     return result
 

@@ -2,7 +2,7 @@ import hmac
 import hashlib
 from urllib.parse import unquote
 from datetime import datetime, timedelta
-
+import json
 import jwt
 
 
@@ -22,6 +22,10 @@ def validate_initData(hash_str, init_data, token, c_str="WebAppData") -> bool:
           for chunk in unquote(init_data).split("&")
             if chunk[:len("hash=")]!="hash="],
         key=lambda x: x[0])
+    user = [item for item in init_data if item[0] == 'user']
+
+    userData = json.loads(user[0][1])
+
     init_data = "\n".join([f"{rec[0]}={rec[1]}" for rec in init_data])
 
     secret_key = hmac.new(c_str.encode(), token.encode(),
@@ -29,7 +33,7 @@ def validate_initData(hash_str, init_data, token, c_str="WebAppData") -> bool:
     data_check = hmac.new( secret_key, init_data.encode(),
         hashlib.sha256)
 
-    return data_check.hexdigest() == hash_str
+    return data_check.hexdigest() == hash_str, userData.get('id')
 
 
 def create_access_token(

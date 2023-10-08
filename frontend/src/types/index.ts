@@ -1,4 +1,4 @@
-export interface ITransaction{
+export interface ITransaction {
   id: string;
   amount: number;
   description: string;
@@ -8,7 +8,7 @@ export interface ITransaction{
   user: IAccount;
 }
 
-export interface IAccount{
+export interface IAccount {
   id: string;
   name: string;
   username: string;
@@ -18,9 +18,14 @@ export interface IAccount{
   photo_url: string;
 }
 
-export interface ICategory{
+export interface ICategory {
   id: string;
   name: string;
 }
 
-
+export interface Wallet {
+  id: number;
+  name: string;
+  currency: string;
+  user_type: '';
+}
