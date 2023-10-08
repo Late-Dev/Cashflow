@@ -21,13 +21,13 @@
       <CategoryChart></CategoryChart>
     </div>
     <div class="row justify-center q-mt-md">
-      <q-btn @click="webAppStore.webapp.BackButton.show()" :icon="ionAdd" :align="`center`" no-caps unelevated
+      <q-btn @click="router.push({ name: 'new' })" :icon="ionAdd" :align="`center`" no-caps unelevated
         class="link-button button__new">New expense</q-btn>
     </div>
     <div class="column">
-      <div>
+      <div class="transactions__list">
         <div class="row">August 20 </div>
-        <div class="row">Clothing and shoes</div>
+        <TransactionBar />
       </div>
     </div>
   </q-page>
@@ -39,6 +39,7 @@ import { ref } from 'vue';
 import { ionPodiumOutline, ionPieChartOutline, ionAdd } from '@quasar/extras/ionicons-v7'
 import { useRouter } from 'vue-router';
 import ModeToggle from 'src/components/ModeToggle.vue';
+import TransactionBar from 'src/components/TransactionBar.vue';
 import { useWebApp } from 'src/stores/webapp'
 
 const router = useRouter()
@@ -79,5 +80,9 @@ const barchart = ref(false)
 
 .month {
   font-size: 14px;
+}
+
+.transactions__list {
+  overflow: hidden;
 }
 </style>
