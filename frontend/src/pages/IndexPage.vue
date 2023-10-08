@@ -24,7 +24,7 @@
     </div>
     <div class="row justify-center  q-mt-md">
       <q-btn @click="router.push({ name: 'new' })" :icon="ionAdd" :align="`center`" no-caps unelevated
-        class="link-button button__new">New expense</q-btn>
+        class="link-button button__new">New {{ useTransactionStore.currentMode === 'expenses' ? 'expense' : 'income' }}</q-btn>
     </div>
     <div class="column q-mt-md">
       <div class="transactions__item">
@@ -42,7 +42,9 @@ import { ionPodiumOutline, ionPieChartOutline, ionAdd, ionChevronBack, ionChevro
 import { useRouter } from 'vue-router';
 import ModeToggle from 'src/components/ModeToggle.vue';
 import TransactionBar from 'src/components/TransactionBar.vue';
+import { useTransaction } from 'src/stores/transactions';
 
+const useTransactionStore = useTransaction()
 const router = useRouter()
 
 const barchart = ref(false)
@@ -99,13 +101,13 @@ function handleSwipe({ ...newInfo }) {
 .transactions {
   &__item {
     overflow: hidden;
-    padding-left: 10px;
+    // padding-left: 10px;
   }
 
   &__date {
     font-size: 17px;
     font-weight: 600;
-    padding-left: 5px;
+    padding-left: 15px;
   }
 }
 </style>

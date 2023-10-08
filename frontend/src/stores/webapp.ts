@@ -25,5 +25,14 @@ export const useWebApp = defineStore('webapp', () => {
     webapp.BackButton.hide();
   };
 
-  return { webapp, showBack, hideBack };
+  const showMainButton = (text: string, fn: () => void) => {
+    webapp.MainButton.setParams({ text, is_visible: true });
+    webapp.MainButton.onClick(fn);
+  };
+
+  const hideMainButton = () => {
+    webapp.MainButton.hide();
+  };
+
+  return { webapp, showBack, hideBack, showMainButton, hideMainButton };
 });

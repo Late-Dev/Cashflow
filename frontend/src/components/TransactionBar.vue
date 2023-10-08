@@ -1,5 +1,5 @@
 <template>
-  <div class="row items-center transaction-bar" :class="{ 'transaction-bar--settings': isSettingsOpened }"
+  <q-item clickable dense class="row items-center transaction-bar" :class="{ 'transaction-bar--settings': isSettingsOpened }"
     v-touch-swipe.mouse.horizontal="handleSwipe">
     <EmojiIcon />
     <div class="col transaction-bar__info">
@@ -17,7 +17,7 @@
       <q-btn flat class="transaction-bar__edit"> <q-icon size="md" :name="ionCreate"></q-icon> edit</q-btn>
       <q-btn flat class="transaction-bar__delete"> <q-icon size="md" :name="ionTrash"></q-icon>delete</q-btn>
     </div>
-  </div>
+  </q-item>
 </template>
 
 <script setup lang='ts'>
@@ -46,7 +46,9 @@ function handleSwipe({ ...newInfo }) {
   transition: transform .2s ease-in-out;
   transform: translateX(0);
 
-  cursor: pointer;
+  padding: 0;
+  padding-left: 10px;
+
   -moz-user-select: none;
   -khtml-user-select: none;
   user-select: none;
