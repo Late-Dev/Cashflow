@@ -16,9 +16,9 @@
 
 $primary   : $theme-primary-bg;
 $secondary : $theme-secondary-bg;
-$accent    : #0098EA;
+$accent    : $theme-link;
 
-$dark      : #1D1D1D;
+$dark      : $theme-primary-text;
 $dark-page : #121212;
 
 $positive  : #5BDB8E;

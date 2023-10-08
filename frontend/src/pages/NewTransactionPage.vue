@@ -3,6 +3,12 @@
     <div class="q-ma-sm">
       <ModeToggle />
     </div>
+    <div>
+
+      <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
+        <q-input filled v-model="text" label="Filled" />
+      </q-form>
+    </div>
   </q-page>
 </template>
 

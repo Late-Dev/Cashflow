@@ -34,6 +34,7 @@ const options = ref({
   cutout: '85%',
   borderRadius: 20,
   offset: 20,
+  borderWidth: 0,
   onClick: (_: any, b: any) => {
     const clickIndex = b[0].index;
 
@@ -69,6 +70,7 @@ onMounted(() => {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    font-size: 17px;
   }
 }
 </style>
