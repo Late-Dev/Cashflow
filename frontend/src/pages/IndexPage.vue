@@ -21,8 +21,8 @@
       <CategoryChart></CategoryChart>
     </div>
     <div class="row justify-center q-mt-md">
-      <q-btn @click="router.push({ name: 'new' })" :icon="ionAdd" :align="`center`" no-caps unelevated
-        class="link-button button__new">New expense</q-btn>
+      <q-btn @click="router.push({ name: 'new' }); webAppStore.webapp.BackButton.show()" :icon="ionAdd" :align="`center`"
+        no-caps unelevated class="link-button button__new">New expense</q-btn>
     </div>
     <div class="column">
       <div>
@@ -38,20 +38,16 @@ import CategoryChart from 'components/CategoryChart.vue';
 import { ref } from 'vue';
 import { ionPodiumOutline, ionPieChartOutline, ionAdd } from '@quasar/extras/ionicons-v7'
 import { useRouter } from 'vue-router';
-import { useTransaction } from 'src/stores/transactions';
 import ModeToggle from 'src/components/ModeToggle.vue';
-
-const useTransactionStore = useTransaction()
+import { useWebApp } from 'src/stores/webapp'
 
 const router = useRouter()
-
+const webAppStore = useWebApp()
 
 const barchart = ref(false)
 </script>
 
 <style lang="scss" scoped>
-
-
 .checkbox {
   background: #F4F4F5;
   border-radius: 6px;
