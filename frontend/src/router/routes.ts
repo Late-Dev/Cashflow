@@ -10,6 +10,11 @@ const routes: RouteRecordRaw[] = [
         name: 'index',
         component: () => import('pages/IndexPage.vue'),
       },
+      {
+        path: '/explore/:id',
+        name: 'explore',
+        component: () => import('pages/TransactionExplorePage.vue'),
+      },
     ],
   },
   {
