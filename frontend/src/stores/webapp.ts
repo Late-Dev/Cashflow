@@ -35,14 +35,19 @@ export const useWebApp = defineStore('webapp', () => {
     webapp.MainButton.hide();
   };
   async function auth() {
-    if (!webapp.initDataUnsafe.hash) {
-      webapp.showAlert('no hash!');
-      return;
-    }
-    webapp.showAlert('response.data ' + webapp.initDataUnsafe.hash);
-    const response = await login(webapp.initDataUnsafe.hash, webapp.initData);
+    // if (!webapp.initDataUnsafe.hash) {
+    //   webapp.showAlert('no hash!');
+    //   return;
+    // }
+    const response = await login(webapp.initDataUnsafe.hash, webapp.initData)
+      .then(() => {
+        webapp.showAlert('has response.data ');
+      })
+      .catch((e) => {
+        webapp.showAlert(e.message);
+      });
     webapp.showAlert('response.data');
-    return response.data;
+    return response;
   }
 
   return { webapp, showBack, hideBack, showMainButton, hideMainButton, auth };

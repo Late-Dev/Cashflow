@@ -76,6 +76,7 @@ origins = [
     "http://127.0.0.1:8080",
     "http://127.0.0.1:8081",
     "http://127.0.0.1",
+    'http://localhost:5080',
     'https://cashflow.omegasoft.keenetic.name',
     'https://tg-webapp.omegasoft.keenetic.name'
 ]
