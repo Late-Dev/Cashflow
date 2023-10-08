@@ -61,20 +61,13 @@ export function addCategory(
   });
 }
 
-export function addTransaction(
-  description: string,
-  value: number,
-  date: string,
-  source: string,
-  category_id: number,
-  wallet_id: number
-) {
+export function addTransaction(payload: Omit<ITransaction, 'id' | 'user' >) {
   return axios.post('/transaction', {
-    description,
-    value,
-    date,
-    source,
-    category_id,
-    wallet_id,
+    description: payload.description,
+    value: payload.value,
+    date: payload.date,
+    source: payload.source,
+    category_id: payload.category,
+    wallet_id: payload.wallet,
   });
 }

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { getTransactions } from 'src/api';
+import { addTransaction, getTransactions } from 'src/api';
 import { computed, ref } from 'vue';
 import { useWallets } from './wallets';
 import { ITransaction } from 'src/types';
@@ -17,6 +17,16 @@ export const useTransaction = defineStore('transaction', () => {
       outcomeTransactionsList.value = response.data.outcome;
     });
   }
+
+  async function newTransaciton(
+    payload: Omit<ITransaction, 'id' | 'user' | 'type'>
+  ) {
+    await addTransaction({
+      ...payload,
+      type: currentMode.value === 'expenses' ? 'outcome' : 'income',
+    });
+  }
+
   const transactionsList = computed(() => {
     if (currentMode.value === 'expenses') {
       return outcomeTransactionsList.value;
@@ -28,5 +38,6 @@ export const useTransaction = defineStore('transaction', () => {
     currentMode,
     loadTransactions,
     transactionsList,
+    newTransaciton,
   };
 });

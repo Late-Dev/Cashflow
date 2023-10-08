@@ -27,7 +27,6 @@
         class="link-button button__new">New {{ transactionStore.currentMode === 'expenses' ? 'expense' : 'income'
         }}</q-btn>
     </div>
-    {{ transactionStore.transactionsList }}
     <div class="column q-mt-md">
       <div class="transactions__item">
         <div class="row transactions__date">August 20 </div>

@@ -1,11 +1,13 @@
 export interface ITransaction {
   id: string;
-  amount: number;
-  description: string;
+  value: number;
+  description?: string;
   date: string;
   category: string;
-  type: string;
+  type: 'income' | 'outcome';
   user: IAccount;
+  source?: string;
+  wallet?: number;
 }
 
 export interface IAccount {

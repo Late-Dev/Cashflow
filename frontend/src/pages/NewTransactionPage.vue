@@ -8,8 +8,8 @@
       <q-form @submit="onSubmit" ref="formElement">
         <div class="new-transaction__group">
 
-          <q-input dense filled square outlined bg-color="secondary" label-color="dark" color="dark" v-model.number="amount"
-            label="The amount" />
+          <q-input dense filled square outlined bg-color="secondary" label-color="dark" color="dark"
+            v-model.number="amount" label="The amount" />
           <q-input dense filled square outlined bg-color="secondary" label-color="dark" color="dark" v-model="currency"
             label="Currency" />
         </div>
@@ -39,18 +39,32 @@ import ModeToggle from 'src/components/ModeToggle.vue';
 import { onMounted, ref } from 'vue';
 import { useWebApp } from 'src/stores/webapp';
 import { useRouter } from 'vue-router';
+import { useTransaction } from 'src/stores/transactions';
 
+const useTransactionStore = useTransaction()
 const router = useRouter()
 const formElement = ref()
 
 const amount = ref(0);
-const currency = ref();
+const currency = ref<string>();
 const category = ref()
-const source = ref('')
-const comment = ref('')
-const dateField = ref('')
+const source = ref()
+const comment = ref()
+const dateField = ref()
 
 async function onSubmit() {
+
+
+
+  await useTransactionStore.newTransaciton({
+
+    value: amount.value,
+    category: category.value,
+    source: source.value,
+    description: comment.value,
+    date: dateField.value,
+  })
+
   router.go(-1)
   return
 }
