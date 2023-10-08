@@ -34,16 +34,16 @@ export const useWebApp = defineStore('webapp', () => {
   const hideMainButton = () => {
     webapp.MainButton.hide();
   };
-
-  const auth = async () => {
+  async function auth() {
     if (!webapp.initDataUnsafe.hash) {
       webapp.showAlert('no hash!');
       return;
     }
+    webapp.showAlert('response.data ' + webapp.initDataUnsafe.hash);
     const response = await login(webapp.initDataUnsafe.hash, webapp.initData);
-    webapp.showAlert(response.data);
+    webapp.showAlert('response.data');
     return response.data;
-  };
+  }
 
   return { webapp, showBack, hideBack, showMainButton, hideMainButton, auth };
 });

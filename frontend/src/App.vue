@@ -1,5 +1,5 @@
 <template>
-  -{{ data }}-
+  -{{ webAppStore.webapp.version }}-
   <router-view />
 </template>
 
