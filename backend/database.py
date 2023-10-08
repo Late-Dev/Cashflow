@@ -2,6 +2,8 @@ from datetime import datetime
 from decimal import Decimal
 from pony.orm import *
 
+from default_categories import default_categories
+
 
 db = Database()
 
@@ -26,6 +28,8 @@ class Category(db.Entity):
     name = Required(str)
     wallet = Required(Wallet)
     transaction_type = Optional(str)
+    icon = Optional(str)
+    color = Optional(int)
 
 
 class Transaction(db.Entity):
@@ -85,7 +89,9 @@ def add_category_data(category: dict):
     Category(
         name=category['name'],
         wallet=wallet,
-        transaction_type=category['transaction_type']
+        transaction_type=category['transaction_type'],
+        icon=category['icon'],
+        color=category['color'],
     )
 
 @db_session
@@ -100,6 +106,14 @@ def add_wallet_data(wallet: dict):
         wallet=wallet,
         user_type='owner'
     )
+    for category in default_categories:
+        Category(
+            name=category['name'],
+            wallet=wallet,
+            transaction_type=category['transaction_type'],
+            icon=category['icon'],
+            color=category['color'],
+        )
 
 @db_session
 def add_transaction_data(transaction: dict):
@@ -114,3 +128,18 @@ def add_transaction_data(transaction: dict):
         source=transaction['source'],
         date=date,
     )
+
+@db_session
+def delete_transaction_data(id: int):
+    Transaction[id].delete()
+
+@db_session
+def update_transaction_data(id: int, transaction: dict):
+    current_transaction = Transaction[id]
+    if transaction.get('category_id', None) is not None:
+        current_transaction.category = Category[transaction['category_id']]
+    current_transaction.description = transaction.get('description', None) or current_transaction.description
+    current_transaction.value = transaction.get('value', None) or current_transaction.value
+    current_transaction.date = transaction.get('date', None) or current_transaction.date
+    current_transaction.source = transaction.get('source', None) or current_transaction.source
+

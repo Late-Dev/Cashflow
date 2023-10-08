@@ -4,16 +4,18 @@ from fastapi import FastAPI
 from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
 
-from schema import CategorySchema, TransactionSchema, UserSchema, WalletSchema
+from schema import CategorySchema, TransactionSchema, TransactionUpdateSchema, UserSchema, WalletSchema
 from database import (
     add_category_data, 
     add_transaction_data, 
     add_user_data, 
     add_wallet_data, 
     db,
+    delete_transaction_data,
     get_user_wallets_data,
     get_wallet_categories_data, 
-    get_wallet_transactions_data
+    get_wallet_transactions_data,
+    update_transaction_data
 )
 
 
@@ -86,4 +88,15 @@ def add_category(category: CategorySchema):
 def add_transaction(transaction: TransactionSchema):
     transaction = jsonable_encoder(transaction)
     add_transaction_data(transaction)
+    return 'success'
+
+@app.delete("/transaction/{id}")
+def delete_transaction(id: int):
+    delete_transaction_data(id)
+    return 'success'
+
+@app.patch("/transaction/{id}")
+def update_transaction(id: int, transaction: TransactionUpdateSchema):
+    transaction = jsonable_encoder(transaction)
+    update_transaction_data(id, transaction)
     return 'success'
