@@ -88,6 +88,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.options("/{path:path}")
+async def options_handler(path: str):
+    return {
+        "allowed_methods": ["OPTIONS", "POST", "GET", "DELETE", "PATCH"]
+    }
+
+
 @app.get("/")
 async def healthcheck():
     return "I am alive!"
