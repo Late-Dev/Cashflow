@@ -1,5 +1,4 @@
 <template>
-  --{{ webAppStore.webapp.initData }}--
   <router-view />
 </template>
 
@@ -7,5 +6,7 @@
 import { useWebApp } from 'src/stores/webapp'
 
 const webAppStore = useWebApp()
+
+
 
 </script>

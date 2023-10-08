@@ -8,3 +8,8 @@
 .hint{
   color: $theme-hint
 }
+
+.link-button{
+  background-color: var(--wallet-second-button-color, rgba(0, 122, 255, 0.10));
+  color: $theme-link;
+}

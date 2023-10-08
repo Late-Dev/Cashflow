@@ -10,10 +10,10 @@
     </div>
     <div class="row justify-between q-ma-sm">
       <div class="column">
-        <div class="row text-bold">
+        <div class="row text-bold total">
           20 000 $
         </div>
-        <div class="row hint">
+        <div class="row hint month">
           Spent in August
         </div>
       </div>
@@ -25,20 +25,32 @@
     <div class="row justify-center">
       <CategoryChart></CategoryChart>
     </div>
+    <div class="row justify-center q-mt-md">
+      <q-btn @click="router.push({ name: 'new' })" :icon="ionAdd" :align="`center`" no-caps unelevated
+        class="link-button button__new">New expense</q-btn>
+    </div>
+    <div class="column">
+      <div>
+        <div class="row">August 20 </div>
+        <div class="row">Clothing and shoes</div>
+      </div>
+    </div>
   </q-page>
 </template>
 
 <script setup lang="ts">
 import CategoryChart from 'components/CategoryChart.vue';
 import { ref } from 'vue';
-import { ionPodiumOutline, ionPieChartOutline } from '@quasar/extras/ionicons-v7'
+import { ionPodiumOutline, ionPieChartOutline, ionAdd } from '@quasar/extras/ionicons-v7'
+import { useRouter } from 'vue-router';
 
+const router = useRouter()
 const mode = ref<'expenses' | 'income'>('expenses')
 
 const barchart = ref(false)
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .toggle {
   padding: 3px;
   background-color: $theme-secondary-bg;
@@ -47,7 +59,7 @@ const barchart = ref(false)
 
   height: 32px;
 
-  button {
+  :deep(button) {
     padding: 5px;
     line-height: 1em;
 
@@ -56,7 +68,7 @@ const barchart = ref(false)
     border-radius: 7px;
   }
 
-  .bg-primary {
+  :deep(.bg-primary) {
     border-radius: 7px !important;
     box-shadow: 0px 3px 1px 0px rgba(0, 0, 0, 0.04), 0px 3px 8px 0px rgba(0, 0, 0, 0.12);
     font-weight: 500;
@@ -64,8 +76,10 @@ const barchart = ref(false)
 }
 
 .checkbox {
+  background: #F4F4F5;
+  border-radius: 6px;
 
-  .q-checkbox__inner {
+  :deep(.q-checkbox__inner) {
 
 
     &::before {
@@ -74,5 +88,23 @@ const barchart = ref(false)
     }
   }
 
+}
+
+.button__new {
+  line-height: 2em;
+  font-size: 13px;
+  border-radius: 12px;
+
+  padding: 10px 24px;
+  width: 212px;
+
+}
+
+.total {
+  font-size: 17px;
+}
+
+.month {
+  font-size: 14px;
 }
 </style>
