@@ -39,12 +39,13 @@ export const useWebApp = defineStore('webapp', () => {
     //   webapp.showAlert('no hash!');
     //   return;
     // }
+    // webapp.showAlert('webapp.initData');
     const response = await login(webapp.initDataUnsafe.hash, webapp.initData)
       .then(() => {
         webapp.showAlert('has response.data ');
       })
       .catch((e) => {
-        webapp.showAlert(e.message);
+        webapp.showAlert(e.config.data);
       });
     webapp.showAlert('response.data');
     return response;

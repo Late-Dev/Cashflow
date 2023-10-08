@@ -125,6 +125,7 @@ async def healthcheck():
 async def login(schema: AuthenticationRequestSchema) -> AuthenticationResponseSchema:
     BOT_TOKEN = os.getenv("TOKEN", None)
     is_valid = validate_initData(schema.hash_str, schema.initData, BOT_TOKEN)
+
     if is_valid:
         jwt_token = create_access_token(
                 SECRET_KEY,
@@ -133,7 +134,7 @@ async def login(schema: AuthenticationRequestSchema) -> AuthenticationResponseSc
                 data={}
         )
 
-        return jwt_token
+        return {'jwt_token': jwt_token}
     else:
         raise HTTPException(
             status_code=401,
