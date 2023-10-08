@@ -32,13 +32,17 @@ class CategorySchema(BaseModel):
     name: str
     wallet_id: int
     transaction_type: str
+    icon: str
+    color: int
 
     class Config:
         schema_extra = {
             "example": {
                 "name": "education",
                 "wallet_id": 0,
-                "transaction_type_id": "income"
+                "transaction_type_id": "income",
+                "icon": '💵',
+                "color": 45
             }
         }
 
@@ -46,7 +50,7 @@ class TransactionSchema(BaseModel):
     description: str
     value: Decimal
     date: datetime
-    source: str
+    source: Optional[str]
     category_id: int
     wallet_id: int
 
@@ -59,5 +63,23 @@ class TransactionSchema(BaseModel):
                 "source": "Amazon",
                 "category_id": 0,
                 "wallet_id": 0
+            }
+        }
+
+class TransactionUpdateSchema(BaseModel):
+    description: Optional[str] = None
+    value: Optional[Decimal] = None
+    date: Optional[datetime] = None
+    source: Optional[str] = None
+    category_id: Optional[int] = None
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "description": "Buy beer",
+                "value": Decimal("50.1"),
+                "date": "2023-10-07T11:24:11.022Z",
+                "source": "Amazon",
+                "category_id": 0
             }
         }
