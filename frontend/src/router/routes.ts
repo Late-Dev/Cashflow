@@ -29,13 +29,13 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   {
-    path: '/select',
+    path: '/',
     component: () => import('layouts/BlankLayout.vue'),
     children: [
       {
-        path: '/:type',
+        path: '/select/:type',
         name: 'select',
-        component: () => import('pages/NewTransactionPage.vue'),
+        component: () => import('pages/SelectionsPage.vue'),
       },
     ],
   },

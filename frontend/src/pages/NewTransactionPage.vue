@@ -10,8 +10,8 @@
 
           <q-input dense filled square outlined bg-color="secondary" label-color="dark" color="dark"
             v-model.number="amount" label="The amount" />
-          <q-field dense filled square outlined bg-color="secondary" label-color="dark" color="dark" v-model="currency"
-            label="Currency">
+          <q-field @focus="router.push({ name: 'select', params: { type: 'currency' } })" dense filled square outlined
+            bg-color="secondary" label-color="dark" color="dark" v-model="currency" label="Currency">
 
             <template v-slot:append>
               <div class="text-body2 flex flex-center">
@@ -22,8 +22,8 @@
         </div>
 
         <div class="new-transaction__group">
-          <q-field dense filled square outlined bg-color="secondary" label-color="dark" color="dark" v-model="currency"
-            label="Category">
+          <q-field @focus="router.push({ name: 'select', params: { type: 'category' } })" dense filled square outlined
+            bg-color="secondary" label-color="dark" color="dark" v-model="currency" label="Category">
 
             <template v-slot:append>
               <div class="text-body2 flex flex-center">
