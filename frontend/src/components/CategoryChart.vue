@@ -12,6 +12,9 @@ import { Chart as ChartJS, ArcElement, ChartData, Colors } from 'chart.js';
 
 ChartJS.register(ArcElement, Colors);
 
+
+
+
 interface PropsType {
   chartData: number[];
   colors: (number | undefined)[];

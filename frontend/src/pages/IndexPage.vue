@@ -10,7 +10,7 @@
         </div>
         <q-skeleton v-else type="rect" width="100px" />
         <div class="row hint month" v-if="transactionStore.loaded">
-          <div v-if="transactionStore.selectedMonth">
+          <div v-if="transactionStore.selectedMonth !== undefined">
             {{ transactionStore.currentMode === 'outcome' ? 'Spent' : 'Earned'
             }} in {{ getMonthName(transactionStore.selectedMonth) }}
           </div>
@@ -22,7 +22,7 @@
           :unchecked-icon="ionPodiumOutline" />
       </div>
     </div>
-    <div class="row justify-between items-center" v-touch-swipe.mouse.horizontal="handleSwipe">
+    <div v-if="!barchart" class="row justify-between items-center" v-touch-swipe.mouse.horizontal="handleSwipe">
       <q-icon size="sm" @click="transactionStore.selectMonth(transactionStore.selectedMonth - 1)"
         class="q-pl-md cursor-pointer" :name="ionChevronBack" />
       <div v-if="transactionStore.loaded && categorieStore.loaded">
@@ -37,6 +37,16 @@
       <q-skeleton v-else type="circle" width="180px" height="180px" />
       <q-icon @click="transactionStore.selectMonth(transactionStore.selectedMonth + 1)" size="sm"
         class="q-pr-md cursor-pointer" :name="ionChevronForward" />
+    </div>
+    <div v-else>
+      <MonthBarChart :chart-data="monthChartData" @choose-month="chooseMonth" v-if="transactionStore.loaded" />
+
+      <q-scroll-area v-else style="height: 180px; max-width: 100vw;">
+        <div class="row no-wrap items-end" style="height: 180px; padding: 10px 20px;">
+          <q-skeleton type="rect" style="margin: 0 10px;" width="60px" :height="`${(n * n * 15 % (123 - n)) % 100}%`"
+            v-for="n in 12" :key="n" />
+        </div>
+      </q-scroll-area>
     </div>
     <div class="row justify-center  q-mt-md">
       <q-btn :disable="!transactionStore.loaded" @click="router.push({ name: 'new' })" :icon="ionAdd" :align="`center`"
@@ -110,6 +120,7 @@ import ModeToggle from 'src/components/ModeToggle.vue';
 import TransactionBar from 'src/components/TransactionBar.vue';
 import { useTransaction } from 'src/stores/transactions';
 import { useCategories } from 'src/stores/category';
+import MonthBarChart from 'src/components/MonthBarChart.vue';
 const transactionStore = useTransaction()
 const router = useRouter()
 
@@ -150,6 +161,15 @@ const colorsChartData = computed(() => {
   return aggregatedTransactions.value?.map(el => categorieStore.categoriesList?.find((element) => el.category === element.id)?.color) || [0]
 })
 
+const monthChartData = computed(() => {
+  const monthArray = new Array(12).fill(0);
+  transactionStore.transactionsList?.forEach((element) => {
+    const index = new Date(element.date).getMonth()
+    monthArray[index] += element.value
+  })
+  return monthArray
+})
+
 
 function handleSwipe({ ...newInfo }) {
   if (newInfo.direction === 'left') {
@@ -176,6 +196,11 @@ function isFirstToday(index: number) {
     }
   }
   return false
+}
+
+function chooseMonth(event: number) {
+  barchart.value = false
+  transactionStore.selectMonth(event)
 }
 
 
