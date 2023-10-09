@@ -40,6 +40,14 @@ export const useTransaction = defineStore('transaction', () => {
       ...newTransacitonData.value,
       type: currentMode.value,
       wallet: walletsStore.currentWallet?.id,
+    }).then(() => {
+      newTransacitonData.value = {
+        value: 0,
+        description: '',
+        category: undefined,
+        source: '',
+        date: new Date().toUTCString(),
+      };
     });
     await loadTransactions();
   }
@@ -75,6 +83,6 @@ export const useTransaction = defineStore('transaction', () => {
     monthTransactionsList,
     selectedMonth,
     selectMonth,
-    loaded
+    loaded,
   };
 });
