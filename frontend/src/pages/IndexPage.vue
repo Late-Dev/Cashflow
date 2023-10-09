@@ -26,7 +26,7 @@
       <CategoryChart v-if="transactionStore.loaded && categorieStore.loaded" :chart-data="categoriesChartData"
         :colors="colorsChartData" :month="getMonthName(transactionStore.selectedMonth)">
       </CategoryChart>
-      <q-skeleton v-else type="circle" width="300px" height="300px" />
+      <q-skeleton v-else type="circle" width="180px" height="180px" />
       <q-icon @click="transactionStore.selectMonth(transactionStore.selectedMonth + 1)" size="sm"
         class="q-pr-md cursor-pointer" :name="ionChevronForward" />
     </div>

@@ -68,6 +68,7 @@ watch(() => props.chartData, () => {
 <style scoped lang="scss">
 .category-chart {
   position: relative;
+  height: 180px;
 
   &__sum {
     position: absolute;
