@@ -61,11 +61,11 @@ export function addCategory(
   });
 }
 
-export function addTransaction(payload: Omit<ITransaction, 'id' | 'user' >) {
+export function addTransaction(payload: any) {
   return axios.post('/transaction', {
     description: payload.description,
     value: payload.value,
-    date: payload.date,
+    date: new Date(payload.date).toISOString(),
     source: payload.source,
     category_id: payload.category?.id,
     wallet_id: payload.wallet,

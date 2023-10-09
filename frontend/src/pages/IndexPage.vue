@@ -28,9 +28,11 @@
         }}</q-btn>
     </div>
     <div class="column q-mt-md">
-      <div class="transactions__item">
-        <div class="row transactions__date">August 20 </div>
-        <TransactionBar @open="router.push({ name: 'explore', params: { id: 1 } })" />
+      <div class="transactions__item q-mt-md" v-for="(transaction, index) in transactionStore.transactionsList"
+        :key="transaction.id">
+        <div v-if="isFirstToday(index)" class="row transactions__date">{{ (new
+          Date(transaction.date)).toLocaleDateString('en-US', { month: 'long', day: 'numeric' }) }}</div>
+        <TransactionBar :transaction="transaction" @open="router.push({ name: 'explore', params: { id: 1 } })" />
       </div>
     </div>
   </q-page>
@@ -61,6 +63,22 @@ function handleSwipe({ ...newInfo }) {
     console.log('change down')
   }
 }
+
+function isFirstToday(index: number) {
+  if (index === 0) {
+    return true
+  }
+
+  if (transactionStore.transactionsList && transactionStore.transactionsList[index] && transactionStore.transactionsList[index - 1]) {
+    const prevDate = new Date(transactionStore.transactionsList[index - 1].date)
+    const currentDate = new Date(transactionStore.transactionsList[index].date)
+    if (prevDate.getDate() !== currentDate.getDate()) {
+      return true
+    }
+  }
+  return false
+}
+
 
 </script>
 

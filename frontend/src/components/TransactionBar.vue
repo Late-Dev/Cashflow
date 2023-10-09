@@ -1,17 +1,18 @@
 <template>
   <q-item @click="emit('open', 1)" clickable dense class="row items-center transaction-bar"
     :class="{ 'transaction-bar--settings': isSettingsOpened }" v-touch-swipe.mouse.horizontal="handleSwipe">
-    <EmojiIcon />
+    <EmojiIcon :color="category?.color">{{ category?.icon }}</EmojiIcon>
     <div class="col transaction-bar__info">
       <div>
         <div class="transaction-bar__name">
-          Clothing and shoes
+          {{ category?.name }}
         </div>
         <div class="transaction-bar__source">
-          ZARA
+          {{ transaction.source }}
         </div>
       </div>
-      <div class="transaction-bar__value">-2,000 $</div>
+      <div class="transaction-bar__value">{{ category?.transaction_type === 'outcome' ? '-' : '+' }}{{ transaction.value }} $
+      </div>
     </div>
     <div class="transaction-bar__options">
       <q-btn flat @click="emit('edit')" class="transaction-bar__edit"> <q-icon size="md" :name="ionCreate"></q-icon>
@@ -23,11 +24,21 @@
 </template>
 
 <script setup lang='ts'>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import EmojiIcon from './EmojiIcon.vue';
 import { ionCreate, ionTrash } from '@quasar/extras/ionicons-v7';
+import { ITransaction } from 'src/types';
+import { useCategories } from 'src/stores/category';
+
+const categorieStore = useCategories()
 
 const emit = defineEmits(['open', 'edit', 'delete'])
+
+interface PropsType {
+  transaction: ITransaction
+}
+
+const props = defineProps<PropsType>()
 
 const isSettingsOpened = ref(false)
 
@@ -39,6 +50,11 @@ function handleSwipe({ ...newInfo }) {
     isSettingsOpened.value = false
   }
 }
+
+const category = computed(() => {
+  return categorieStore.categoriesList?.find((el) => el.id === props.transaction.category)
+})
+
 </script>
 
 <style scoped lang='scss'>

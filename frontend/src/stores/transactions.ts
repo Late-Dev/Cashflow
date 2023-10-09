@@ -28,9 +28,11 @@ export const useTransaction = defineStore('transaction', () => {
   }
 
   async function newTransaciton() {
+
     await addTransaction({
       ...newTransacitonData.value,
       type: currentMode.value === 'expenses' ? 'outcome' : 'income',
+      wallet: walletsStore.currentWallet?.id,
     });
     await loadTransactions();
   }

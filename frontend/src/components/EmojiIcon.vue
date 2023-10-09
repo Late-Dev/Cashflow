@@ -1,8 +1,11 @@
 <template>
-  <div class="flex-center emoji-icon">📖</div>
+  <div :style="{ background: `hsl(${color}, 64%, 61%)` }" class="flex-center emoji-icon">
+    <slot></slot>
+  </div>
 </template>
 
 <script setup lang='ts'>
+defineProps(['color'])
 
 </script>
 
@@ -12,7 +15,6 @@
   width: 40px;
   margin: 5px;
   font-size: 24px;
-  background-color: #5BDB8E;
   border-radius: 50%;
   flex-shrink: 0;
   display: flex;
