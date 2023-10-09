@@ -1,12 +1,12 @@
 <template>
   <div class="category-chart">
-    <div class="category-chart__sum">{{ month }}{{ chartData }}</div>
+    <div class="category-chart__sum">{{ month }}</div>
     <Doughnut :data="data" :options="options"></Doughnut>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
+import {  ref, watch } from 'vue';
 import { Doughnut } from 'vue-chartjs';
 import { Chart as ChartJS, ArcElement, ChartData, Colors } from 'chart.js';
 
