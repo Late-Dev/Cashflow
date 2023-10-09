@@ -6,12 +6,14 @@
     <div class="row justify-between q-ma-sm">
       <div class="column">
         <div class="row text-bold total" v-if="transactionStore.loaded">
-          {{ monthSum }} $
+          {{ transactionStore.monthTransactionsList?.length ? monthSum + ' $' : 'no data' }}
         </div>
         <q-skeleton v-else type="rect" width="100px" />
         <div class="row hint month" v-if="transactionStore.loaded">
-          {{ transactionStore.currentMode === 'outcome' ? 'Spent' : 'Earned'
-          }} in {{ getMonthName(transactionStore.selectedMonth) }}
+          <div v-if="transactionStore.selectedMonth">
+            {{ transactionStore.currentMode === 'outcome' ? 'Spent' : 'Earned'
+            }} in {{ getMonthName(transactionStore.selectedMonth) }}
+          </div>
         </div>
         <q-skeleton v-else type="text" width="80px" />
       </div>
@@ -23,9 +25,15 @@
     <div class="row justify-between items-center" v-touch-swipe.mouse.horizontal="handleSwipe">
       <q-icon size="sm" @click="transactionStore.selectMonth(transactionStore.selectedMonth - 1)"
         class="q-pl-md cursor-pointer" :name="ionChevronBack" />
-      <CategoryChart v-if="transactionStore.loaded && categorieStore.loaded" :chart-data="categoriesChartData"
-        :colors="colorsChartData" :month="getMonthName(transactionStore.selectedMonth)">
-      </CategoryChart>
+      <div v-if="transactionStore.loaded && categorieStore.loaded">
+
+        <CategoryChart :chart-data="categoriesChartData" v-if="transactionStore.selectedMonth" :colors="colorsChartData"
+          :month="getMonthName(transactionStore.selectedMonth)">
+        </CategoryChart>
+        <h5 style="width: 180px; text-align: center;" v-else>
+          Add your first transaction
+        </h5>
+      </div>
       <q-skeleton v-else type="circle" width="180px" height="180px" />
       <q-icon @click="transactionStore.selectMonth(transactionStore.selectedMonth + 1)" size="sm"
         class="q-pr-md cursor-pointer" :name="ionChevronForward" />
@@ -44,8 +52,8 @@
         <TransactionBar :transaction="transaction" @open="router.push({ name: 'explore', params: { id: $event } })" />
       </div>
     </div>
-    <div v-else >
-      <q-item >
+    <div v-else>
+      <q-item>
         <q-item-section avatar>
           <q-skeleton type="QAvatar" />
         </q-item-section>
@@ -60,7 +68,7 @@
         </q-item-section>
       </q-item>
 
-      <q-item >
+      <q-item>
         <q-item-section avatar>
           <q-skeleton type="QAvatar" />
         </q-item-section>
@@ -75,7 +83,7 @@
         </q-item-section>
       </q-item>
 
-      <q-item >
+      <q-item>
         <q-item-section avatar>
           <q-skeleton type="QAvatar" />
         </q-item-section>
