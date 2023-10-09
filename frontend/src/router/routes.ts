@@ -28,6 +28,28 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
+  {
+    path: '/select',
+    component: () => import('layouts/BlankLayout.vue'),
+    children: [
+      {
+        path: '/:type',
+        name: 'select',
+        component: () => import('pages/NewTransactionPage.vue'),
+      },
+    ],
+  },
+  {
+    path: '/settings',
+    component: () => import('layouts/BlankLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'settings',
+        component: () => import('pages/SettingsPage.vue'),
+      },
+    ],
+  },
 
   // Always leave this as last one,
   // but you can also remove it

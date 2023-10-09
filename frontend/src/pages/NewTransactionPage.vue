@@ -10,14 +10,27 @@
 
           <q-input dense filled square outlined bg-color="secondary" label-color="dark" color="dark"
             v-model.number="amount" label="The amount" />
-          <q-input dense filled square outlined bg-color="secondary" label-color="dark" color="dark" v-model="currency"
-            label="Currency" />
+          <q-field dense filled square outlined bg-color="secondary" label-color="dark" color="dark" v-model="currency"
+            label="Currency">
+
+            <template v-slot:append>
+              <div class="text-body2 flex flex-center">
+                All <q-icon :name="ionChevronForward" class="cursor-pointer" />
+              </div>
+            </template>
+          </q-field>
         </div>
 
         <div class="new-transaction__group">
+          <q-field dense filled square outlined bg-color="secondary" label-color="dark" color="dark" v-model="currency"
+            label="Category">
 
-          <q-input dense filled square outlined bg-color="secondary" label-color="dark" color="dark" v-model="category"
-            label="Category" />
+            <template v-slot:append>
+              <div class="text-body2 flex flex-center">
+                All <q-icon :name="ionChevronForward" class="cursor-pointer" />
+              </div>
+            </template>
+          </q-field>
           <q-input dense filled square outlined bg-color="secondary" label-color="dark" color="dark" v-model="source"
             label="Source" />
           <q-input dense filled square outlined bg-color="secondary" label-color="dark" color="dark" v-model="comment"
@@ -40,6 +53,7 @@ import { onMounted, ref } from 'vue';
 import { useWebApp } from 'src/stores/webapp';
 import { useRouter } from 'vue-router';
 import { useTransaction } from 'src/stores/transactions';
+import { ionChevronForward } from '@quasar/extras/ionicons-v7';
 
 const useTransactionStore = useTransaction()
 const router = useRouter()
@@ -54,7 +68,7 @@ const dateField = ref()
 
 async function onSubmit() {
 
-
+  router.go(-1)
 
   await useTransactionStore.newTransaciton({
 
@@ -63,9 +77,10 @@ async function onSubmit() {
     source: source.value,
     description: comment.value,
     date: dateField.value,
-  }).then(()=>{
-    router.go(-1)
+  }).then(() => {
+    return
   })
+
 
   return
 }

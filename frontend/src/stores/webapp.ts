@@ -18,7 +18,11 @@ export const useWebApp = defineStore('webapp', () => {
   // webapp.enableClosingConfirmation();
 
   webapp.BackButton.onClick(() => {
-    router.go(-1);
+    if (window.history.length) {
+      router.go(-1);
+    } else {
+      router.push({ name: 'index' });
+    }
   });
 
   const showBack = () => {

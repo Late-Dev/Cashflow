@@ -23,6 +23,9 @@ export interface IAccount {
 export interface ICategory {
   id: string;
   name: string;
+  icon: string;
+  color: number;
+  transaction_type: 'income' | 'outcome';
 }
 
 export interface Wallet {

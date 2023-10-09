@@ -30,7 +30,7 @@
     <div class="column q-mt-md">
       <div class="transactions__item">
         <div class="row transactions__date">August 20 </div>
-        <TransactionBar />
+        <TransactionBar @open="router.push({ name: 'explore', params: { id: 1 } })" />
       </div>
     </div>
   </q-page>

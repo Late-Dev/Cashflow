@@ -1,6 +1,6 @@
 <template>
-  <q-item clickable dense class="row items-center transaction-bar" :class="{ 'transaction-bar--settings': isSettingsOpened }"
-    v-touch-swipe.mouse.horizontal="handleSwipe">
+  <q-item @click="emit('open', 1)" clickable dense class="row items-center transaction-bar"
+    :class="{ 'transaction-bar--settings': isSettingsOpened }" v-touch-swipe.mouse.horizontal="handleSwipe">
     <EmojiIcon />
     <div class="col transaction-bar__info">
       <div>
@@ -14,8 +14,10 @@
       <div class="transaction-bar__value">-2,000 $</div>
     </div>
     <div class="transaction-bar__options">
-      <q-btn flat class="transaction-bar__edit"> <q-icon size="md" :name="ionCreate"></q-icon> edit</q-btn>
-      <q-btn flat class="transaction-bar__delete"> <q-icon size="md" :name="ionTrash"></q-icon>delete</q-btn>
+      <q-btn flat @click="emit('edit')" class="transaction-bar__edit"> <q-icon size="md" :name="ionCreate"></q-icon>
+        edit</q-btn>
+      <q-btn flat @click="emit('delete')" class="transaction-bar__delete"> <q-icon size="md"
+          :name="ionTrash"></q-icon>delete</q-btn>
     </div>
   </q-item>
 </template>
@@ -24,6 +26,8 @@
 import { ref } from 'vue';
 import EmojiIcon from './EmojiIcon.vue';
 import { ionCreate, ionTrash } from '@quasar/extras/ionicons-v7';
+
+const emit = defineEmits(['open', 'edit', 'delete'])
 
 const isSettingsOpened = ref(false)
 

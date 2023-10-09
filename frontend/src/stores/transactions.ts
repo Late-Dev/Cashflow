@@ -3,6 +3,7 @@ import { addTransaction, getTransactions } from 'src/api';
 import { computed, ref } from 'vue';
 import { useWallets } from './wallets';
 import { ITransaction } from 'src/types';
+
 export const useTransaction = defineStore('transaction', () => {
   const currentMode = ref<'expenses' | 'income'>('expenses');
   const walletsStore = useWallets();

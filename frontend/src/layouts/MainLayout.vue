@@ -8,7 +8,7 @@
           {{ walletsStore.currentWallet?.name }}
         </q-toolbar-title>
 
-        <q-btn flat dense round :icon="ionChevronForward" aria-label="Menu" />
+        <q-btn @click="router.push({ name: 'settings' })" flat dense round :icon="ionChevronForward" aria-label="Menu" />
       </q-toolbar>
     </q-header>
 
@@ -23,6 +23,9 @@
 <script setup lang="ts">
 import { useWallets } from 'src/stores/wallets'
 import { ionChevronForward } from '@quasar/extras/ionicons-v7'
+import { useRouter } from 'vue-router';
+
 const walletsStore = useWallets()
+const router = useRouter()
 
 </script>
