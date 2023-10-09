@@ -10,16 +10,11 @@ const routes: RouteRecordRaw[] = [
         name: 'index',
         component: () => import('pages/IndexPage.vue'),
       },
-      {
-        path: '/explore/:id',
-        name: 'explore',
-        component: () => import('pages/TransactionExplorePage.vue'),
-      },
     ],
   },
   {
     path: '/new',
-    component: () => import('layouts/MainLayout.vue'),
+    component: () => import('layouts/BlankLayout.vue'),
     children: [
       {
         path: '',
@@ -36,6 +31,11 @@ const routes: RouteRecordRaw[] = [
         path: '/select/:type',
         name: 'select',
         component: () => import('pages/SelectionsPage.vue'),
+      },
+      {
+        path: '/explore/:id',
+        name: 'explore',
+        component: () => import('pages/TransactionExplorePage.vue'),
       },
     ],
   },

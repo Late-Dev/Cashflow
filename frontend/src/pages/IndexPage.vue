@@ -32,7 +32,7 @@
         :key="transaction.id">
         <div v-if="isFirstToday(index)" class="row transactions__date">{{ (new
           Date(transaction.date)).toLocaleDateString('en-US', { month: 'long', day: 'numeric' }) }}</div>
-        <TransactionBar :transaction="transaction" @open="router.push({ name: 'explore', params: { id: 1 } })" />
+        <TransactionBar :transaction="transaction" @open="router.push({ name: 'explore', params: { id: $event } })" />
       </div>
     </div>
   </q-page>

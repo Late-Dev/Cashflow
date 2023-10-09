@@ -1,5 +1,5 @@
 <template>
-  <q-item @click="emit('open', 1)" clickable dense class="row items-center transaction-bar"
+  <q-item @click="emit('open', transaction.id)" clickable dense class="row items-center transaction-bar"
     :class="{ 'transaction-bar--settings': isSettingsOpened }" v-touch-swipe.mouse.horizontal="handleSwipe">
     <EmojiIcon :color="category?.color">{{ category?.icon }}</EmojiIcon>
     <div class="col transaction-bar__info">
