@@ -26,12 +26,12 @@
             bg-color="secondary" label-color="dark" color="dark" v-model="transactionStore.newTransacitonData.category"
             label="Category">
             <template v-slot:control>
-              <div class="self-center full-width no-outline" tabindex="0">
+              <div class="self-center full-width no-outline tg-primary-text " tabindex="0">
                 {{ (transactionStore.newTransacitonData.category as ICategory)?.name }}
               </div>
             </template>
             <template v-slot:append>
-              <div class="text-body2 flex flex-center">
+              <div class="text-body2 flex flex-center tg-primary-text">
                 All <q-icon :name="ionChevronForward" class="cursor-pointer" />
               </div>
             </template>
@@ -46,7 +46,7 @@
           <q-field dense filled square borderless bg-color="secondary" label-color="dark" color="dark" label="Date"
             v-model="transactionStore.newTransacitonData.date">
             <template v-slot:control>
-              <div class="self-center full-width no-outline" tabindex="0">{{ (new
+              <div class="self-center full-width no-outline tg-primary-text" tabindex="0">{{ (new
                 Date(transactionStore.newTransacitonData.date)).toLocaleDateString() }}
               </div>
             </template>

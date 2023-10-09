@@ -44,6 +44,8 @@ export const useTransaction = defineStore('transaction', () => {
     return incomeTransactionsList.value;
   });
 
+  
+
   return {
     currentMode,
     loadTransactions,
