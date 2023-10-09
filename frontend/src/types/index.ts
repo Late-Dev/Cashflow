@@ -3,7 +3,7 @@ export interface ITransaction {
   value: number;
   description?: string;
   date: string;
-  category: string;
+  category?: ICategory;
   type: 'income' | 'outcome';
   user: IAccount;
   source?: string;

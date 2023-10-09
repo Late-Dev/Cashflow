@@ -8,8 +8,16 @@ export const useTransaction = defineStore('transaction', () => {
   const currentMode = ref<'expenses' | 'income'>('expenses');
   const walletsStore = useWallets();
 
-  const incomeTransactionsList = ref<ITransaction>();
-  const outcomeTransactionsList = ref<ITransaction>();
+  const incomeTransactionsList = ref<ITransaction[]>();
+  const outcomeTransactionsList = ref<ITransaction[]>();
+
+  const newTransacitonData = ref<Omit<ITransaction, 'id' | 'user' | 'type'>>({
+    value: 0,
+    description: '',
+    category: undefined,
+    source: '',
+    date: new Date().toUTCString(),
+  });
 
   async function loadTransactions() {
     if (!walletsStore.currentWallet?.id) return;
@@ -19,11 +27,9 @@ export const useTransaction = defineStore('transaction', () => {
     });
   }
 
-  async function newTransaciton(
-    payload: Omit<ITransaction, 'id' | 'user' | 'type'>
-  ) {
+  async function newTransaciton() {
     await addTransaction({
-      ...payload,
+      ...newTransacitonData.value,
       type: currentMode.value === 'expenses' ? 'outcome' : 'income',
     });
     await loadTransactions();
@@ -41,5 +47,6 @@ export const useTransaction = defineStore('transaction', () => {
     loadTransactions,
     transactionsList,
     newTransaciton,
+    newTransacitonData,
   };
 });

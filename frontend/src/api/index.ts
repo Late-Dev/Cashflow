@@ -29,8 +29,8 @@ export function getWallets() {
 
 export function getTransactions(wallet_id: number): Promise<
   AxiosResponse<{
-    income: ITransaction;
-    outcome: ITransaction;
+    income: ITransaction[];
+    outcome: ITransaction[];
   }>
 > {
   return axios.get(`/wallet_transactions/${wallet_id}`);
@@ -67,7 +67,7 @@ export function addTransaction(payload: Omit<ITransaction, 'id' | 'user' >) {
     value: payload.value,
     date: payload.date,
     source: payload.source,
-    category_id: payload.category,
+    category_id: payload.category?.id,
     wallet_id: payload.wallet,
   });
 }

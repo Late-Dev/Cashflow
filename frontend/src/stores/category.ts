@@ -5,7 +5,7 @@ import { useWallets } from './wallets';
 import { getCategories } from 'src/api';
 
 export const useCategories = defineStore('category', () => {
-  const categoriesList = ref<ICategory>();
+  const categoriesList = ref<ICategory[]>();
   const walletsStore = useWallets();
 
   async function loadCategories() {

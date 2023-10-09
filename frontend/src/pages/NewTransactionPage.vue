@@ -9,8 +9,8 @@
         <div class="new-transaction__group">
 
           <q-input dense filled square outlined bg-color="secondary" label-color="dark" color="dark"
-            v-model.number="amount" label="The amount" />
-          <q-field @focus="router.push({ name: 'select', params: { type: 'currency' } })" dense filled square outlined
+            v-model.number="transactionStore.newTransacitonData.value" label="The amount" />
+          <!-- <q-field @focus="router.push({ name: 'select', params: { type: 'currency' } })" dense filled square outlined
             bg-color="secondary" label-color="dark" color="dark" v-model="currency" label="Currency">
 
             <template v-slot:append>
@@ -18,29 +18,39 @@
                 All <q-icon :name="ionChevronForward" class="cursor-pointer" />
               </div>
             </template>
-          </q-field>
+          </q-field> -->
         </div>
 
         <div class="new-transaction__group">
           <q-field @focus="router.push({ name: 'select', params: { type: 'category' } })" dense filled square outlined
-            bg-color="secondary" label-color="dark" color="dark" v-model="currency" label="Category">
-
+            bg-color="secondary" label-color="dark" color="dark" v-model="transactionStore.newTransacitonData.category"
+            label="Category">
+            <template v-slot:control>
+              <div class="self-center full-width no-outline" tabindex="0">
+                {{ transactionStore.newTransacitonData.category?.name }}
+              </div>
+            </template>
             <template v-slot:append>
               <div class="text-body2 flex flex-center">
                 All <q-icon :name="ionChevronForward" class="cursor-pointer" />
               </div>
             </template>
           </q-field>
-          <q-input dense filled square outlined bg-color="secondary" label-color="dark" color="dark" v-model="source"
-            label="Source" />
-          <q-input dense filled square outlined bg-color="secondary" label-color="dark" color="dark" v-model="comment"
-            label="Comment" />
+          <q-input dense filled square outlined bg-color="secondary" label-color="dark" color="dark"
+            v-model="transactionStore.newTransacitonData.source" label="Source" />
+          <q-input dense filled square outlined bg-color="secondary" label-color="dark" color="dark"
+            v-model="transactionStore.newTransacitonData.description" label="Comment" />
         </div>
 
         <div class="new-transaction__group">
-
-          <q-input dense filled square borderless bg-color="secondary" label-color="dark" color="dark" v-model="dateField"
-            label="Date" />
+          <q-field dense filled square borderless bg-color="secondary" label-color="dark" color="dark" label="Date"
+            v-model="transactionStore.newTransacitonData.date">
+            <template v-slot:control>
+              <div class="self-center full-width no-outline" tabindex="0">{{ (new
+                Date(transactionStore.newTransacitonData.date)).toLocaleDateString() }}
+              </div>
+            </template>
+          </q-field>
         </div>
       </q-form>
     </div>
@@ -55,31 +65,19 @@ import { useRouter } from 'vue-router';
 import { useTransaction } from 'src/stores/transactions';
 import { ionChevronForward } from '@quasar/extras/ionicons-v7';
 
-const useTransactionStore = useTransaction()
+const transactionStore = useTransaction()
 const router = useRouter()
 const formElement = ref()
 
-const amount = ref(0);
-const currency = ref<string>();
-const category = ref()
-const source = ref()
-const comment = ref()
-const dateField = ref()
 
 async function onSubmit() {
 
-  router.go(-1)
 
-  await useTransactionStore.newTransaciton({
+  await transactionStore.newTransaciton().then(() => {
+    router.go(-1)
 
-    value: amount.value,
-    category: category.value,
-    source: source.value,
-    description: comment.value,
-    date: dateField.value,
-  }).then(() => {
-    return
   })
+
 
 
   return
