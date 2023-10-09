@@ -11,6 +11,8 @@ export const useTransaction = defineStore('transaction', () => {
   const incomeTransactionsList = ref<ITransaction[]>();
   const outcomeTransactionsList = ref<ITransaction[]>();
 
+  const loaded = ref(false);
+
   const newTransacitonData = ref<Omit<ITransaction, 'id' | 'user' | 'type'>>({
     value: 0,
     description: '',
@@ -24,6 +26,8 @@ export const useTransaction = defineStore('transaction', () => {
     await getTransactions(walletsStore.currentWallet.id).then((response) => {
       incomeTransactionsList.value = response.data.income;
       outcomeTransactionsList.value = response.data.outcome;
+
+      loaded.value = true;
 
       selectedMonth.value = new Date(
         transactionsList.value?.at(-1)?.date as string
@@ -71,5 +75,6 @@ export const useTransaction = defineStore('transaction', () => {
     monthTransactionsList,
     selectedMonth,
     selectMonth,
+    loaded
   };
 });

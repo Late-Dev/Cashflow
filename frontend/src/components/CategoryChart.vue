@@ -61,7 +61,7 @@ watch(() => props.chartData, () => {
     }]
   };
 
-})
+}, { immediate: true })
 
 </script>
 

@@ -1,12 +1,13 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-header class="tg-primary">
-      <q-toolbar>
+      <q-toolbar class="row justify-between">
 
 
-        <q-toolbar-title>
+        <q-toolbar-title v-if="walletsStore.loaded">
           {{ walletsStore.currentWallet?.name }}
         </q-toolbar-title>
+        <q-skeleton v-else type="rect" width="50%" />
 
         <q-btn @click="router.push({ name: 'settings' })" flat dense round :icon="ionChevronForward" aria-label="Menu" />
       </q-toolbar>

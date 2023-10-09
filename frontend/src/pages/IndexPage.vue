@@ -5,13 +5,15 @@
     </div>
     <div class="row justify-between q-ma-sm">
       <div class="column">
-        <div class="row text-bold total">
+        <div class="row text-bold total" v-if="transactionStore.loaded">
           {{ monthSum }} $
         </div>
-        <div class="row hint month">
+        <q-skeleton v-else type="rect" width="100px" />
+        <div class="row hint month" v-if="transactionStore.loaded">
           {{ transactionStore.currentMode === 'outcome' ? 'Spent' : 'Earned'
           }} in {{ getMonthName(transactionStore.selectedMonth) }}
         </div>
+        <q-skeleton v-else type="text" width="80px" />
       </div>
       <div class="column">
         <q-checkbox class="checkbox" color="dark" v-model="barchart" :checked-icon="ionPieChartOutline"
@@ -20,25 +22,73 @@
     </div>
     <div class="row justify-between items-center" v-touch-swipe.mouse.horizontal="handleSwipe">
       <q-icon size="sm" @click="transactionStore.selectMonth(transactionStore.selectedMonth - 1)"
-        class="q-pa-md cursor-pointer" :name="ionChevronBack" />
-      <CategoryChart :chart-data="categoriesChartData" :colors="colorsChartData"
-        :month="getMonthName(transactionStore.selectedMonth)">
+        class="q-pl-md cursor-pointer" :name="ionChevronBack" />
+      <CategoryChart v-if="transactionStore.loaded && categorieStore.loaded" :chart-data="categoriesChartData"
+        :colors="colorsChartData" :month="getMonthName(transactionStore.selectedMonth)">
       </CategoryChart>
+      <q-skeleton v-else type="circle" width="300px" height="300px" />
       <q-icon @click="transactionStore.selectMonth(transactionStore.selectedMonth + 1)" size="sm"
-        class="q-pa-md cursor-pointer" :name="ionChevronForward" />
+        class="q-pr-md cursor-pointer" :name="ionChevronForward" />
     </div>
     <div class="row justify-center  q-mt-md">
-      <q-btn @click="router.push({ name: 'new' })" :icon="ionAdd" :align="`center`" no-caps unelevated
-        class="link-button button__new">New {{ transactionStore.currentMode === 'outcome' ? 'expense' : 'income'
+      <q-btn :disable="!transactionStore.loaded" @click="router.push({ name: 'new' })" :icon="ionAdd" :align="`center`"
+        no-caps unelevated class="link-button button__new">New {{ transactionStore.currentMode === 'outcome' ? 'expense' :
+          'income'
         }}</q-btn>
     </div>
-    <div class="column q-mt-md">
+    <div class="column q-mt-md" v-if="transactionStore.loaded">
       <div class="transactions__item q-mt-md" v-for="(transaction, index) in transactionStore.monthTransactionsList"
         :key="transaction.id">
         <div v-if="isFirstToday(index)" class="row transactions__date">{{ (new
           Date(transaction.date)).toLocaleDateString('en-US', { month: 'long', day: 'numeric' }) }}</div>
         <TransactionBar :transaction="transaction" @open="router.push({ name: 'explore', params: { id: $event } })" />
       </div>
+    </div>
+    <div v-else class="q-pa-md">
+      <q-item >
+        <q-item-section avatar>
+          <q-skeleton type="QAvatar" />
+        </q-item-section>
+
+        <q-item-section>
+          <q-item-label>
+            <q-skeleton type="text" />
+          </q-item-label>
+          <q-item-label caption>
+            <q-skeleton type="text" width="65%" />
+          </q-item-label>
+        </q-item-section>
+      </q-item>
+
+      <q-item >
+        <q-item-section avatar>
+          <q-skeleton type="QAvatar" />
+        </q-item-section>
+
+        <q-item-section>
+          <q-item-label>
+            <q-skeleton type="text" />
+          </q-item-label>
+          <q-item-label caption>
+            <q-skeleton type="text" width="90%" />
+          </q-item-label>
+        </q-item-section>
+      </q-item>
+
+      <q-item >
+        <q-item-section avatar>
+          <q-skeleton type="QAvatar" />
+        </q-item-section>
+
+        <q-item-section>
+          <q-item-label>
+            <q-skeleton type="text" width="35%" />
+          </q-item-label>
+          <q-item-label caption>
+            <q-skeleton type="text" />
+          </q-item-label>
+        </q-item-section>
+      </q-item>
     </div>
   </q-page>
 </template>

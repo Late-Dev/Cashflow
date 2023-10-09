@@ -10,6 +10,8 @@ export const useWallets = defineStore('wallets', () => {
 
   const currentWallet = ref<Wallet>();
 
+  const loaded = ref(false);
+
   const transactionStore = useTransaction();
   const categoriesStore = useCategories();
 
@@ -17,6 +19,7 @@ export const useWallets = defineStore('wallets', () => {
     await getWallets().then((response) => {
       walletList.value = response.data;
       currentWallet.value = response.data[0];
+      loaded.value = true;
     });
 
     transactionStore.loadTransactions();
@@ -27,5 +30,6 @@ export const useWallets = defineStore('wallets', () => {
     loadWallets,
     walletList,
     currentWallet,
+    loaded
   };
 });
