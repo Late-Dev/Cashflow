@@ -14,7 +14,7 @@ ChartJS.register(ArcElement, Colors);
 
 interface PropsType {
   chartData: number[];
-  colors?: number[];
+  colors: number[];
   month?: string;
 }
 
@@ -23,7 +23,12 @@ const props = defineProps<PropsType>()
 const data = ref<ChartData<'doughnut'>>({
   datasets: [
     {
-      data: [1, 2, 3, 4, 5],
+      data: [0],
+      backgroundColor: [
+        'rgb(255, 99, 132)',
+        'rgb(54, 162, 235)',
+        'rgb(255, 205, 86)'
+      ],
     },
   ],
 });
@@ -50,7 +55,11 @@ const options = ref({
 
 
 watch(() => props.chartData, () => {
-  data.value = { datasets: [{ data: props.chartData }] };
+  data.value = {
+    datasets: [{
+      data: props.chartData, backgroundColor: props.colors.map(num => `hsl(${num}, 64%, 61%)`),
+    }]
+  };
 
 })
 

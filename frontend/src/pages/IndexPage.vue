@@ -21,8 +21,9 @@
     <div class="row justify-between items-center" v-touch-swipe.mouse.horizontal="handleSwipe">
       <q-icon size="sm" @click="transactionStore.selectMonth(transactionStore.selectedMonth - 1)"
         class="q-pa-md cursor-pointer" :name="ionChevronBack" />
-      <CategoryChart :chart-data="(transactionStore.monthTransactionsList?.map(el => el.value) || [0])"
-        :month="getMonthName(transactionStore.selectedMonth)"></CategoryChart>
+      <CategoryChart :chart-data="categoriesChartData" :colors="colorsChartData"
+        :month="getMonthName(transactionStore.selectedMonth)">
+      </CategoryChart>
       <q-icon @click="transactionStore.selectMonth(transactionStore.selectedMonth + 1)" size="sm"
         class="q-pa-md cursor-pointer" :name="ionChevronForward" />
     </div>
@@ -50,7 +51,7 @@ import { useRouter } from 'vue-router';
 import ModeToggle from 'src/components/ModeToggle.vue';
 import TransactionBar from 'src/components/TransactionBar.vue';
 import { useTransaction } from 'src/stores/transactions';
-
+import { useCategories } from 'src/stores/category';
 const transactionStore = useTransaction()
 const router = useRouter()
 
@@ -65,6 +66,30 @@ function getMonthName(monthNumber: number) {
 
 const monthSum = computed(() => {
   return transactionStore.monthTransactionsList?.reduce((accumulator, val) => accumulator + val.value, 0)
+})
+
+const aggregatedTransactions = computed(() => {
+  return transactionStore.monthTransactionsList?.reduce((accumulator, val) => {
+
+    const category = accumulator.find(el => el.category === val.category)
+    if (accumulator.length && category) {
+      category.value += val.value
+    } else if (val.category) {
+      accumulator.push({ category: val.category as number, value: val.value })
+
+    }
+    return accumulator
+  }, [{ category: 0, value: 0 }])
+})
+
+const categoriesChartData = computed(() => {
+  return aggregatedTransactions.value?.map(el => el.value) || [0]
+})
+
+const categorieStore = useCategories()
+
+const colorsChartData = computed(() => {
+  return aggregatedTransactions.value?.map(el => categorieStore.categoriesList?.find((element) => el.category === element.id)?.color) || [0]
 })
 
 
