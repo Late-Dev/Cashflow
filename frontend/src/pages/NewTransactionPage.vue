@@ -63,9 +63,10 @@ async function onSubmit() {
     source: source.value,
     description: comment.value,
     date: dateField.value,
+  }).then(()=>{
+    router.go(-1)
   })
 
-  router.go(-1)
   return
 }
 const webAppStore = useWebApp()

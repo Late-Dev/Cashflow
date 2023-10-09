@@ -25,6 +25,7 @@ export const useTransaction = defineStore('transaction', () => {
       ...payload,
       type: currentMode.value === 'expenses' ? 'outcome' : 'income',
     });
+    await loadTransactions();
   }
 
   const transactionsList = computed(() => {
