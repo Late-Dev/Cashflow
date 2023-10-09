@@ -24,6 +24,10 @@ export const useTransaction = defineStore('transaction', () => {
     await getTransactions(walletsStore.currentWallet.id).then((response) => {
       incomeTransactionsList.value = response.data.income;
       outcomeTransactionsList.value = response.data.outcome;
+
+      selectedMonth.value = new Date(
+        transactionsList.value?.at(-1)?.date as string
+      ).getMonth();
     });
   }
 
@@ -43,11 +47,25 @@ export const useTransaction = defineStore('transaction', () => {
     return incomeTransactionsList.value;
   });
 
+  function selectMonth(num: number) {
+    selectedMonth.value = num;
+  }
+
+  const selectedMonth = ref();
+  const monthTransactionsList = computed(() => {
+    return transactionsList.value?.filter(
+      (el) => new Date(el.date).getMonth() === selectedMonth.value
+    );
+  });
+
   return {
     currentMode,
     loadTransactions,
     transactionsList,
     newTransaciton,
     newTransacitonData,
+    monthTransactionsList,
+    selectedMonth,
+    selectMonth
   };
 });

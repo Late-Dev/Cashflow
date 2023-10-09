@@ -1,23 +1,29 @@
 <template>
   <div class="category-chart">
-    <div class="category-chart__sum">August</div>
+    <div class="category-chart__sum">{{ month }}{{ chartData }}</div>
     <Doughnut :data="data" :options="options"></Doughnut>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { Doughnut } from 'vue-chartjs';
 import { Chart as ChartJS, ArcElement, ChartData, Colors } from 'chart.js';
 
 ChartJS.register(ArcElement, Colors);
 
+interface PropsType {
+  chartData: number[];
+  colors?: number[];
+  month?: string;
+}
+
+const props = defineProps<PropsType>()
+
 const data = ref<ChartData<'doughnut'>>({
   datasets: [
     {
       data: [1, 2, 3, 4, 5],
-      label: 'asdasd',
-
     },
   ],
 });
@@ -42,23 +48,12 @@ const options = ref({
   },
 });
 
-function generateRandomArray(num = 5, min = 0, max = 10) {
-  const localMin = Math.ceil(min);
-  const localMax = Math.floor(max);
-  const result = [];
-  for (let n = 0; n < num; n++) {
-    result.push(Math.floor(Math.random() * (localMax - localMin + 1)));
-  }
-  return result;
-}
 
-onMounted(() => {
-  data.value = { datasets: [{ data: [5, 4, 3, 1, 1] }] };
+watch(() => props.chartData, () => {
+  data.value = { datasets: [{ data: props.chartData }] };
 
-  setInterval(() => {
-    data.value = { datasets: [{ data: generateRandomArray(5, 0, 10) }] };
-  }, 3000);
-});
+})
+
 </script>
 
 <style scoped lang="scss">

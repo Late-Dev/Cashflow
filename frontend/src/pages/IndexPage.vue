@@ -6,10 +6,11 @@
     <div class="row justify-between q-ma-sm">
       <div class="column">
         <div class="row text-bold total">
-          20 000 $
+          {{ monthSum }} $
         </div>
         <div class="row hint month">
-          Spent in August
+          {{ transactionStore.currentMode === 'outcome' ? 'Spent' : 'Earned'
+          }} in {{ getMonthName(transactionStore.selectedMonth) }}
         </div>
       </div>
       <div class="column">
@@ -18,9 +19,12 @@
       </div>
     </div>
     <div class="row justify-between items-center" v-touch-swipe.mouse.horizontal="handleSwipe">
-      <q-icon size="sm" class="q-pa-md cursor-pointer" :name="ionChevronBack" />
-      <CategoryChart></CategoryChart>
-      <q-icon size="sm" class="q-pa-md cursor-pointer" :name="ionChevronForward" />
+      <q-icon size="sm" @click="transactionStore.selectMonth(transactionStore.selectedMonth - 1)"
+        class="q-pa-md cursor-pointer" :name="ionChevronBack" />
+      <CategoryChart :chart-data="(transactionStore.monthTransactionsList?.map(el => el.value) || [0])"
+        :month="getMonthName(transactionStore.selectedMonth)"></CategoryChart>
+      <q-icon @click="transactionStore.selectMonth(transactionStore.selectedMonth + 1)" size="sm"
+        class="q-pa-md cursor-pointer" :name="ionChevronForward" />
     </div>
     <div class="row justify-center  q-mt-md">
       <q-btn @click="router.push({ name: 'new' })" :icon="ionAdd" :align="`center`" no-caps unelevated
@@ -28,7 +32,7 @@
         }}</q-btn>
     </div>
     <div class="column q-mt-md">
-      <div class="transactions__item q-mt-md" v-for="(transaction, index) in transactionStore.transactionsList"
+      <div class="transactions__item q-mt-md" v-for="(transaction, index) in transactionStore.monthTransactionsList"
         :key="transaction.id">
         <div v-if="isFirstToday(index)" class="row transactions__date">{{ (new
           Date(transaction.date)).toLocaleDateString('en-US', { month: 'long', day: 'numeric' }) }}</div>
@@ -40,7 +44,7 @@
 
 <script setup lang="ts">
 import CategoryChart from 'components/CategoryChart.vue';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { ionPodiumOutline, ionPieChartOutline, ionAdd, ionChevronBack, ionChevronForward } from '@quasar/extras/ionicons-v7'
 import { useRouter } from 'vue-router';
 import ModeToggle from 'src/components/ModeToggle.vue';
@@ -52,14 +56,26 @@ const router = useRouter()
 
 const barchart = ref(false)
 
+function getMonthName(monthNumber: number) {
+  const date = new Date();
+  date.setMonth(monthNumber);
+
+  return date.toLocaleString('en-US', { month: 'long' });
+}
+
+const monthSum = computed(() => {
+  return transactionStore.monthTransactionsList?.reduce((accumulator, val) => accumulator + val.value, 0)
+})
+
 
 function handleSwipe({ ...newInfo }) {
   if (newInfo.direction === 'left') {
 
     console.log('change up')
+    transactionStore.selectMonth(transactionStore.selectedMonth + 1)
   }
   if (newInfo.direction === 'right') {
-
+    transactionStore.selectMonth(transactionStore.selectedMonth - 1)
     console.log('change down')
   }
 }
