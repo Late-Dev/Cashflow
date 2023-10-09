@@ -44,7 +44,7 @@
         <TransactionBar :transaction="transaction" @open="router.push({ name: 'explore', params: { id: $event } })" />
       </div>
     </div>
-    <div v-else class="q-pa-md">
+    <div v-else >
       <q-item >
         <q-item-section avatar>
           <q-skeleton type="QAvatar" />
