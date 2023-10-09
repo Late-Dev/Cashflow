@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-import {  ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import { Doughnut } from 'vue-chartjs';
 import { Chart as ChartJS, ArcElement, ChartData, Colors } from 'chart.js';
 
@@ -14,7 +14,7 @@ ChartJS.register(ArcElement, Colors);
 
 interface PropsType {
   chartData: number[];
-  colors: number[];
+  colors: (number | undefined)[];
   month?: string;
 }
 

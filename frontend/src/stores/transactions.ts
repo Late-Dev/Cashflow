@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { addTransaction, getTransactions } from 'src/api';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useWallets } from './wallets';
 import { ITransaction } from 'src/types';
 
@@ -58,6 +58,10 @@ export const useTransaction = defineStore('transaction', () => {
     );
   });
 
+  watch(currentMode, () => {
+    newTransacitonData.value.category = undefined;
+  });
+
   return {
     currentMode,
     loadTransactions,
@@ -66,6 +70,6 @@ export const useTransaction = defineStore('transaction', () => {
     newTransacitonData,
     monthTransactionsList,
     selectedMonth,
-    selectMonth
+    selectMonth,
   };
 });
