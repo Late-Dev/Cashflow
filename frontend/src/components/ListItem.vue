@@ -1,18 +1,25 @@
 <template>
-  <q-item @click="emit('open', transaction.id)" clickable dense class="row items-center transaction-bar"
+  <q-item @click="emit('open', item.id)" clickable dense class="row items-center transaction-bar"
     :class="{ 'transaction-bar--settings': isSettingsOpened }" v-touch-swipe.mouse.horizontal="handleSwipe">
-    <EmojiIcon :color="category?.color">{{ category?.icon }}</EmojiIcon>
-    <div class="col transaction-bar__info">
+    <q-avatar :color="color" class="q-mr-sm">
+      <slot name="icon">
+
+        {{ icon }}
+      </slot>
+    </q-avatar>
+    <div class="col col-grow transaction-bar__info">
       <div>
         <div class="transaction-bar__name">
-          {{ category?.name }}
+          <slot name="name">
+
+          </slot>
         </div>
         <div class="transaction-bar__source">
-          {{ transaction.source }}
+          <slot name="source"></slot>
         </div>
       </div>
-      <div class="transaction-bar__value">{{ category?.transaction_type === 'outcome' ? '-' : '+' }}{{ transaction.value
-      }} $
+      <div class="transaction-bar__value">
+        <slot name="right"></slot>
       </div>
     </div>
     <div class="transaction-bar__options">
@@ -25,18 +32,19 @@
 </template>
 
 <script setup lang='ts'>
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import EmojiIcon from './EmojiIcon.vue';
 import { ionCreate, ionTrash } from '@quasar/extras/ionicons-v7';
-import { ITransaction } from 'src/types';
-import { useCategories } from 'src/stores/category';
 
-const categorieStore = useCategories()
 
 const emit = defineEmits(['open', 'edit', 'delete'])
 
 interface PropsType {
-  transaction: ITransaction
+  item: {
+    id: number
+  },
+  color?: string,
+  icon?: string
 }
 
 const props = defineProps<PropsType>()
@@ -52,9 +60,6 @@ function handleSwipe({ ...newInfo }) {
   }
 }
 
-const category = computed(() => {
-  return categorieStore.categoriesList?.find((el) => el.id === props.transaction.category as number)
-})
 
 </script>
 

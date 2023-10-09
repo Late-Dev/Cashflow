@@ -9,7 +9,7 @@
         </q-toolbar-title>
         <q-skeleton v-else type="rect" width="50%" />
 
-        <q-btn @click="router.push({ name: 'settings' })" flat dense round :icon="ionChevronForward" aria-label="Menu" />
+        <q-btn @click="router.push({ name: 'wallets' })" flat dense round :icon="ionChevronForward" aria-label="Menu" />
       </q-toolbar>
     </q-header>
 

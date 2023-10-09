@@ -26,10 +26,20 @@ export const useWallets = defineStore('wallets', () => {
     categoriesStore.loadCategories();
   }
 
+  async function chooseWallet(id: number) {
+    loaded.value = false;
+    currentWallet.value = walletList.value?.find((el) => el.id === id);
+
+    await transactionStore.loadTransactions();
+    await categoriesStore.loadCategories();
+    loaded.value = true;
+  }
+
   return {
     loadWallets,
     walletList,
     currentWallet,
-    loaded
+    loaded,
+    chooseWallet,
   };
 });

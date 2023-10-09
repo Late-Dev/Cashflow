@@ -40,13 +40,13 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   {
-    path: '/settings',
+    path: '/wallets',
     component: () => import('layouts/BlankLayout.vue'),
     children: [
       {
         path: '',
-        name: 'settings',
-        component: () => import('pages/SettingsPage.vue'),
+        name: 'wallets',
+        component: () => import('pages/WalletsPage.vue'),
       },
     ],
   },
