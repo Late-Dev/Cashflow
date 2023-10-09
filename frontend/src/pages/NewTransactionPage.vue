@@ -27,7 +27,7 @@
             label="Category">
             <template v-slot:control>
               <div class="self-center full-width no-outline" tabindex="0">
-                {{ transactionStore.newTransacitonData.category?.name }}
+                {{ (transactionStore.newTransacitonData.category as ICategory)?.name }}
               </div>
             </template>
             <template v-slot:append>
@@ -64,6 +64,7 @@ import { useWebApp } from 'src/stores/webapp';
 import { useRouter } from 'vue-router';
 import { useTransaction } from 'src/stores/transactions';
 import { ionChevronForward } from '@quasar/extras/ionicons-v7';
+import { ICategory } from 'src/types';
 
 const transactionStore = useTransaction()
 const router = useRouter()

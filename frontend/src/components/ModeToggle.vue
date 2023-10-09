@@ -1,7 +1,7 @@
 <template>
   <q-btn-toggle spread no-caps rounded class="toggle" v-model="useTransactionStore.currentMode" unelevated
     toggle-text-color="dark" text-color="dark" toggle-color="primary" :options="[
-      { label: 'Expenses', value: 'expenses' },
+      { label: 'Expenses', value: 'outcome' },
       { label: 'Income', value: 'income' },
 
     ]"></q-btn-toggle>

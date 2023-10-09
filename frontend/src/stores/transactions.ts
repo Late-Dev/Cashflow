@@ -5,7 +5,7 @@ import { useWallets } from './wallets';
 import { ITransaction } from 'src/types';
 
 export const useTransaction = defineStore('transaction', () => {
-  const currentMode = ref<'expenses' | 'income'>('expenses');
+  const currentMode = ref<'outcome' | 'income'>('outcome');
   const walletsStore = useWallets();
 
   const incomeTransactionsList = ref<ITransaction[]>();
@@ -31,14 +31,14 @@ export const useTransaction = defineStore('transaction', () => {
 
     await addTransaction({
       ...newTransacitonData.value,
-      type: currentMode.value === 'expenses' ? 'outcome' : 'income',
+      type: currentMode.value ,
       wallet: walletsStore.currentWallet?.id,
     });
     await loadTransactions();
   }
 
   const transactionsList = computed(() => {
-    if (currentMode.value === 'expenses') {
+    if (currentMode.value === 'outcome') {
       return outcomeTransactionsList.value;
     }
     return incomeTransactionsList.value;

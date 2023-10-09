@@ -3,7 +3,7 @@ export interface ITransaction {
   value: number;
   description?: string;
   date: string;
-  category?: ICategory;
+  category?: ICategory | number;
   type: 'income' | 'outcome';
   user: IAccount;
   source?: string;
@@ -21,7 +21,7 @@ export interface IAccount {
 }
 
 export interface ICategory {
-  id: string;
+  id: number;
   name: string;
   icon: string;
   color: number;

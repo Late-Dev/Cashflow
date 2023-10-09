@@ -11,7 +11,8 @@
           {{ transaction.source }}
         </div>
       </div>
-      <div class="transaction-bar__value">{{ category?.transaction_type === 'outcome' ? '-' : '+' }}{{ transaction.value }} $
+      <div class="transaction-bar__value">{{ category?.transaction_type === 'outcome' ? '-' : '+' }}{{ transaction.value
+      }} $
       </div>
     </div>
     <div class="transaction-bar__options">
@@ -52,7 +53,7 @@ function handleSwipe({ ...newInfo }) {
 }
 
 const category = computed(() => {
-  return categorieStore.categoriesList?.find((el) => el.id === props.transaction.category)
+  return categorieStore.categoriesList?.find((el) => el.id === props.transaction.category as number)
 })
 
 </script>

@@ -24,7 +24,7 @@
     </div>
     <div class="row justify-center  q-mt-md">
       <q-btn @click="router.push({ name: 'new' })" :icon="ionAdd" :align="`center`" no-caps unelevated
-        class="link-button button__new">New {{ transactionStore.currentMode === 'expenses' ? 'expense' : 'income'
+        class="link-button button__new">New {{ transactionStore.currentMode === 'outcome' ? 'expense' : 'income'
         }}</q-btn>
     </div>
     <div class="column q-mt-md">
