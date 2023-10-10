@@ -1,4 +1,7 @@
 # Cashflow
+
+![avatar](avatar.jpeg)
+
 [Cashflow](https://t.me/keepcashflowbot) is an application for financial management and collaborative planning with your loved ones. 
 
 With Cashflow, you can:
