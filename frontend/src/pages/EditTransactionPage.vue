@@ -1,5 +1,5 @@
 <template>
-  <q-page class="column">
+  <q-page class="column overflow-hidden">
     <div class="q-ma-sm">
       <ModeToggle />
     </div>
@@ -95,6 +95,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   webAppStore.disableCloseConfirm()
+  webAppStore.hideMainButton(formElement.value.submit)
 })
 
 </script>

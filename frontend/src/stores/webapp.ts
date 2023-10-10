@@ -45,8 +45,9 @@ export const useWebApp = defineStore('webapp', () => {
     webapp.MainButton.onClick(fn);
   };
 
-  const hideMainButton = () => {
+  const hideMainButton = (fn: () => void) => {
     webapp.MainButton.hide();
+    webapp.MainButton.offClick(fn);
   };
   async function auth() {
     if (!webapp.initDataUnsafe.hash) {

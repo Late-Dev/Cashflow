@@ -1,5 +1,5 @@
 <template>
-  <q-page class="column q-pa-md">
+  <q-page class="column q-pa-md overflow-hidden">
     <div class="column flex-center">
       <q-avatar size="60px" :style="{ background: `hsl(${category?.color}, 64%, 61%)` }"> {{ category?.icon }} </q-avatar>
       <div class="transaction__category q-mt-sm">

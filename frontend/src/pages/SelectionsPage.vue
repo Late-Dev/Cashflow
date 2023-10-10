@@ -1,5 +1,5 @@
 <template>
-  <q-page class="column">
+  <q-page class="column overflow-hidden">
     <q-list bordered separator>
       <q-item @click="selectItem(category)" clickable v-ripple v-for="category in categoriesStore.categoriesList"
         :key="category.id">

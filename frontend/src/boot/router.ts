@@ -12,7 +12,6 @@ export default boot(async ({ router }) => {
       webappStore.showBack();
     }
 
-    webappStore.hideMainButton();
 
     return true;
   });

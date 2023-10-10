@@ -1,5 +1,5 @@
 <template>
-  <q-page class="column">
+  <q-page class="column overflow-hidden">
     <div class="row q-ma-sm title"> New wallet</div>
     <div class="add-wallet__group">
 
@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang='ts'>
-import { onMounted, ref } from 'vue';
+import { onBeforeMount, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useWallets } from 'src/stores/wallets';
 import { useWebApp } from 'src/stores/webapp';
 import { useRouter } from 'vue-router';
@@ -27,6 +27,13 @@ const newWalletName = ref()
 
 onMounted(() => {
   webAppStore.showMainButton('Add', async () => {
+    await walletStore.createWallet(newWalletName.value);
+    router.push({ name: 'index' })
+  })
+})
+
+onBeforeUnmount(() => {
+  webAppStore.hideMainButton(async () => {
     await walletStore.createWallet(newWalletName.value);
     router.push({ name: 'index' })
   })

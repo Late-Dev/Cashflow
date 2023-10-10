@@ -1,5 +1,5 @@
 <template>
-  <q-page class="column">
+  <q-page class="column overflow-hidden">
     <div class="q-ma-sm">
       <ModeToggle :disabled="route.params.id" />
     </div>
@@ -27,7 +27,7 @@
 
 <script setup lang='ts'>
 import { ICategory } from 'src/types';
-import { onMounted, ref, watch } from 'vue';
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useTransaction } from 'src/stores/transactions'
 import { useRoute, useRouter } from 'vue-router';
 import { useCategories } from 'src/stores/category';
@@ -67,6 +67,21 @@ onMounted(() => {
     }
   }
 })
+
+onBeforeUnmount(() => {
+  webAppStore.hideMainButton(() => {
+
+    if (category.value.id !== -1) {
+      categoryStore.createCategory(category.value)
+    }
+    else {
+      categoryStore.editCategory(category.value)
+    }
+
+    router.go(-1)
+  })
+})
+
 
 
 watch(() => transactionStore.currentMode, (value) => {

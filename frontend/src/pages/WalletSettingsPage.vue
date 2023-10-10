@@ -1,5 +1,5 @@
 <template>
-  <q-page class="column">
+  <q-page class="column overflow-hidden">
     <div class="row q-ma-sm title">
       Categories
     </div>
@@ -33,7 +33,7 @@
 import ListItem from 'src/components/ListItem.vue';
 import { useRouter } from 'vue-router';
 import { useWebApp } from 'src/stores/webapp';
-import { onMounted } from 'vue';
+import { onBeforeUnmount, onMounted } from 'vue';
 import { useCategories } from 'src/stores/category';
 import { ICategory } from 'src/types';
 
@@ -44,6 +44,12 @@ const categorieStore = useCategories()
 onMounted(() => {
   webAppStore.showMainButton('Add', () => { router.push({ name: 'newCategory' }) })
 })
+
+onBeforeUnmount(() => {
+  webAppStore.hideMainButton(() => { router.push({ name: 'newCategory' }) })
+
+})
+
 
 function deleteCategory(id: number) {
   webAppStore.confirm(() => {
