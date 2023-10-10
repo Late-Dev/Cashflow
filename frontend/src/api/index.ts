@@ -55,6 +55,19 @@ export function deleteCategoryRequest(category_id: number) {
   return axios.delete(`/category/${category_id}`);
 }
 
+export function editCategoryRequest(
+  category_id: number,
+  name: string,
+  icon: string,
+  color: number
+) {
+  return axios.patch(`/category/${category_id}`, {
+    name,
+    icon,
+    color,
+  });
+}
+
 export function addUser(id: number) {
   // not needed after authentication update
   return axios.post('/user', { id });
@@ -67,12 +80,16 @@ export function addWallet(name: string, currency = 'USD') {
 export function addCategory(
   name: string,
   wallet_id: number,
-  transaction_type: string
+  transaction_type: string,
+  icon: string,
+  color: number
 ) {
   return axios.post('/category', {
     name,
     wallet_id,
     transaction_type,
+    icon,
+    color,
   });
 }
 

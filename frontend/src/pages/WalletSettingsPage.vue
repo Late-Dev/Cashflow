@@ -42,7 +42,7 @@ const router = useRouter()
 const categorieStore = useCategories()
 
 onMounted(() => {
-  webAppStore.showMainButton('Add', () => { router.push({ name: 'addCategory' }) })
+  webAppStore.showMainButton('Add', () => { router.push({ name: 'newCategory' }) })
 })
 
 function deleteCategory(id: number) {
@@ -52,7 +52,7 @@ function deleteCategory(id: number) {
 }
 
 function editCategory(category: ICategory) {
-  router.push({ name: 'editCategory' })
+  router.push({ name: 'editCategory', params: { id: category.id } })
 }
 
 </script>

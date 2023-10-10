@@ -25,3 +25,11 @@ $positive  : #5BDB8E;
 $negative  : #FF3B30;
 $info      : #31CCEC;
 $warning   : #F2C037;
+
+.bg-rainbow {
+  background: linear-gradient(90deg, rgba(241,3,3,1) 0%, rgba(251,255,6,1) 16%, rgba(7,252,0,1) 33%, rgba(6,244,219,1) 47%, rgba(5,27,239,1) 64%, rgba(230,3,247,1) 84%, rgba(255,0,16,1) 100%) !important;
+}
+
+.text-rainbow {
+  background: linear-gradient(90deg, rgba(241,3,3,1) 0%, rgba(251,255,6,1) 16%, rgba(7,252,0,1) 33%, rgba(6,244,219,1) 47%, rgba(5,27,239,1) 64%, rgba(230,3,247,1) 84%, rgba(255,0,16,1) 100%) !important;
+}

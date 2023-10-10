@@ -52,7 +52,7 @@ const transactionStore = useTransaction()
 const route = useRoute()
 
 const transationInfo = computed(() => {
-  return transactionStore.transactionsList?.find((item) => item.id == route.params.id)
+  return transactionStore.transactionsList?.find((item) => item.id == parseInt(route.params.id as string))
 })
 
 
