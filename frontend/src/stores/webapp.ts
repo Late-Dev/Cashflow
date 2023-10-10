@@ -16,6 +16,14 @@ export const useWebApp = defineStore('webapp', () => {
   const token = ref();
   const walletsStore = useWallets();
 
+  const mainButton = ref({
+    text: '',
+    onClick: () => {
+      return;
+    },
+    isVisible: false,
+  });
+
   function enableCloseConfirm() {
     webapp.enableClosingConfirmation();
   }
@@ -41,15 +49,19 @@ export const useWebApp = defineStore('webapp', () => {
   };
 
   const showMainButton = (text: string, fn: () => void) => {
-    webapp.MainButton.setParams({ text });
-    webapp.MainButton.enable()
-    webapp.MainButton.onClick(fn);
+    // webapp.MainButton.setParams({ text });
+    // webapp.MainButton.enable();
+    // webapp.MainButton.onClick(fn);
+    mainButton.value.isVisible = true;
+    mainButton.value.text = text;
+    mainButton.value.onClick = fn;
   };
 
   const hideMainButton = (fn: () => void) => {
-    // webapp.MainButton.hide();
-    webapp.MainButton.disable()
-    webapp.MainButton.offClick(fn);
+    // // webapp.MainButton.hide();
+    // webapp.MainButton.disable();
+    // webapp.MainButton.offClick(fn);
+    mainButton.value.isVisible = false;
   };
   async function auth() {
     if (!webapp.initDataUnsafe.hash) {
@@ -88,5 +100,6 @@ export const useWebApp = defineStore('webapp', () => {
     enableCloseConfirm,
     disableCloseConfirm,
     showAlert,
+    mainButton,
   };
 });

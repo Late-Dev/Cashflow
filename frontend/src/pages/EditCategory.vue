@@ -1,7 +1,7 @@
 <template>
   <q-page class="column overflow-hidden">
     <div class="q-ma-sm">
-      <ModeToggle :disabled="route.params.id" />
+      <ModeToggle :readonly="!!route.params.id" />
     </div>
     <div class="row justify-around items-center">
       <q-avatar :style="{ background: `hsl(${category.color}, 64%, 61%)` }">
