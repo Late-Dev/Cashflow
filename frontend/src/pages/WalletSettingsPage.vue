@@ -3,9 +3,9 @@
     <div class="row q-ma-sm title">
       Categories
     </div>
-    <div v-if="categorieStore.loaded">
+    <div v-if="loaded">
       <list-item :color="category.color" @delete="deleteCategory" @edit="editCategory" :item="category"
-        v-for="category in categorieStore.allCategoriesList" :key="category.id">
+        v-for="category in walletCategories" :key="category.id">
         <template #icon>
           {{ category.icon }}
         </template>
@@ -31,34 +31,41 @@
 
 <script setup lang='ts'>
 import ListItem from 'src/components/ListItem.vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { useWebApp } from 'src/stores/webapp';
-import { onBeforeUnmount, onMounted } from 'vue';
-import { useCategories } from 'src/stores/category';
+import { onMounted, ref } from 'vue';
+// import { useCategories } from 'src/stores/category';
 import { ICategory } from 'src/types';
+import { deleteCategoryRequest, getCategories } from 'src/api';
 
 const webAppStore = useWebApp()
 const router = useRouter()
-const categorieStore = useCategories()
+// const categorieStore = useCategories()
+const route = useRoute()
+const walletCategories = ref<ICategory[]>()
+const loaded = ref(false)
 
-onMounted(() => {
+onMounted(async () => {
   webAppStore.showMainButton('Add', () => { router.push({ name: 'newCategory' }) })
+  await loadWalletCategories()
 })
 
-onBeforeUnmount(() => {
-  webAppStore.hideMainButton(() => { router.push({ name: 'newCategory' }) })
-
-})
-
+async function loadWalletCategories() {
+  await getCategories(parseInt(route.params.id as string)).then((response) => {
+    walletCategories.value = response.data
+    loaded.value = true
+  })
+}
 
 function deleteCategory(id: number) {
-  webAppStore.confirm(() => {
-    categorieStore.deleteCategory(id)
+  webAppStore.confirm(async () => {
+    await deleteCategoryRequest(id)
+    await loadWalletCategories()
   })
 }
 
 function editCategory(category: ICategory) {
-  router.push({ name: 'editCategory', params: { id: category.id } })
+  router.push({ name: 'editCategory', params: { category_id: category.id, wallet_id: route.params.id } })
 }
 
 </script>

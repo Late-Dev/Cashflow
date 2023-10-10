@@ -32,12 +32,7 @@ onMounted(() => {
   })
 })
 
-onBeforeUnmount(() => {
-  webAppStore.hideMainButton(() => {
-    walletStore.createWallet(newWalletName.value);
-    router.push({ name: 'index' })
-  })
-})
+
 
 
 </script>

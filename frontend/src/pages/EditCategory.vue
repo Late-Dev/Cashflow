@@ -1,7 +1,7 @@
 <template>
   <q-page class="column overflow-hidden">
     <div class="q-ma-sm">
-      <ModeToggle :readonly="!!route.params.id" />
+      <ModeToggle :readonly="!!route.params.category_id" />
     </div>
     <div class="row justify-around items-center">
       <q-avatar :style="{ background: `hsl(${category.color}, 64%, 61%)` }">
@@ -30,12 +30,11 @@ import { ICategory } from 'src/types';
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useTransaction } from 'src/stores/transactions'
 import { useRoute, useRouter } from 'vue-router';
-import { useCategories } from 'src/stores/category';
 import { useWebApp } from 'src/stores/webapp';
 import ModeToggle from 'src/components/ModeToggle.vue';
+import { getCategories, addCategory, editCategoryRequest } from 'src/api';
 
 const router = useRouter()
-const categoryStore = useCategories()
 const transactionStore = useTransaction()
 const route = useRoute()
 const webAppStore = useWebApp()
@@ -48,40 +47,45 @@ const category = ref<ICategory>({
   transaction_type: 'outcome'
 })
 
-onMounted(() => {
-  webAppStore.showMainButton('Save', () => {
+
+const walletCategories = ref<ICategory[]>()
+const loaded = ref(false)
+
+async function loadWalletCategories() {
+  await getCategories(parseInt(route.params.category_id as string)).then((response) => {
+    walletCategories.value = response.data
+    loaded.value = true
+  })
+}
+
+
+onMounted(async () => {
+
+  webAppStore.showMainButton('Save', async () => {
 
     if (category.value.id !== -1) {
-      categoryStore.createCategory(category.value)
+      await addCategory(
+        category.value.name,
+        parseInt(route.params.wallet_id as string),
+        transactionStore.currentMode,
+        category.value.icon,
+        category.value.color)
     }
     else {
-      categoryStore.editCategory(category.value)
+      editCategoryRequest(category.value.id, category.value.name, category.value.icon, category.value.color)
+
     }
 
     router.go(-1)
   })
-  if (route.params.id) {
-    const foundCat = categoryStore.allCategoriesList?.find((el) => el.id === parseInt(route.params.id as string))
+  if (route.params.category_id) {
+    await loadWalletCategories()
+    const foundCat = walletCategories.value?.find((el) => el.id === parseInt(route.params.id as string))
     if (foundCat) {
       category.value = foundCat
     }
   }
 })
-
-onBeforeUnmount(() => {
-  webAppStore.hideMainButton(() => {
-
-    if (category.value.id !== -1) {
-      categoryStore.createCategory(category.value)
-    }
-    else {
-      categoryStore.editCategory(category.value)
-    }
-
-    router.go(-1)
-  })
-})
-
 
 
 watch(() => transactionStore.currentMode, (value) => {

@@ -95,7 +95,6 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   webAppStore.disableCloseConfirm()
-  webAppStore.hideMainButton(formElement.value.submit)
 })
 
 </script>

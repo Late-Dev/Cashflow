@@ -33,7 +33,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/EditCategory.vue'),
       },
       {
-        path: '/category/edit/:id',
+        path: '/category/edit/:wallet_id/:category_id',
         name: 'editCategory',
         component: () => import('pages/EditCategory.vue'),
       },
@@ -59,7 +59,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/EditTransactionPage.vue'),
       },
       {
-        path: 'editWallet/id',
+        path: 'editWallet/:id',
         name: 'editWallet',
         component: () => import('pages/WalletSettingsPage.vue'),
       },

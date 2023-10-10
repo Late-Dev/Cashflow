@@ -26,7 +26,7 @@ import { ionWalletOutline } from '@quasar/extras/ionicons-v7';
 import ListItem from 'src/components/ListItem.vue';
 import { useRouter } from 'vue-router';
 import { useWebApp } from 'src/stores/webapp';
-import { onBeforeUnmount, onMounted } from 'vue';
+import {  onMounted } from 'vue';
 import { Wallet } from 'src/types';
 
 const webAppStore = useWebApp()
@@ -41,9 +41,7 @@ function openWallet(id: number) {
 onMounted(() => {
   webAppStore.showMainButton('Add', () => { router.push({ name: 'addWallet' }) })
 })
-onBeforeUnmount(() => {
-  webAppStore.hideMainButton(() => { router.push({ name: 'addWallet' }) })
-})
+
 
 function deleteWallet(id: number) {
   webAppStore.confirm(() => {
