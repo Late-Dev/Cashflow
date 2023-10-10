@@ -11,6 +11,7 @@ db = Database()
 class User(db.Entity):
     id = PrimaryKey(int, auto=True)
     user2_wallets = Set('User2Wallet')
+    transactions = Set('Transaction')
 
 
 class Wallet(db.Entity):
@@ -40,6 +41,7 @@ class Transaction(db.Entity):
     wallet = Required(Wallet)
     date = Required(datetime)
     source = Optional(str)
+    user = Required(User)
 
 
 class User2Wallet(db.Entity):
@@ -107,6 +109,17 @@ def add_category_data(category: dict):
     )
 
 @db_session
+def delete_category_data(id: int):
+    Category[id].delete()
+
+@db_session
+def update_category_data(id: int, category: dict):
+    current_category = Category[id]
+    current_category.name = category.get('name', None) or current_category.name
+    current_category.icon = category.get('icon', None) or current_category.icon
+    current_category.color = category.get('color', None) or current_category.color
+
+@db_session
 def add_wallet_data(wallet: dict):
     user = User[wallet['user_id']]
     wallet = Wallet(
@@ -128,10 +141,20 @@ def add_wallet_data(wallet: dict):
         )
 
 @db_session
+def delete_wallet_data(id: int):
+    Wallet[id].delete()
+
+@db_session
+def update_wallet_data(id: int, wallet: dict):
+    current_wallet = Wallet[id]
+    current_wallet.name = wallet.get('name', None) or current_wallet.name
+
+@db_session
 def add_transaction_data(transaction: dict):
     category = Category[transaction['category_id']]
     wallet = Wallet[transaction['wallet_id']]
     date = datetime.fromisoformat(transaction['date'])
+    user = User[transaction['user_id']]
     Transaction(
         category=category,
         description=transaction['description'],
@@ -139,6 +162,7 @@ def add_transaction_data(transaction: dict):
         wallet=wallet,
         source=transaction['source'],
         date=date,
+        user=user
     )
 
 @db_session

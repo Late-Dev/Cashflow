@@ -10,12 +10,14 @@ from utils import validate_initData, create_access_token
 
 from schema import (
         CategorySchema,
+        CategoryUpdateSchema,
         TransactionSchema,
         TransactionUpdateSchema,
         UserSchema,
         WalletSchema,
         AuthenticationRequestSchema,
-        AuthenticationResponseSchema
+        AuthenticationResponseSchema,
+        WalletUpdateSchema
 )
 from database import (
     add_category_data,
@@ -23,11 +25,15 @@ from database import (
     add_user_data,
     add_wallet_data,
     db,
+    delete_category_data,
     delete_transaction_data,
+    delete_wallet_data,
     get_user_wallets_data,
     get_wallet_categories_data,
     get_wallet_transactions_data,
-    update_transaction_data
+    update_category_data,
+    update_transaction_data,
+    update_wallet_data
 )
 
 
@@ -171,10 +177,32 @@ def add_wallet(wallet: WalletSchema, data = Depends(val_jwt)):
     add_wallet_data(wallet)
     return 'success'
 
+@app.delete("/wallet/{id}")
+def delete_wallet(id: int, data = Depends(val_jwt)):
+    delete_wallet_data(id)
+    return 'success'
+
+@app.patch("/wallet/{id}")
+def update_wallet(id: int, wallet: WalletUpdateSchema, data = Depends(val_jwt)):
+    wallet = jsonable_encoder(wallet)
+    update_wallet_data(id, wallet)
+    return 'success'
+
 @app.post("/category")
 def add_category(category: CategorySchema, data = Depends(val_jwt)):
     category = jsonable_encoder(category)
     add_category_data(category)
+    return 'success'
+
+@app.delete("/category/{id}")
+def delete_category(id: int, data = Depends(val_jwt)):
+    delete_category_data(id)
+    return 'success'
+
+@app.patch("/category/{id}")
+def update_category(id: int, category: CategoryUpdateSchema, data = Depends(val_jwt)):
+    category = jsonable_encoder(category)
+    update_category_data(id, category)
     return 'success'
 
 @app.post("/transaction")
