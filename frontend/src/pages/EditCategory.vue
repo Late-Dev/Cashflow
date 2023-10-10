@@ -63,7 +63,7 @@ onMounted(async () => {
 
   webAppStore.showMainButton('Save', async () => {
 
-    if (category.value.id !== -1) {
+    if (category.value.id === -1) {
       await addCategory(
         category.value.name,
         parseInt(route.params.wallet_id as string),
@@ -73,7 +73,6 @@ onMounted(async () => {
     }
     else {
       await editCategoryRequest(category.value.id, category.value.name, category.value.icon, category.value.color)
-
     }
 
     router.go(-1)

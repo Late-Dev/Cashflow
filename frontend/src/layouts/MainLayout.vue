@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-header class="tg-primary">
-      <q-toolbar class="row justify-between">
+      <q-toolbar @click="router.push({ name: 'wallets' })" class="row justify-between">
 
 
         <q-toolbar-title v-if="walletsStore.loaded">
