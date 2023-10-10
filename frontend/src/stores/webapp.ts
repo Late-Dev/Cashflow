@@ -22,6 +22,7 @@ export const useWebApp = defineStore('webapp', () => {
       return;
     },
     isVisible: false,
+    disabled: false
   });
 
   function enableCloseConfirm() {
@@ -49,10 +50,14 @@ export const useWebApp = defineStore('webapp', () => {
   };
 
   const showMainButton = (text: string, fn: () => void) => {
-
+    mainButton.value.disabled = false
     mainButton.value.isVisible = true;
     mainButton.value.text = text;
     mainButton.value.onClick = fn;
+  };
+
+  const disableMainButton = () => {
+    mainButton.value.disabled = true;
   };
 
   const hideMainButton = () => {
@@ -97,5 +102,6 @@ export const useWebApp = defineStore('webapp', () => {
     disableCloseConfirm,
     showAlert,
     mainButton,
+    disableMainButton
   };
 });
