@@ -46,7 +46,7 @@ const walletCategories = ref<ICategory[]>()
 const loaded = ref(false)
 
 onMounted(async () => {
-  webAppStore.showMainButton('Add', () => { router.push({ name: 'newCategory' }) })
+  webAppStore.showMainButton('Add', () => { router.push({ name: 'newCategory', params: { wallet_id: route.params.id as string } }) })
   await loadWalletCategories()
 })
 

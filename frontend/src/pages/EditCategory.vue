@@ -4,11 +4,6 @@
     <div class="q-ma-sm">
       <ModeToggle :readonly="!!route.params.category_id" />
     </div>
-    {{ [category.name,
-    parseInt(route.params.wallet_id as string),
-    transactionStore.currentMode,
-    category.icon,
-    category.color] }}
     <div v-if="loaded" class="row justify-around items-center">
       <q-avatar :style="{ background: `hsl(${category.color}, 64%, 61%)` }">
         {{ category.icon }}
@@ -18,6 +13,12 @@
           label="Icon" />
       </div>
     </div>
+
+    <div v-else class="row justify-around items-center">
+      <q-skeleton type="QAvatar"></q-skeleton>
+      <q-skeleton type="rect"></q-skeleton>
+    </div>
+
     <div v-if="loaded" class="row">
       <q-slider :min="0" :max="360" selection-color="secondary" track-color="rainbow" class="q-ma-md"
         v-model="category.color" color="secondary" :step="1" />
@@ -25,8 +26,6 @@
     <div v-if="loaded" class="edit-category__group">
       <q-input dense filled square outlined bg-color="secondary" label-color="dark" color="dark" v-model="category.name"
         label="Category name" />
-
-
     </div>
   </q-page>
 </template>

@@ -28,7 +28,7 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/BlankLayout.vue'),
     children: [
       {
-        path: '/category/new',
+        path: '/category/new/:wallet_id',
         name: 'newCategory',
         component: () => import('pages/EditCategory.vue'),
       },
