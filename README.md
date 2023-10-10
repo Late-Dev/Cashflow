@@ -1,6 +1,8 @@
 # Cashflow
 
-![avatar](avatar.jpeg)
+<p align="center">
+  <img src="https://github.com/Late-Dev/Cashflow/blob/main/avatar.jpeg" />
+</p>
 
 [Cashflow](https://t.me/keepcashflowbot) is an application for financial management and collaborative planning with your loved ones. 
 
