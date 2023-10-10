@@ -3,7 +3,7 @@
     <div class="q-ma-sm">
       <ModeToggle :readonly="!!route.params.category_id" />
     </div>
-    <div class="row justify-around items-center">
+    <div v-if="loaded" class="row justify-around items-center">
       <q-avatar :style="{ background: `hsl(${category.color}, 64%, 61%)` }">
         {{ category.icon }}
       </q-avatar>
@@ -12,11 +12,11 @@
           label="Icon" />
       </div>
     </div>
-    <div class="row">
+    <div v-if="loaded" class="row">
       <q-slider :min="0" :max="360" selection-color="secondary" track-color="rainbow" class="q-ma-md"
         v-model="category.color" color="secondary" :step="1" />
     </div>
-    <div class="edit-category__group">
+    <div v-if="loaded" class="edit-category__group">
       <q-input dense filled square outlined bg-color="secondary" label-color="dark" color="dark" v-model="category.name"
         label="Category name" />
 
@@ -27,7 +27,7 @@
 
 <script setup lang='ts'>
 import { ICategory } from 'src/types';
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useTransaction } from 'src/stores/transactions'
 import { useRoute, useRouter } from 'vue-router';
 import { useWebApp } from 'src/stores/webapp';
@@ -72,7 +72,7 @@ onMounted(async () => {
         category.value.color)
     }
     else {
-      editCategoryRequest(category.value.id, category.value.name, category.value.icon, category.value.color)
+      await editCategoryRequest(category.value.id, category.value.name, category.value.icon, category.value.color)
 
     }
 
@@ -80,10 +80,13 @@ onMounted(async () => {
   })
   if (route.params.category_id) {
     await loadWalletCategories()
-    const foundCat = walletCategories.value?.find((el) => el.id === parseInt(route.params.id as string))
+    const foundCat = walletCategories.value?.find((el) => el.id === parseInt(route.params.category_id as string))
     if (foundCat) {
       category.value = foundCat
     }
+  }
+  else {
+    loaded.value = true
   }
 })
 
