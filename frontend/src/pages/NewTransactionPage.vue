@@ -59,7 +59,7 @@
 
 <script setup lang='ts'>
 import ModeToggle from 'src/components/ModeToggle.vue';
-import { onMounted, ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 import { useWebApp } from 'src/stores/webapp';
 import { useRouter } from 'vue-router';
 import { useTransaction } from 'src/stores/transactions';
@@ -75,12 +75,17 @@ async function onSubmit() {
   await transactionStore.newTransaciton().then(() => {
     router.go(-1)
   })
-
+  webAppStore.disableCloseConfirm()
 }
 const webAppStore = useWebApp()
 
 onMounted(() => {
   webAppStore.showMainButton('Save', formElement.value.submit)
+  webAppStore.enableCloseConfirm()
+})
+
+onBeforeUnmount(() => {
+  webAppStore.disableCloseConfirm()
 })
 
 </script>

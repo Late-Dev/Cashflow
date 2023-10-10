@@ -15,7 +15,15 @@ export const useWebApp = defineStore('webapp', () => {
   const router = useRouter();
   const token = ref();
   const walletsStore = useWallets();
-  // webapp.enableClosingConfirmation();
+
+
+  function enableCloseConfirm(){
+    webapp.enableClosingConfirmation();
+  }
+
+  function disableCloseConfirm(){
+    webapp.disableClosingConfirmation();
+  }
 
   webapp.BackButton.onClick(() => {
     if (window.history.length) {
@@ -71,5 +79,7 @@ export const useWebApp = defineStore('webapp', () => {
     auth,
     token,
     confirm,
+    enableCloseConfirm,
+    disableCloseConfirm
   };
 });
