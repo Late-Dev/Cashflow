@@ -23,6 +23,9 @@ export const useTransaction = defineStore('transaction', () => {
 
   async function loadTransactions() {
     if (!walletsStore.currentWallet?.id) return;
+    loaded.value = false;
+    incomeTransactionsList.value = undefined;
+    outcomeTransactionsList.value = undefined;
     await getTransactions(walletsStore.currentWallet.id).then((response) => {
       incomeTransactionsList.value = response.data.income;
       outcomeTransactionsList.value = response.data.outcome;
@@ -36,6 +39,7 @@ export const useTransaction = defineStore('transaction', () => {
   }
 
   async function newTransaciton() {
+
     await addTransaction({
       ...newTransacitonData.value,
       type: currentMode.value,

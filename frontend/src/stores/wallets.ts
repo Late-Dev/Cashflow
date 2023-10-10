@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { getWallets } from 'src/api';
+import { addWallet, getWallets } from 'src/api';
 import { Wallet } from 'src/types';
 import { ref } from 'vue';
 import { useTransaction } from './transactions';
@@ -27,8 +27,24 @@ export const useWallets = defineStore('wallets', () => {
   }
 
   async function chooseWallet(id: number) {
+    if (!loaded.value) return;
     loaded.value = false;
     currentWallet.value = walletList.value?.find((el) => el.id === id);
+
+    await transactionStore.loadTransactions();
+    await categoriesStore.loadCategories();
+    loaded.value = true;
+  }
+
+  async function createWallet(id?: number, name?: string) {
+    if (!id || !name) return;
+    if (!loaded.value) return;
+    loaded.value = false;
+    await addWallet(id, name);
+    await getWallets().then((response) => {
+      walletList.value = response.data;
+      currentWallet.value = response.data.at(-1);
+    });
 
     await transactionStore.loadTransactions();
     await categoriesStore.loadCategories();
@@ -41,5 +57,6 @@ export const useWallets = defineStore('wallets', () => {
     currentWallet,
     loaded,
     chooseWallet,
+    createWallet,
   };
 });

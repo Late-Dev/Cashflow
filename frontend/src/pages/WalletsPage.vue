@@ -1,6 +1,6 @@
 <template>
   <q-page class="column">
-    <div class="row q-ml-sm settings__title">
+    <div class="row q-ma-sm title">
       All wallets
     </div>
     <div>
@@ -25,7 +25,10 @@ import { useWallets } from 'src/stores/wallets';
 import { ionWalletOutline } from '@quasar/extras/ionicons-v7';
 import ListItem from 'src/components/ListItem.vue';
 import { useRouter } from 'vue-router';
+import { useWebApp } from 'src/stores/webapp';
+import { onMounted } from 'vue';
 
+const webAppStore = useWebApp()
 const walletStore = useWallets()
 const router = useRouter()
 
@@ -34,14 +37,12 @@ function openWallet(id: number) {
   router.push({ name: 'index' })
 }
 
+onMounted(() => {
+  webAppStore.showMainButton('add', () => { router.push({ name: 'addWallet' }) })
+})
+
 </script>
 
 <style scoped lang='scss'>
-.settings {
-  &__title {
-    font-size: 17px;
-    font-style: normal;
-    font-weight: 600;
-  }
-}
+
 </style>

@@ -11,10 +11,13 @@ export const useCategories = defineStore('category', () => {
   const walletsStore = useWallets();
   const transactionStore = useTransaction();
 
-  const loaded = ref(false)
+  const loaded = ref(false);
 
   async function loadCategories() {
     if (!walletsStore.currentWallet?.id) return;
+    loaded.value = false;
+    allCategoriesList.value = undefined;
+
     await getCategories(walletsStore.currentWallet.id).then((response) => {
       allCategoriesList.value = response.data;
       loaded.value = true;
@@ -30,6 +33,6 @@ export const useCategories = defineStore('category', () => {
   return {
     categoriesList,
     loadCategories,
-    loaded
+    loaded,
   };
 });
