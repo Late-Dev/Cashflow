@@ -15,9 +15,9 @@ With Cashflow, you can:
 3. *In progress* **Create shared wallets** Invite your friends and family to shared wallets for joint financial management. Shared purchases or trips have become easier!
 
 4. **Analyze finances** Cashflow provides convenient reports and analytics to help you better understand where your money is going and how to save.
-
-![cashflow_demo](cashflow_demo.gif)
-
+<p align="center">
+  <img height="600" src="https://github.com/Late-Dev/Cashflow/raw/main/cashflow_demo.gif">
+</p>
 ## Requirements
 
 - docker
