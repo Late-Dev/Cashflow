@@ -10,7 +10,7 @@ defineProps(['text'])
 
 <style scoped lang='scss'>
 .main-button{
-  position: absolute;
+  position: fixed;
   width: 100vw;
   top: calc(100vh - 50px);
   background: $theme-button-bg;
