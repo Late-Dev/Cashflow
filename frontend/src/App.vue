@@ -1,6 +1,6 @@
 <template>
   <router-view />
-  <MainButton v-if="webAppStore.mainButton.isVisible" @click="webAppStore.mainButton.onClick" :text="webAppStore.mainButton.text" />
+  <MainButton :disable="webAppStore.mainButton.disabled" v-if="webAppStore.mainButton.isVisible" @click="webAppStore.mainButton.onClick" :text="webAppStore.mainButton.text" />
 </template>
 
 <script setup lang="ts">

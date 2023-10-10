@@ -1,10 +1,10 @@
 <template>
-  <q-btn flat square class="main-button">{{ text }}</q-btn>
+  <q-btn flat square :disable="disable" class="main-button">{{ text }}</q-btn>
 </template>
 
 <script setup lang='ts'>
 
-defineProps(['text'])
+defineProps(['text', 'disable'])
 
 </script>
 

@@ -75,6 +75,7 @@ const formElement = ref()
 const chosingDate = ref(false)
 
 async function onSubmit() {
+  webAppStore.disableMainButton()
 
   if (!transactionStore.editTransactionData.category) {
     webAppStore.showAlert('Category is required')
