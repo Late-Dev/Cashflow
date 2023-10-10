@@ -50,8 +50,12 @@ API_URL=http://<your URL>:8000
 
 ## Services
 
-swagger - http://<your URL>:8000/docs
+### swagger
+```http://<your URL>:8000/docs```
 
-pgadmin4 - http://<your URL>:5050/
+### pgadmin4
+```http://<your URL>:5050/```
 
-frontend - https://<your URL>:80/ - should have SSL certificate. This ip should be added to your bot via https://t.me/BotFather 
+### frontend
+```https://<your URL>:80/```
+should have SSL certificate. This ip should be added to your bot via https://t.me/BotFather 
