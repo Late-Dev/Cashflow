@@ -51,6 +51,10 @@ export function getCategories(wallet_id: number) {
   return axios.get(`/wallet_categories/${wallet_id}`);
 }
 
+export function deleteCategoryRequest(category_id: number) {
+  return axios.delete(`/category/${category_id}`);
+}
+
 export function addUser(id: number) {
   // not needed after authentication update
   return axios.post('/user', { id });

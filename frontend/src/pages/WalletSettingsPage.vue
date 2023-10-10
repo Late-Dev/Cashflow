@@ -3,8 +3,7 @@
     <div class="row q-ma-sm title">
       Categories
     </div>
-    <div>
-
+    <div v-if="categorieStore.loaded">
       <list-item :color="category.color" @delete="deleteCategory" @edit="editCategory" :item="category"
         v-for="category in categorieStore.allCategoriesList" :key="category.id">
         <template #icon>
@@ -13,8 +12,18 @@
 
         <template #name>{{ category.name }}</template>
       </list-item>
-
-
+    </div>
+    <div v-else>
+      <q-item v-for="n in 10" :key="n">
+        <q-item-section avatar>
+          <q-skeleton type="QAvatar" />
+        </q-item-section>
+        <q-item-section>
+          <q-item-label>
+            <q-skeleton type="rect" />
+          </q-item-label>
+        </q-item-section>
+      </q-item>
     </div>
 
   </q-page>

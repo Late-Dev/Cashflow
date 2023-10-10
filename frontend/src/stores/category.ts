@@ -4,7 +4,7 @@ import { computed, ref } from 'vue';
 import { useWallets } from './wallets';
 import { useTransaction } from './transactions';
 
-import { getCategories } from 'src/api';
+import { deleteCategoryRequest, getCategories } from 'src/api';
 
 export const useCategories = defineStore('category', () => {
   const allCategoriesList = ref<ICategory[]>();
@@ -31,7 +31,8 @@ export const useCategories = defineStore('category', () => {
   });
 
   async function deleteCategory(id: number) {
-    return;
+    await deleteCategoryRequest(id);
+    await loadCategories();
   }
 
   return {
@@ -39,6 +40,6 @@ export const useCategories = defineStore('category', () => {
     loadCategories,
     loaded,
     allCategoriesList,
-    deleteCategory
+    deleteCategory,
   };
 });
