@@ -20,7 +20,7 @@ from dotenv import load_dotenv
 import os 
 
 
-from telegram import ForceReply, Update
+from telegram import ForceReply, Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
 
 load_dotenv()
@@ -34,14 +34,36 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
+help_string = rf"""
+        
+        Hello! Cashflow is an application for financial management and collaborative planning with your loved ones.
+
+With Cashflow, you can:
+
+<b>1. Track your expenses:</b> No more need for complicated spreadsheets. Cashflow allows you to easily record and monitor all your expenses in a user-friendly interface.
+
+<b>2. Build savings:</b> Plan your savings and goals. Watch as your budget grows to achieve your dreams.
+
+<b>3. Create shared wallets:</b> Invite your friends and family to shared wallets for joint financial management. Shared purchases or trips have become easier!
+
+<b>4. Analyze finances:</b> Cashflow provides convenient reports and analytics to help you better understand where your money is going and how to save.
+        """
+
+
 # Define a few command handlers. These usually take the two arguments update and
 # context.
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /start is issued."""
     user = update.effective_user
+    keyboard = [
+        [
+            InlineKeyboardButton("Open your wallet", web_app={'url':'https://cashflow.omegasoft.keenetic.name/#/'}),
+        ],
+
+    ]
     await update.message.reply_html(
-        rf"Hi {user.mention_html()}!",
-        reply_markup=ForceReply(selective=True),
+        help_string,
+        reply_markup=InlineKeyboardMarkup(keyboard),
     )
 
 

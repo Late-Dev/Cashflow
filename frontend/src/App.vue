@@ -1,36 +1,17 @@
-
 <template>
-  <div class="app">
-    <div class="app_navbar">
-
-    </div>
-    <div class="card app__card">
-
-
-      <CategoryChart />
-      <button class="app__new-btn">Add new</button>
-    </div>
-  </div>
+  <router-view />
+  <MainButton :disable="webAppStore.mainButton.disabled" v-if="webAppStore.mainButton.isVisible" @click="webAppStore.mainButton.onClick" :text="webAppStore.mainButton.text" />
 </template>
 
-
 <script setup lang="ts">
-import CategoryChart from './components/CategoryChart/CategoryChart.vue'
+import { useWebApp } from 'src/stores/webapp'
+import { onMounted, ref } from 'vue';
+import MainButton from './components/MainButton.vue';
 
+const webAppStore = useWebApp()
+const data = ref()
+onMounted(async () => {
+  data.value = await webAppStore.auth()
+})
 
 </script>
-
-<style scoped lang="scss">
-.app {
-
-  &__card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  &__new-btn {
-    margin-top: 1em;
-  }
-}
-</style>
