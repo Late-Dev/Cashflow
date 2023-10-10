@@ -83,3 +83,13 @@ class TransactionUpdateSchema(BaseModel):
                 "category_id": 0
             }
         }
+
+
+class AuthenticationRequestSchema(BaseModel):
+    hash_str: str
+    initData: str
+
+
+class AuthenticationResponseSchema(BaseModel):
+    jwt_token: str
+

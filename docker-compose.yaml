@@ -10,6 +10,8 @@ services:
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      TOKEN: ${TOKEN}
+      SECRET_KEY: ${SECRET_KEY}
     networks:
       - postgres
     depends_on:
@@ -23,9 +25,9 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: cashflow
-    networks: 
+    networks:
       - postgres
-  
+
   pgadmin:
     image: dpage/pgadmin4
     environment:

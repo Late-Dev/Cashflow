@@ -14,12 +14,13 @@ PGADMIN_DEFAULT_EMAIL=admin@admin.com
 PGADMIN_DEFAULT_PASSWORD=root
 
 TOKEN=<your telegram token>
+SECRET_KEY=<your secret_key>
 ```
 
 2. Run ```docker compose --env-file .env up```
 
 ## Database schema
- 
+
 ![schema](schema.svg)
 
 ## Services
