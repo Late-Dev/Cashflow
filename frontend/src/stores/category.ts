@@ -4,7 +4,7 @@ import { computed, ref } from 'vue';
 import { useWallets } from './wallets';
 import { useTransaction } from './transactions';
 
-import { getCategories } from 'src/api';
+import { deleteCategoryRequest, getCategories, addCategory, editCategoryRequest } from 'src/api';
 
 export const useCategories = defineStore('category', () => {
   const allCategoriesList = ref<ICategory[]>();
@@ -30,9 +30,35 @@ export const useCategories = defineStore('category', () => {
     );
   });
 
+  async function deleteCategory(id: number) {
+    await deleteCategoryRequest(id);
+    await loadCategories();
+  }
+
+  async function createCategory(category: ICategory) {
+    if (!walletsStore.currentWallet?.id) return;
+    await addCategory(
+      category.name,
+      walletsStore.currentWallet.id,
+      category.transaction_type,
+      category.icon,
+      category.color
+    );
+    await loadCategories();
+  }
+
+  async function editCategory(category: ICategory) {
+    await editCategoryRequest(category.id, category.name, category.icon, category.color);
+    await loadCategories();
+  }
+
   return {
     categoriesList,
     loadCategories,
     loaded,
+    allCategoriesList,
+    deleteCategory,
+    createCategory,
+    editCategory,
   };
 });

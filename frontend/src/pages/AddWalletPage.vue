@@ -1,7 +1,7 @@
 <template>
-  <q-page class="column">
+  <q-page class="column overflow-hidden ">
     <div class="row q-ma-sm title"> New wallet</div>
-    <div class="add-wallet__group">
+    <div class="add-wallet__group q-ma-sm">
 
       <q-input dense filled square outlined bg-color="secondary" label-color="dark" color="dark"
         v-model.number="newWalletName" label="Name" />
@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang='ts'>
-import { onMounted, ref } from 'vue';
+import { onBeforeMount, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useWallets } from 'src/stores/wallets';
 import { useWebApp } from 'src/stores/webapp';
 import { useRouter } from 'vue-router';
@@ -26,11 +26,13 @@ const newWalletName = ref()
 
 
 onMounted(() => {
-  webAppStore.showMainButton('Add', async () => {
-    await walletStore.createWallet(webAppStore.webapp.initDataUnsafe.user?.id, newWalletName.value);
+  webAppStore.showMainButton('Add', () => {
+    walletStore.createWallet(newWalletName.value);
     router.push({ name: 'index' })
   })
 })
+
+
 
 
 </script>

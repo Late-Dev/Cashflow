@@ -24,6 +24,22 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   {
+    path: '/category',
+    component: () => import('layouts/BlankLayout.vue'),
+    children: [
+      {
+        path: '/category/new/:wallet_id',
+        name: 'newCategory',
+        component: () => import('pages/EditCategory.vue'),
+      },
+      {
+        path: '/category/edit/:wallet_id/:category_id',
+        name: 'editCategory',
+        component: () => import('pages/EditCategory.vue'),
+      },
+    ],
+  },
+  {
     path: '/',
     component: () => import('layouts/BlankLayout.vue'),
     children: [
@@ -36,6 +52,16 @@ const routes: RouteRecordRaw[] = [
         path: '/explore/:id',
         name: 'explore',
         component: () => import('pages/TransactionExplorePage.vue'),
+      },
+      {
+        path: 'edit',
+        name: 'editTransaction',
+        component: () => import('pages/EditTransactionPage.vue'),
+      },
+      {
+        path: 'editWallet/:id',
+        name: 'editWallet',
+        component: () => import('pages/WalletSettingsPage.vue'),
       },
     ],
   },

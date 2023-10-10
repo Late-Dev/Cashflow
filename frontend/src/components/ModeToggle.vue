@@ -1,6 +1,6 @@
 <template>
-  <q-btn-toggle spread no-caps rounded class="toggle" v-model="useTransactionStore.currentMode" unelevated
-    toggle-text-color="dark" text-color="dark" toggle-color="primary" :options="[
+  <q-btn-toggle :disable="disabled" spread no-caps rounded class="toggle" v-model="useTransactionStore.currentMode"
+    unelevated toggle-text-color="dark" text-color="dark" toggle-color="primary" :options="[
       { label: 'Expenses', value: 'outcome' },
       { label: 'Income', value: 'income' },
 
@@ -11,6 +11,9 @@
 import { useTransaction } from 'src/stores/transactions';
 
 const useTransactionStore = useTransaction()
+
+defineProps(['disabled'])
+
 </script>
 
 <style scoped lang='scss'>

@@ -1,5 +1,10 @@
 import { defineStore } from 'pinia';
-import { addTransaction, deleteTransaction, getTransactions } from 'src/api';
+import {
+  addTransaction,
+  deleteTransaction,
+  editTransactionRequest,
+  getTransactions,
+} from 'src/api';
 import { computed, ref, watch } from 'vue';
 import { useWallets } from './wallets';
 import { ITransaction } from 'src/types';
@@ -14,6 +19,16 @@ export const useTransaction = defineStore('transaction', () => {
   const loaded = ref(false);
 
   const newTransacitonData = ref<Omit<ITransaction, 'id' | 'user' | 'type'>>({
+    value: 0,
+    description: '',
+    category: undefined,
+    source: '',
+    date: new Date().toUTCString(),
+  });
+
+  const editTransactionData = ref<Omit<ITransaction, 'user'>>({
+    id: 0,
+    type: 'income',
     value: 0,
     description: '',
     category: undefined,
@@ -78,7 +93,23 @@ export const useTransaction = defineStore('transaction', () => {
   });
 
   async function delTransaction(id: number) {
-    await deleteTransaction(id)
+    await deleteTransaction(id);
+    await loadTransactions();
+  }
+
+  async function editTransaction() {
+    await editTransactionRequest(editTransactionData.value);
+
+    editTransactionData.value = {
+      id: 0,
+      type: 'income',
+      value: 0,
+      description: '',
+      category: undefined,
+      source: '',
+      date: new Date().toUTCString(),
+    };
+    await loadTransactions();
   }
 
   return {
@@ -91,6 +122,8 @@ export const useTransaction = defineStore('transaction', () => {
     selectedMonth,
     selectMonth,
     loaded,
-    delTransaction
+    delTransaction,
+    editTransactionData,
+    editTransaction,
   };
 });

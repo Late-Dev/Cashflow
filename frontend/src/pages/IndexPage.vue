@@ -1,5 +1,5 @@
 <template>
-  <q-page class="column">
+  <q-page class="column overflow-hidden">
     <div class="q-ma-sm">
       <ModeToggle />
     </div>
@@ -59,7 +59,7 @@
         :key="transaction.id">
         <div v-if="isFirstToday(index)" class="row transactions__date">{{ (new
           Date(transaction.date)).toLocaleDateString('en-US', { month: 'long', day: 'numeric' }) }}</div>
-        <TransactionBar :transaction="transaction" @delete="deleteTransaction"
+        <TransactionBar :transaction="transaction" @delete="deleteTransaction" @edit="editTransaction"
           @open="router.push({ name: 'explore', params: { id: $event } })" />
       </div>
     </div>
@@ -123,6 +123,7 @@ import { useTransaction } from 'src/stores/transactions';
 import { useCategories } from 'src/stores/category';
 import MonthBarChart from 'src/components/MonthBarChart.vue';
 import { useWebApp } from 'src/stores/webapp';
+import { ITransaction } from 'src/types';
 
 const webAppStore = useWebApp()
 const transactionStore = useTransaction()
@@ -213,6 +214,10 @@ function deleteTransaction(id: number) {
   })
 }
 
+function editTransaction(transaction: ITransaction) {
+  transactionStore.editTransactionData = { ...transaction , category: categorieStore.categoriesList?.find((element) => element.id === transaction.category) };
+  router.push({ name: 'editTransaction' })
+}
 
 </script>
 

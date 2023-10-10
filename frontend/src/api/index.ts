@@ -23,8 +23,11 @@ export function login(hash_str: string, initData: string) {
 }
 
 export function getWallets() {
-  // not needed after authentication update
   return axios.get('/user_wallets');
+}
+
+export function deleteWalletRequest(id: number) {
+  return axios.delete(`/wallet/${id}`);
 }
 
 export function getTransactions(wallet_id: number): Promise<
@@ -36,9 +39,8 @@ export function getTransactions(wallet_id: number): Promise<
   return axios.get(`/wallet_transactions/${wallet_id}`);
 }
 
-
 export function deleteTransaction(transaction_id: number) {
-  return axios.delete(`/transaction/${transaction_id}`,);
+  return axios.delete(`/transaction/${transaction_id}`);
 }
 
 export function getWallet(wallet_id: number) {
@@ -49,24 +51,45 @@ export function getCategories(wallet_id: number) {
   return axios.get(`/wallet_categories/${wallet_id}`);
 }
 
+export function deleteCategoryRequest(category_id: number) {
+  return axios.delete(`/category/${category_id}`);
+}
+
+export function editCategoryRequest(
+  category_id: number,
+  name: string,
+  icon: string,
+  color: number
+) {
+  return axios.patch(`/category/${category_id}`, {
+    name,
+    icon,
+    color,
+  });
+}
+
 export function addUser(id: number) {
   // not needed after authentication update
   return axios.post('/user', { id });
 }
 
-export function addWallet(user_id: number, name: string, currency = 'USD') {
-  return axios.post('/wallet', { user_id, name, currency });
+export function addWallet(name: string, currency = 'USD') {
+  return axios.post('/wallet', { name, currency });
 }
 
 export function addCategory(
   name: string,
   wallet_id: number,
-  transaction_type: string
+  transaction_type: string,
+  icon: string,
+  color: number
 ) {
   return axios.post('/category', {
     name,
     wallet_id,
     transaction_type,
+    icon,
+    color,
   });
 }
 
@@ -78,5 +101,15 @@ export function addTransaction(payload: any) {
     source: payload.source,
     category_id: payload.category?.id,
     wallet_id: payload.wallet,
+  });
+}
+
+export function editTransactionRequest(payload: any) {
+  return axios.patch(`/transaction/${payload.id}`, {
+    description: payload.description,
+    value: payload.value,
+    date: new Date(payload.date).toISOString(),
+    source: payload.source,
+    category_id: payload.category?.id,
   });
 }
