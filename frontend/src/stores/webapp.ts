@@ -16,12 +16,11 @@ export const useWebApp = defineStore('webapp', () => {
   const token = ref();
   const walletsStore = useWallets();
 
-
-  function enableCloseConfirm(){
+  function enableCloseConfirm() {
     webapp.enableClosingConfirmation();
   }
 
-  function disableCloseConfirm(){
+  function disableCloseConfirm() {
     webapp.disableClosingConfirmation();
   }
 
@@ -70,6 +69,10 @@ export const useWebApp = defineStore('webapp', () => {
     });
   }
 
+  function showAlert(text: string) {
+    webapp.showAlert(text);
+  }
+
   return {
     webapp,
     showBack,
@@ -80,6 +83,7 @@ export const useWebApp = defineStore('webapp', () => {
     token,
     confirm,
     enableCloseConfirm,
-    disableCloseConfirm
+    disableCloseConfirm,
+    showAlert,
   };
 });

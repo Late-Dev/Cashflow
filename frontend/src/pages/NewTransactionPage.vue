@@ -75,6 +75,12 @@ const formElement = ref()
 const chosingDate = ref(false)
 
 async function onSubmit() {
+
+  if (!transactionStore.newTransacitonData.category) {
+    webAppStore.showAlert('Category is required')
+    return
+  }
+
   await transactionStore.newTransaciton().then(() => {
     router.go(-1)
   })
