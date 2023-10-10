@@ -36,9 +36,8 @@ export function getTransactions(wallet_id: number): Promise<
   return axios.get(`/wallet_transactions/${wallet_id}`);
 }
 
-
 export function deleteTransaction(transaction_id: number) {
-  return axios.delete(`/transaction/${transaction_id}`,);
+  return axios.delete(`/transaction/${transaction_id}`);
 }
 
 export function getWallet(wallet_id: number) {
@@ -78,5 +77,15 @@ export function addTransaction(payload: any) {
     source: payload.source,
     category_id: payload.category?.id,
     wallet_id: payload.wallet,
+  });
+}
+
+export function editTransactionRequest(payload: any) {
+  return axios.patch(`/transaction/${payload.id}`, {
+    description: payload.description,
+    value: payload.value,
+    date: new Date(payload.date).toISOString(),
+    source: payload.source,
+    category_id: payload.category?.id,
   });
 }

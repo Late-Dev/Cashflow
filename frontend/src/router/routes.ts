@@ -37,6 +37,11 @@ const routes: RouteRecordRaw[] = [
         name: 'explore',
         component: () => import('pages/TransactionExplorePage.vue'),
       },
+      {
+        path: 'edit',
+        name: 'editTransaction',
+        component: () => import('pages/EditTransactionPage.vue'),
+      }
     ],
   },
   {

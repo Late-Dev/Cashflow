@@ -24,7 +24,13 @@ const route = useRoute()
 const router = useRouter()
 
 function selectItem(item: any) {
-  transactionStore.newTransacitonData.category = item;
+  if (route.query.mode === 'edit') {
+    transactionStore.editTransactionData.category = item
+  }
+  else {
+
+    transactionStore.newTransacitonData.category = item;
+  }
   router.go(-1);
 }
 
