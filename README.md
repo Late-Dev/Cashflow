@@ -6,13 +6,13 @@
 
 With Cashflow, you can:
 
-1. Track your expenses: No more need for complicated spreadsheets. Cashflow allows you to easily record and monitor all your expenses in a user-friendly interface.
+1. **Track your expenses** No more need for complicated spreadsheets. Cashflow allows you to easily record and monitor all your expenses in a user-friendly interface.
 
-2. Build savings: Plan your savings and goals. Watch as your budget grows to achieve your dreams.
+2. **Build savings** Plan your savings and goals. Watch as your budget grows to achieve your dreams.
 
-3. Create shared wallets: Invite your friends and family to shared wallets for joint financial management. Shared purchases or trips have become easier!
+3. *In progress* **Create shared wallets** Invite your friends and family to shared wallets for joint financial management. Shared purchases or trips have become easier!
 
-4. Analyze finances: Cashflow provides convenient reports and analytics to help you better understand where your money is going and how to save.
+4. **Analyze finances** Cashflow provides convenient reports and analytics to help you better understand where your money is going and how to save.
 
 ## Requirements
 
