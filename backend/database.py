@@ -152,6 +152,6 @@ def update_transaction_data(id: int, transaction: dict):
         current_transaction.category = Category[transaction['category_id']]
     current_transaction.description = transaction.get('description', None) or current_transaction.description
     current_transaction.value = transaction.get('value', None) or current_transaction.value
-    current_transaction.date = transaction.get('date', None) or current_transaction.date
+    current_transaction.date = datetime.fromisoformat(transaction.get('date', None)) or current_transaction.date
     current_transaction.source = transaction.get('source', None) or current_transaction.source
 
