@@ -26,15 +26,15 @@ const newWalletName = ref()
 
 
 onMounted(() => {
-  webAppStore.showMainButton('Add', async () => {
-    await walletStore.createWallet(newWalletName.value);
+  webAppStore.showMainButton('Add', () => {
+    walletStore.createWallet(newWalletName.value);
     router.push({ name: 'index' })
   })
 })
 
 onBeforeUnmount(() => {
-  webAppStore.hideMainButton(async () => {
-    await walletStore.createWallet(newWalletName.value);
+  webAppStore.hideMainButton(() => {
+    walletStore.createWallet(newWalletName.value);
     router.push({ name: 'index' })
   })
 })
