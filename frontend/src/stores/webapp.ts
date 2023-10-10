@@ -41,12 +41,14 @@ export const useWebApp = defineStore('webapp', () => {
   };
 
   const showMainButton = (text: string, fn: () => void) => {
-    webapp.MainButton.setParams({ text, is_visible: true });
+    webapp.MainButton.setParams({ text });
+    webapp.MainButton.enable()
     webapp.MainButton.onClick(fn);
   };
 
   const hideMainButton = (fn: () => void) => {
-    webapp.MainButton.hide();
+    // webapp.MainButton.hide();
+    webapp.MainButton.disable()
     webapp.MainButton.offClick(fn);
   };
   async function auth() {
