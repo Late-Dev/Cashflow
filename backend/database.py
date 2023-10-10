@@ -2,6 +2,8 @@ from datetime import datetime
 from decimal import Decimal
 from pony.orm import *
 
+from pony.orm.core import TransactionIntegrityError
+
 from default_categories import default_categories
 
 
@@ -81,7 +83,12 @@ def get_user_wallets_data(id: int):
     ]
 
     if(len(wallets) < 1):
-        add_user_data({'id': id})
+
+        user_id = select(user for user in User if user.id == id)
+        if len(user_id) < 1:
+            add_user_data({'id': id})
+
+
         add_wallet_data({'user_id': id, 'name': 'Personal wallet', 'currency': "USD"})
 
         wallets = [
@@ -95,7 +102,10 @@ def get_user_wallets_data(id: int):
 
 @db_session
 def add_user_data(user: dict):
-    User(id=user['id'])
+    try:
+        User(id=user['id'])
+    except TransactionIntegrityError as e:
+        print('user exists')
 
 @db_session
 def add_category_data(category: dict):

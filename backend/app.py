@@ -174,6 +174,8 @@ def add_user(user: UserSchema):
 @app.post("/wallet")
 def add_wallet(wallet: WalletSchema, data = Depends(val_jwt)):
     wallet = jsonable_encoder(wallet)
+    id = data.get('id')
+    wallet['user_id'] = id
     add_wallet_data(wallet)
     return 'success'
 
@@ -208,6 +210,8 @@ def update_category(id: int, category: CategoryUpdateSchema, data = Depends(val_
 @app.post("/transaction")
 def add_transaction(transaction: TransactionSchema, data = Depends(val_jwt)):
     transaction = jsonable_encoder(transaction)
+    id = data.get('id')
+    transaction['user_id'] = id
     add_transaction_data(transaction)
     return 'success'
 

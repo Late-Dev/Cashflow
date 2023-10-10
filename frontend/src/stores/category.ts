@@ -30,10 +30,15 @@ export const useCategories = defineStore('category', () => {
     );
   });
 
+  async function deleteCategory(id: number) {
+    return;
+  }
+
   return {
     categoriesList,
     loadCategories,
     loaded,
-    allCategoriesList
+    allCategoriesList,
+    deleteCategory
   };
 });

@@ -23,8 +23,11 @@ export function login(hash_str: string, initData: string) {
 }
 
 export function getWallets() {
-  // not needed after authentication update
   return axios.get('/user_wallets');
+}
+
+export function deleteWalletRequest(id: number) {
+  return axios.delete(`/wallet/${id}`);
 }
 
 export function getTransactions(wallet_id: number): Promise<
@@ -53,8 +56,8 @@ export function addUser(id: number) {
   return axios.post('/user', { id });
 }
 
-export function addWallet(user_id: number, name: string, currency = 'USD') {
-  return axios.post('/wallet', { user_id, name, currency });
+export function addWallet(name: string, currency = 'USD') {
+  return axios.post('/wallet', { name, currency });
 }
 
 export function addCategory(

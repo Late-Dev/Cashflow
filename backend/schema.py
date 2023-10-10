@@ -15,14 +15,12 @@ class UserSchema(BaseModel):
         }
 
 class WalletSchema(BaseModel):
-    user_id: int
     name: str
     currency: str
 
     class Config:
         schema_extra = {
             "example": {
-                "user_id": 123,
                 "name": "Family finances",
                 "currency": "dollar"
             }
@@ -53,7 +51,6 @@ class TransactionSchema(BaseModel):
     source: Optional[str]
     category_id: int
     wallet_id: int
-    user_id: int
 
     class Config:
         schema_extra = {
@@ -64,7 +61,6 @@ class TransactionSchema(BaseModel):
                 "source": "Amazon",
                 "category_id": 0,
                 "wallet_id": 0,
-                "user_id": 0
             }
         }
 

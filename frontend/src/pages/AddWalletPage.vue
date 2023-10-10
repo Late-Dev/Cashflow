@@ -27,7 +27,7 @@ const newWalletName = ref()
 
 onMounted(() => {
   webAppStore.showMainButton('Add', async () => {
-    await walletStore.createWallet(webAppStore.webapp.initDataUnsafe.user?.id, newWalletName.value);
+    await walletStore.createWallet(newWalletName.value);
     router.push({ name: 'index' })
   })
 })
