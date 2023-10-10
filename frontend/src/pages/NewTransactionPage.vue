@@ -72,16 +72,10 @@ const formElement = ref()
 
 
 async function onSubmit() {
-
-
   await transactionStore.newTransaciton().then(() => {
     router.go(-1)
-
   })
 
-
-
-  return
 }
 const webAppStore = useWebApp()
 

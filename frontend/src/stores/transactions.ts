@@ -79,6 +79,7 @@ export const useTransaction = defineStore('transaction', () => {
 
   async function delTransaction(id: number) {
     await deleteTransaction(id)
+    await loadTransactions()
   }
 
   return {
