@@ -16,6 +16,10 @@ With Cashflow, you can:
 
 4. **Analyze finances** Cashflow provides convenient reports and analytics to help you better understand where your money is going and how to save.
 
+<p align="center">
+  <img src="https://github.com/Late-Dev/Cashflow/blob/main/cashflow_demo.gif" />
+</p>
+
 ## Requirements
 
 - docker
