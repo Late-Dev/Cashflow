@@ -1,8 +1,14 @@
 <template>
   <q-page class="column overflow-hidden">
+
     <div class="q-ma-sm">
       <ModeToggle :readonly="!!route.params.category_id" />
     </div>
+    {{ [category.name,
+    parseInt(route.params.wallet_id as string),
+    transactionStore.currentMode,
+    category.icon,
+    category.color] }}
     <div v-if="loaded" class="row justify-around items-center">
       <q-avatar :style="{ background: `hsl(${category.color}, 64%, 61%)` }">
         {{ category.icon }}
@@ -52,7 +58,7 @@ const walletCategories = ref<ICategory[]>()
 const loaded = ref(false)
 
 async function loadWalletCategories() {
-  await getCategories(parseInt(route.params.category_id as string)).then((response) => {
+  await getCategories(parseInt(route.params.wallet_id as string)).then((response) => {
     walletCategories.value = response.data
     loaded.value = true
   })
