@@ -20,7 +20,7 @@ from dotenv import load_dotenv
 import os 
 
 
-from telegram import ForceReply, Update
+from telegram import ForceReply, Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
 
 load_dotenv()
@@ -55,9 +55,15 @@ With Cashflow, you can:
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /start is issued."""
     user = update.effective_user
+    keyboard = [
+        [
+            InlineKeyboardButton("Open your wallet", web_app={'url':'https://cashflow.omegasoft.keenetic.name/#/'}),
+        ],
+
+    ]
     await update.message.reply_html(
         help_string,
-        # reply_markup=ForceReply(selective=True),
+        reply_markup=InlineKeyboardMarkup(keyboard),
     )
 
 
