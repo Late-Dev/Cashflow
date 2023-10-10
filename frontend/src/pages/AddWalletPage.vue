@@ -1,7 +1,7 @@
 <template>
-  <q-page class="column overflow-hidden">
+  <q-page class="column overflow-hidden ">
     <div class="row q-ma-sm title"> New wallet</div>
-    <div class="add-wallet__group">
+    <div class="add-wallet__group q-ma-sm">
 
       <q-input dense filled square outlined bg-color="secondary" label-color="dark" color="dark"
         v-model.number="newWalletName" label="Name" />

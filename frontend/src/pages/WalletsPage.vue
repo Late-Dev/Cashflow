@@ -3,7 +3,7 @@
     <div class="row q-ma-sm title">
       All wallets
     </div>
-    <div>
+    <div style="padding-bottom: 60px;">
 
       <list-item color="secondary" @delete="deleteWallet" @open="openWallet" @edit="editWallet" :item="wallet"
         v-for="wallet in walletStore.walletList" :key="wallet.id">

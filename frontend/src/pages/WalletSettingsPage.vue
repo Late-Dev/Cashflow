@@ -1,9 +1,9 @@
 <template>
-  <q-page class="column overflow-hidden">
+  <q-page class="column overflow-hidden ">
     <div class="row q-ma-sm title">
       Categories
     </div>
-    <div v-if="loaded">
+    <div v-if="loaded" style="padding-bottom: 60px;">
       <list-item :color="category.color" @delete="deleteCategory" @edit="editCategory" :item="category"
         v-for="category in walletCategories" :key="category.id">
         <template #icon>
