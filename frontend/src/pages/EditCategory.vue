@@ -16,7 +16,7 @@
 
     <div v-else class="row justify-around items-center">
       <q-skeleton type="QAvatar"></q-skeleton>
-      <q-skeleton type="rect"></q-skeleton>
+      <q-skeleton width="200px" type="rect"></q-skeleton>
     </div>
 
     <div v-if="loaded" class="row">
