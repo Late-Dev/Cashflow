@@ -53,6 +53,7 @@ class TransactionSchema(BaseModel):
     source: Optional[str]
     category_id: int
     wallet_id: int
+    user_id: int
 
     class Config:
         schema_extra = {
@@ -62,7 +63,8 @@ class TransactionSchema(BaseModel):
                 "date": "2023-10-07T11:24:11.022Z",
                 "source": "Amazon",
                 "category_id": 0,
-                "wallet_id": 0
+                "wallet_id": 0,
+                "user_id": 0
             }
         }
 
@@ -81,6 +83,32 @@ class TransactionUpdateSchema(BaseModel):
                 "date": "2023-10-07T11:24:11.022Z",
                 "source": "Amazon",
                 "category_id": 0
+            }
+        }
+
+
+class CategoryUpdateSchema(BaseModel):
+    name: Optional[str] = None
+    icon: Optional[str] = None
+    color: Optional[int] = None
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "name": "education",
+                "icon": '💵',
+                "color": 45
+            }
+        }
+
+
+class WalletUpdateSchema(BaseModel):
+    name: str
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "name": "Family finances"
             }
         }
 
