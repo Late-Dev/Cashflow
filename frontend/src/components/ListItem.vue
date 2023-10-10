@@ -1,7 +1,8 @@
 <template>
   <q-item @click="emit('open', item.id)" clickable dense class="row items-center transaction-bar"
     :class="{ 'transaction-bar--settings': isSettingsOpened }" v-touch-swipe.mouse.horizontal="handleSwipe">
-    <q-avatar :color="color" class="q-mr-sm">
+    <q-avatar :color="typeof color === 'string' ? color : ''" :style="{ background: `hsl(${color}, 64%, 61%)` }"
+      class="q-mr-sm">
       <slot name="icon">
 
         {{ icon }}
@@ -23,7 +24,7 @@
       </div>
     </div>
     <div class="transaction-bar__options">
-      <q-btn flat @click.stop="emit('edit', item.id)" class="transaction-bar__edit"> <q-icon size="md"
+      <q-btn flat @click.stop="emit('edit', item)" class="transaction-bar__edit"> <q-icon size="md"
           :name="ionCreate"></q-icon>
         edit</q-btn>
       <q-btn flat @click.stop="emit('delete', item.id)" class="transaction-bar__delete"> <q-icon size="md"
@@ -44,7 +45,7 @@ interface PropsType {
   item: {
     id: number
   },
-  color?: string,
+  color?: string | number,
   icon?: string
 }
 

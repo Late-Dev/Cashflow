@@ -5,7 +5,7 @@
     </div>
     <div>
 
-      <list-item color="secondary" @delete="deleteWallet" @open="openWallet" :item="wallet"
+      <list-item color="secondary" @delete="deleteWallet" @open="openWallet" @edit="editWallet" :item="wallet"
         v-for="wallet in walletStore.walletList" :key="wallet.id">
         <template #icon>
           <q-icon :name="ionWalletOutline"></q-icon>
@@ -27,6 +27,7 @@ import ListItem from 'src/components/ListItem.vue';
 import { useRouter } from 'vue-router';
 import { useWebApp } from 'src/stores/webapp';
 import { onMounted } from 'vue';
+import { Wallet } from 'src/types';
 
 const webAppStore = useWebApp()
 const walletStore = useWallets()
@@ -38,13 +39,17 @@ function openWallet(id: number) {
 }
 
 onMounted(() => {
-  webAppStore.showMainButton('add', () => { router.push({ name: 'addWallet' }) })
+  webAppStore.showMainButton('Add', () => { router.push({ name: 'addWallet' }) })
 })
 
 function deleteWallet(id: number) {
   webAppStore.confirm(() => {
     walletStore.deleteWallet(id)
   })
+}
+
+function editWallet(wallet: Wallet){
+  router.push({ name: 'editWallet', params: { id: wallet.id } })
 }
 
 </script>

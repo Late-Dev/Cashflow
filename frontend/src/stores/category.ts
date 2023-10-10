@@ -34,5 +34,6 @@ export const useCategories = defineStore('category', () => {
     categoriesList,
     loadCategories,
     loaded,
+    allCategoriesList
   };
 });
