@@ -77,6 +77,18 @@ def get_user_wallets_data(id: int):
         }
         for line in select(line for line in User2Wallet if line.user.id == id)
     ]
+
+    if(len(wallets) < 1):
+        add_user_data({'id': id})
+        add_wallet_data({'user_id': id, 'name': 'Personal wallet', 'currency': "USD"})
+
+        wallets = [
+            {
+                **line.wallet.to_dict(), 
+                'user_type': line.user_type
+            }
+            for line in select(line for line in User2Wallet if line.user.id == id)
+        ]
     return wallets
 
 @db_session

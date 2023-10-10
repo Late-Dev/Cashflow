@@ -1,0 +1,28 @@
+@import './quasar.variables.scss';
+
+.tg-primary{
+  background-color: $theme-primary-bg;
+  color: $theme-primary-text;
+}
+
+.tg-primary-text{
+  color: $theme-primary-text;
+}
+
+.hint{
+  color: $theme-hint
+}
+
+.link-button{
+  background-color: var(--wallet-second-button-color, rgba(0, 122, 255, 0.10));
+  color: $theme-link;
+}
+
+
+
+
+.title{
+  font-size: 17px;
+  font-style: normal;
+  font-weight: 600;
+}

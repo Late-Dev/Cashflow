@@ -17,7 +17,13 @@ TOKEN=<your telegram token>
 SECRET_KEY=<your secret_key>
 ```
 
-2. Run ```docker compose --env-file .env up```
+2. Create ```.env``` file in `/frontend`
+Example
+```
+API_URL=http://localhost:8000
+```
+
+3. Run ```docker compose --env-file .env up```
 
 ## Database schema
 

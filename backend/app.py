@@ -75,16 +75,47 @@ origins = [
     "http://localhost:8081",
     "http://127.0.0.1:8080",
     "http://127.0.0.1:8081",
-    "http://127.0.0.1"
+    "http://127.0.0.1",
+    'http://localhost:5080',
+    'https://cashflow.omegasoft.keenetic.name',
+    'https://tg-webapp.omegasoft.keenetic.name'
 ]
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=origins,
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
+
+
+@app.middleware("http")
+async def add_cors_headers(request, call_next):
+    response = await call_next(request)
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "*"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    response.headers["Access-Control-Allow-Credentials"] = "true"
+    return response
+
+@app.middleware("https")
+async def add_cors_headers(request, call_next):
+    response = await call_next(request)
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "*"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    response.headers["Access-Control-Allow-Credentials"] = "true"
+    return response
+
+
+
+@app.options("/{path:path}")
+async def options_handler(path: str):
+    return {
+        "allowed_methods": ["OPTIONS", "POST", "GET", "DELETE", "PATCH"]
+    }
+
 
 @app.get("/")
 async def healthcheck():
@@ -93,16 +124,17 @@ async def healthcheck():
 @app.post("/login")
 async def login(schema: AuthenticationRequestSchema) -> AuthenticationResponseSchema:
     BOT_TOKEN = os.getenv("TOKEN", None)
-    is_valid = validate_initData(schema.hash_str, schema.initData, BOT_TOKEN)
+    is_valid, user_id = validate_initData(schema.hash_str, schema.initData, BOT_TOKEN)
+
     if is_valid:
         jwt_token = create_access_token(
                 SECRET_KEY,
                 ALGORITHM,
                 ACCESS_TOKEN_EXPIRE_MINUTES,
-                data={}
+                data={ 'id': user_id }
         )
 
-        return jwt_token
+        return {'jwt_token': jwt_token}
     else:
         raise HTTPException(
             status_code=401,
@@ -123,7 +155,7 @@ def get_wallet_categories(id: int, data = Depends(val_jwt)):
 
 @app.get("/user_wallets")
 def get_user_wallets(data = Depends(val_jwt)):
-    id = data.id
+    id = data.get('id')
     result = get_user_wallets_data(id)
     return result
 
