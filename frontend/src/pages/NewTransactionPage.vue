@@ -41,8 +41,7 @@
           <q-input dense filled square outlined bg-color="secondary" label-color="dark" color="dark"
             v-model="transactionStore.newTransacitonData.description" label="Comment" />
         </div>
-
-        <div class="new-transaction__group">
+        <div class="new-transaction__group" @click="chosingDate = true">
           <q-field dense filled square borderless bg-color="secondary" label-color="dark" color="dark" label="Date"
             v-model="transactionStore.newTransacitonData.date">
             <template v-slot:control>
@@ -54,6 +53,9 @@
         </div>
       </q-form>
     </div>
+    <q-dialog v-model="chosingDate">
+      <q-date color="secondary" v-model="transactionStore.newTransacitonData.date" minimal />
+    </q-dialog>
   </q-page>
 </template>
 
@@ -70,6 +72,7 @@ const transactionStore = useTransaction()
 const router = useRouter()
 const formElement = ref()
 
+const chosingDate = ref(false)
 
 async function onSubmit() {
   await transactionStore.newTransaciton().then(() => {
