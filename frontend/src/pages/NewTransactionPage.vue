@@ -54,7 +54,7 @@
       </q-form>
     </div>
     <q-dialog v-model="chosingDate">
-      <q-date color="secondary" v-model="transactionStore.newTransacitonData.date" minimal />
+      <q-date class="tg-card" v-model="transactionStore.newTransacitonData.date" minimal />
     </q-dialog>
   </q-page>
 </template>
