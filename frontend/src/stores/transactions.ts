@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { addTransaction, getTransactions } from 'src/api';
+import { addTransaction, deleteTransaction, getTransactions } from 'src/api';
 import { computed, ref, watch } from 'vue';
 import { useWallets } from './wallets';
 import { ITransaction } from 'src/types';
@@ -39,7 +39,6 @@ export const useTransaction = defineStore('transaction', () => {
   }
 
   async function newTransaciton() {
-
     await addTransaction({
       ...newTransacitonData.value,
       type: currentMode.value,
@@ -78,6 +77,10 @@ export const useTransaction = defineStore('transaction', () => {
     newTransacitonData.value.category = undefined;
   });
 
+  async function delTransaction(id: number) {
+    await deleteTransaction(id)
+  }
+
   return {
     currentMode,
     loadTransactions,
@@ -88,5 +91,6 @@ export const useTransaction = defineStore('transaction', () => {
     selectedMonth,
     selectMonth,
     loaded,
+    delTransaction
   };
 });

@@ -13,7 +13,7 @@ declare global {
 export const useWebApp = defineStore('webapp', () => {
   const webapp = window.Telegram.WebApp;
   const router = useRouter();
-
+  const token = ref();
   const walletsStore = useWallets();
   // webapp.enableClosingConfirmation();
 
@@ -54,7 +54,13 @@ export const useWebApp = defineStore('webapp', () => {
     await walletsStore.loadWallets();
   }
 
-  const token = ref();
+  function confirm(fn: () => void) {
+    webapp.showConfirm('Are you sure?', (agree: boolean) => {
+      if (agree) {
+        fn();
+      }
+    });
+  }
 
   return {
     webapp,
@@ -64,5 +70,6 @@ export const useWebApp = defineStore('webapp', () => {
     hideMainButton,
     auth,
     token,
+    confirm,
   };
 });

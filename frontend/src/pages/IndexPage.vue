@@ -59,7 +59,8 @@
         :key="transaction.id">
         <div v-if="isFirstToday(index)" class="row transactions__date">{{ (new
           Date(transaction.date)).toLocaleDateString('en-US', { month: 'long', day: 'numeric' }) }}</div>
-        <TransactionBar :transaction="transaction" @open="router.push({ name: 'explore', params: { id: $event } })" />
+        <TransactionBar :transaction="transaction" @delete="deleteTransaction"
+          @open="router.push({ name: 'explore', params: { id: $event } })" />
       </div>
     </div>
     <div v-else>
@@ -121,6 +122,9 @@ import TransactionBar from 'src/components/TransactionBar.vue';
 import { useTransaction } from 'src/stores/transactions';
 import { useCategories } from 'src/stores/category';
 import MonthBarChart from 'src/components/MonthBarChart.vue';
+import { useWebApp } from 'src/stores/webapp';
+
+const webAppStore = useWebApp()
 const transactionStore = useTransaction()
 const router = useRouter()
 
@@ -201,6 +205,12 @@ function isFirstToday(index: number) {
 function chooseMonth(event: number) {
   barchart.value = false
   transactionStore.selectMonth(event)
+}
+
+function deleteTransaction(id: number) {
+  webAppStore.confirm(() => {
+    transactionStore.delTransaction(id)
+  })
 }
 
 

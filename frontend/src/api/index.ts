@@ -36,6 +36,15 @@ export function getTransactions(wallet_id: number): Promise<
   return axios.get(`/wallet_transactions/${wallet_id}`);
 }
 
+
+export function deleteTransaction(transaction_id: number) {
+  return axios.delete(`/transaction/${transaction_id}`,);
+}
+
+export function getWallet(wallet_id: number) {
+  return axios.get(`/wallet/${wallet_id}`);
+}
+
 export function getCategories(wallet_id: number) {
   return axios.get(`/wallet_categories/${wallet_id}`);
 }

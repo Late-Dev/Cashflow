@@ -5,8 +5,8 @@
     </div>
     <div>
 
-      <list-item color="secondary" @open="openWallet" :item="wallet" v-for="wallet in walletStore.walletList"
-        :key="wallet.id">
+      <list-item color="secondary" @delete="deleteWallet" @open="openWallet" :item="wallet"
+        v-for="wallet in walletStore.walletList" :key="wallet.id">
         <template #icon>
           <q-icon :name="ionWalletOutline"></q-icon>
         </template>
@@ -41,8 +41,12 @@ onMounted(() => {
   webAppStore.showMainButton('add', () => { router.push({ name: 'addWallet' }) })
 })
 
+function deleteWallet(id: number) {
+  webAppStore.confirm(() => {
+    walletStore.deleteWallet(id)
+  })
+}
+
 </script>
 
-<style scoped lang='scss'>
-
-</style>
+<style scoped lang='scss'></style>

@@ -51,6 +51,10 @@ export const useWallets = defineStore('wallets', () => {
     loaded.value = true;
   }
 
+  async function deleteWallet(id: number) {
+    return;
+  }
+
   return {
     loadWallets,
     walletList,
@@ -58,5 +62,6 @@ export const useWallets = defineStore('wallets', () => {
     loaded,
     chooseWallet,
     createWallet,
+    deleteWallet,
   };
 });

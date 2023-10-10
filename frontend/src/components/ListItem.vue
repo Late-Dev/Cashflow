@@ -23,9 +23,10 @@
       </div>
     </div>
     <div class="transaction-bar__options">
-      <q-btn flat @click="emit('edit')" class="transaction-bar__edit"> <q-icon size="md" :name="ionCreate"></q-icon>
+      <q-btn flat @click.stop="emit('edit', item.id)" class="transaction-bar__edit"> <q-icon size="md"
+          :name="ionCreate"></q-icon>
         edit</q-btn>
-      <q-btn flat @click="emit('delete')" class="transaction-bar__delete"> <q-icon size="md"
+      <q-btn flat @click.stop="emit('delete', item.id)" class="transaction-bar__delete"> <q-icon size="md"
           :name="ionTrash"></q-icon>delete</q-btn>
     </div>
   </q-item>
