@@ -67,7 +67,7 @@ async function loadWalletCategories() {
 onMounted(async () => {
 
   webAppStore.showMainButton('Save', async () => {
-
+    webAppStore.disableMainButton()
     if (category.value.id === -1) {
       await addCategory(
         category.value.name,
