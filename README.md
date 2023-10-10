@@ -39,7 +39,7 @@ SECRET_KEY=<your secret_key>
 2. Create ```.env``` file in `/frontend`
 Example
 ```
-API_URL=http://localhost:8000
+API_URL=http://<your URL>:8000
 ```
 
 3. Run ```docker compose --env-file .env up```
@@ -50,8 +50,8 @@ API_URL=http://localhost:8000
 
 ## Services
 
-swagger - http://localhost:8000/docs
+swagger - http://<your URL>:8000/docs
 
-pgadmin4 - http://localhost:5050/
+pgadmin4 - http://<your URL>:5050/
 
-frontend - https://0.0.0.0:80/ - should have SSL certificate. This ip should be added to your bot via https://t.me/BotFather 
+frontend - https://<your URL>:80/ - should have SSL certificate. This ip should be added to your bot via https://t.me/BotFather 
