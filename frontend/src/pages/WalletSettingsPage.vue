@@ -14,7 +14,7 @@
             </q-avatar>
           </q-item-section>
 
-          <q-item-section>@{{ user.username }}</q-item-section>
+          <q-item-section class="wallet-settings__username">@{{ user.username }}</q-item-section>
           <q-item-section side>Admin</q-item-section>
         </q-item>
       </q-list>
@@ -36,8 +36,24 @@
       Categories
     </div>
     <div v-if="loaded" style="padding-bottom: 60px;">
+      <p class="q-ma-sm">
+
+        Income catagories:
+      </p>
       <list-item :color="category.color" @delete="deleteCategory" @edit="editCategory" :item="category"
-        v-for="category in walletCategories" :key="category.id">
+        v-for="category in incomeWalletCategories" :key="category.id">
+        <template #icon>
+          {{ category.icon }}
+        </template>
+
+        <template #name>{{ category.name }}</template>
+      </list-item>
+      <p class="q-ma-sm">
+
+        Expenses:
+      </p>
+      <list-item :color="category.color" @delete="deleteCategory" @edit="editCategory" :item="category"
+        v-for="category in outcomeWalletCategories" :key="category.id">
         <template #icon>
           {{ category.icon }}
         </template>
@@ -65,7 +81,7 @@
 import ListItem from 'src/components/ListItem.vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useWebApp } from 'src/stores/webapp';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 // import { useCategories } from 'src/stores/category';
 import { IAccount, ICategory } from 'src/types';
 import { deleteCategoryRequest, getAllUsersInWallet, getCategories } from 'src/api';
@@ -90,6 +106,15 @@ onMounted(async () => {
   })
 })
 
+const incomeWalletCategories = computed(() => {
+  return walletCategories.value?.filter(el => el.transaction_type === 'income')
+})
+
+const outcomeWalletCategories = computed(() => {
+  return walletCategories.value?.filter(el => el.transaction_type === 'outcome')
+})
+
+
 async function loadWalletCategories() {
   await getCategories(parseInt(route.params.id as string)).then((response) => {
     walletCategories.value = response.data
@@ -110,4 +135,11 @@ function editCategory(category: ICategory) {
 
 </script>
 
-<style scoped lang='scss'></style>
+<style scoped lang='scss'>
+.wallet-settings {
+  &__username {
+    font-size: 17px;
+    font-weight: 500;
+  }
+}
+</style>
