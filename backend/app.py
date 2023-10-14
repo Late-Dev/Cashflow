@@ -253,20 +253,24 @@ def wallet_verify_link(schema: VerificationLinkSchema, data = Depends(val_jwt)):
 
     add_user_to_wallet(wallet_data.get('id'), data.get('id'))
 
-    #TODO check here if relation has been created or not
     return 'success'
-    
+  
   except jwt.ExpiredSignatureError:
-    print(schema)
     raise HTTPException(
         status_code=401,
         detail="Link is expired",
     )
-  except (jwt.InvalidTokenError, Exception) as e:
-    print(schema)
-    print(e)
+
+  except jwt.InvalidTokenError:
     raise HTTPException(
         status_code=401,
         detail="Link is invalid",
     )
-  
+
+  except Exception as e:
+    print(schema)
+    print(e)
+    raise HTTPException(
+        status_code=401,
+        detail=str(e),
+    )

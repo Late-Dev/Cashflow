@@ -213,7 +213,13 @@ def add_user_to_wallet(wallet_id: int,  user_id: int):
     users_wallet = select(uw for uw in User2Wallet if (uw.wallet.id == wallet_id and uw.user.id == user_id))
 
     if(len(users_wallet) > 0):
-        return 
+        raise TransactionIntegrityError('User already in wallet')
+
+    if(not wallet):
+        raise TransactionIntegrityError('Wallet does not exist')
+
+    if(not user):
+        raise TransactionIntegrityError('User does not exist')
 
     User2Wallet(
         user=user, 
