@@ -33,7 +33,8 @@ from database import (
     get_wallet_transactions_data,
     update_category_data,
     update_transaction_data,
-    update_wallet_data
+    update_wallet_data,
+    get_wallet_users_data
 )
 
 
@@ -154,6 +155,11 @@ async def login(schema: AuthenticationRequestSchema) -> AuthenticationResponseSc
 @app.get("/wallet_transactions/{id}")
 def get_wallet_transactions(id: int, data = Depends(val_jwt)):
     result = get_wallet_transactions_data(id)
+    return result
+
+@app.get("/wallet_users/{id}")
+def get_wallet_users(id: int, data = Depends(val_jwt)):
+    result = get_wallet_users_data(id)
     return result
 
 @app.get("/wallet_categories/{id}")

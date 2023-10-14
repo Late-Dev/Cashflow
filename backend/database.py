@@ -196,3 +196,10 @@ def update_transaction_data(id: int, transaction: dict):
     current_transaction.date = datetime.fromisoformat(transaction.get('date', None)) or current_transaction.date
     current_transaction.source = transaction.get('source', None) or current_transaction.source
 
+@db_session
+def get_wallet_users_data(id: int):
+    users = select(uw.user for uw in User2Wallet if uw.wallet.id == id)
+    result = [
+        user.to_dict() for user in users
+    ]
+    return result 

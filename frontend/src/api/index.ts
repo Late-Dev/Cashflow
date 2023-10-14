@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import { useWebApp } from 'src/stores/webapp';
-import { ITransaction } from 'src/types';
+import { ICategory, ITransaction } from 'src/types';
 
 export const API_URL = process.env.API_URL;
 axios.defaults.baseURL = API_URL;
@@ -93,23 +93,27 @@ export function addCategory(
   });
 }
 
-export function addTransaction(payload: any) {
+export function addTransaction(payload: ITransaction) {
   return axios.post('/transaction', {
     description: payload.description,
     value: payload.value,
     date: new Date(payload.date).toISOString(),
     source: payload.source,
-    category_id: payload.category?.id,
+    category_id: (payload.category as ICategory)?.id,
     wallet_id: payload.wallet,
   });
 }
 
-export function editTransactionRequest(payload: any) {
+export function editTransactionRequest(payload: ITransaction) {
   return axios.patch(`/transaction/${payload.id}`, {
     description: payload.description,
     value: payload.value,
     date: new Date(payload.date).toISOString(),
     source: payload.source,
-    category_id: payload.category?.id,
+    category_id: (payload.category as ICategory)?.id,
   });
+}
+
+export function getAllUsersInWallet(id: number) {
+  return axios.get(`/wallet_users/${id}`);
 }
