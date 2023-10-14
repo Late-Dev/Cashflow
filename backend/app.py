@@ -130,15 +130,17 @@ async def healthcheck():
 @app.post("/login")
 async def login(schema: AuthenticationRequestSchema) -> AuthenticationResponseSchema:
     BOT_TOKEN = os.getenv("TOKEN", None)
-    is_valid, user_id = validate_initData(schema.hash_str, schema.initData, BOT_TOKEN)
+    is_valid, user = validate_initData(schema.hash_str, schema.initData, BOT_TOKEN)
 
     if is_valid:
         jwt_token = create_access_token(
                 SECRET_KEY,
                 ALGORITHM,
                 ACCESS_TOKEN_EXPIRE_MINUTES,
-                data={ 'id': user_id }
+                data={ 'id': user.get('id') }
         )
+
+        add_user_data(user)
 
         return {'jwt_token': jwt_token}
     else:

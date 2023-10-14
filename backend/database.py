@@ -12,6 +12,12 @@ db = Database()
 
 class User(db.Entity):
     id = PrimaryKey(int, auto=True)
+
+    username = Optional(str)
+    first_name = Optional(str)
+    last_name = Optional(str)
+    photo_url = Optional(str)
+
     user2_wallets = Set('User2Wallet')
     transactions = Set('Transaction')
 
@@ -81,31 +87,24 @@ def get_user_wallets_data(id: int):
         }
         for line in select(line for line in User2Wallet if line.user.id == id)
     ]
-
-    if(len(wallets) < 1):
-
-        user_id = select(user for user in User if user.id == id)
-        if len(user_id) < 1:
-            add_user_data({'id': id})
-
-
-        add_wallet_data({'user_id': id, 'name': 'Personal wallet', 'currency': "USD"})
-
-        wallets = [
-            {
-                **line.wallet.to_dict(), 
-                'user_type': line.user_type
-            }
-            for line in select(line for line in User2Wallet if line.user.id == id)
-        ]
     return wallets
 
 @db_session
 def add_user_data(user: dict):
-    try:
-        User(id=user['id'])
-    except TransactionIntegrityError as e:
+    print('user data',user)
+    user_id = select(dbuser for dbuser in User if dbuser.id == user.get('id'))
+    if len(user_id) < 1:
+        User(
+            id=user.get('id'),
+            username=user.get('username', ''),
+            first_name=user.get('first_name', ''),
+            last_name=user.get('last_name', ''),
+            photo_url=user.get('photo_url', '')
+            )
+        add_wallet_data({'user_id': user.get('id'), 'name': 'Personal wallet', 'currency': "USD"})
+    else:
         print('user exists')
+        
 
 @db_session
 def add_category_data(category: dict):
