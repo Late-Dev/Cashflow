@@ -117,3 +117,13 @@ export function editTransactionRequest(payload: ITransaction) {
 export function getAllUsersInWallet(id: number) {
   return axios.get(`/wallet_users/${id}`);
 }
+
+export function generateWalletLink(id: number) {
+  return axios.get(`/wallet_generate_link/${id}`);
+}
+
+export function verifyWalletLink(link: string) {
+  return axios.post('/wallet_verify_link', {
+    link,
+  });
+}

@@ -124,3 +124,5 @@ class AuthenticationRequestSchema(BaseModel):
 class AuthenticationResponseSchema(BaseModel):
     jwt_token: str
 
+class VerificationLinkSchema(BaseModel):
+    link: str

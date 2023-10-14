@@ -15,6 +15,7 @@
 
           <q-item-section class="wallet-settings__username">@{{ user.username }}</q-item-section>
           <q-item-section side v-if="user.user_type === 'owner'">Admin</q-item-section>
+          <q-item-section side v-if="user.user_type !== 'owner'">Delete</q-item-section>
         </q-item>
       </q-list>
     </div>
@@ -29,6 +30,10 @@
           </q-item-label>
         </q-item-section>
       </q-item>
+    </div>
+
+    <div>
+      {{ invite_link }} - <a :href="invite_link"> link</a>
     </div>
 
     <div class="row q-ma-sm title">
@@ -83,7 +88,7 @@ import { useWebApp } from 'src/stores/webapp';
 import { computed, onMounted, ref } from 'vue';
 // import { useCategories } from 'src/stores/category';
 import { IAccount, ICategory } from 'src/types';
-import { deleteCategoryRequest, getAllUsersInWallet, getCategories } from 'src/api';
+import { deleteCategoryRequest, getAllUsersInWallet, getCategories, generateWalletLink } from 'src/api';
 import { ionPersonOutline } from '@quasar/extras/ionicons-v7';
 
 const webAppStore = useWebApp()
@@ -100,12 +105,21 @@ interface IAccountWithOwner extends IAccount {
 const walletUsers = ref<IAccountWithOwner[]>()
 const usersLoaded = ref(false)
 
-onMounted(async () => {
+const walletId = computed(() => {
+  return parseInt(route.params.id as string)
+})
+
+const invite_link = ref()
+
+onMounted(() => {
   webAppStore.showMainButton('Add', () => { router.push({ name: 'newCategory', params: { wallet_id: route.params.id as string } }) })
-  await loadWalletCategories()
-  await getAllUsersInWallet(parseInt(route.params.id as string)).then((response) => {
+  loadWalletCategories()
+  getAllUsersInWallet(walletId.value).then((response) => {
     walletUsers.value = response.data
     usersLoaded.value = true
+  })
+  generateWalletLink(walletId.value).then((response) => {
+    invite_link.value = 'https://t.me/pomo_timer_bot/timer?startapp=' + response.data.replaceAll('.', '_')
   })
 })
 
@@ -119,7 +133,7 @@ const outcomeWalletCategories = computed(() => {
 
 
 async function loadWalletCategories() {
-  await getCategories(parseInt(route.params.id as string)).then((response) => {
+  await getCategories(walletId.value).then((response) => {
     walletCategories.value = response.data
     loaded.value = true
   })

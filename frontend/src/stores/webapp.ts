@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { login } from 'src/api';
+import { login, verifyWalletLink } from 'src/api';
 import { TelegramWebApps } from 'telegram-webapps-types-new';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -16,13 +16,15 @@ export const useWebApp = defineStore('webapp', () => {
   const token = ref();
   const walletsStore = useWallets();
 
+  const inviteToken = webapp.initDataUnsafe.start_param;
+
   const mainButton = ref({
     text: '',
     onClick: () => {
       return;
     },
     isVisible: false,
-    disabled: false
+    disabled: false,
   });
 
   function enableCloseConfirm() {
@@ -50,7 +52,7 @@ export const useWebApp = defineStore('webapp', () => {
   };
 
   const showMainButton = (text: string, fn: () => void) => {
-    mainButton.value.disabled = false
+    mainButton.value.disabled = false;
     mainButton.value.isVisible = true;
     mainButton.value.text = text;
     mainButton.value.onClick = fn;
@@ -61,7 +63,6 @@ export const useWebApp = defineStore('webapp', () => {
   };
 
   const hideMainButton = () => {
-
     mainButton.value.isVisible = false;
   };
   async function auth() {
@@ -75,6 +76,16 @@ export const useWebApp = defineStore('webapp', () => {
       }
     );
     await walletsStore.loadWallets();
+
+    if (inviteToken) {
+      await verifyWalletLink(inviteToken.replaceAll('_', '.'))
+        .then(() => {
+          webapp.showAlert('You have been added to the wallet');
+        })
+        .catch((error) => {
+          webapp.showAlert(error.response.data.detail);
+        });
+    }
   }
 
   function confirm(fn: () => void) {
@@ -102,6 +113,6 @@ export const useWebApp = defineStore('webapp', () => {
     disableCloseConfirm,
     showAlert,
     mainButton,
-    disableMainButton
+    disableMainButton,
   };
 });

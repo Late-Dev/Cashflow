@@ -203,3 +203,20 @@ def get_wallet_users_data(id: int):
         {**user_wal.user.to_dict(), 'user_type': user_wal.user_type } for user_wal in users_wallet
     ]
     return result 
+
+@db_session
+def add_user_to_wallet(wallet_id: int,  user_id: int):
+    user_type = 'member'
+    user = User[user_id]
+    wallet = Wallet[wallet_id]
+
+    users_wallet = select(uw for uw in User2Wallet if (uw.wallet.id == wallet_id and uw.user.id == user_id))
+
+    if(len(users_wallet) > 0):
+        return 
+
+    User2Wallet(
+        user=user, 
+        wallet=wallet,
+        user_type=user_type
+    )
