@@ -198,8 +198,8 @@ def update_transaction_data(id: int, transaction: dict):
 
 @db_session
 def get_wallet_users_data(id: int):
-    users = select(uw.user for uw in User2Wallet if uw.wallet.id == id)
+    users_wallet = select(uw for uw in User2Wallet if uw.wallet.id == id)
     result = [
-        user.to_dict() for user in users
+        {**user_wal.user.to_dict(), 'user_type': user_wal.user_type } for user_wal in users_wallet
     ]
     return result 

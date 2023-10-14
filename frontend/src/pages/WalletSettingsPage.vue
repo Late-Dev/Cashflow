@@ -5,7 +5,6 @@
     </div>
     <div v-if="usersLoaded">
 
-      <!-- {{ walletUsers }} -->
       <q-list bordered>
         <q-item clickable v-ripple v-for="user in walletUsers" :key="user.id">
           <q-item-section avatar>
@@ -15,7 +14,7 @@
           </q-item-section>
 
           <q-item-section class="wallet-settings__username">@{{ user.username }}</q-item-section>
-          <q-item-section side>Admin</q-item-section>
+          <q-item-section side v-if="user.user_type === 'owner'">Admin</q-item-section>
         </q-item>
       </q-list>
     </div>
@@ -94,7 +93,11 @@ const route = useRoute()
 const walletCategories = ref<ICategory[]>()
 const loaded = ref(false)
 
-const walletUsers = ref<IAccount[]>()
+interface IAccountWithOwner extends IAccount {
+  user_type: 'owner'
+}
+
+const walletUsers = ref<IAccountWithOwner[]>()
 const usersLoaded = ref(false)
 
 onMounted(async () => {
