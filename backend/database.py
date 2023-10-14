@@ -100,7 +100,6 @@ def get_user_wallets_data(id: int):
 
 @db_session
 def add_user_data(user: dict):
-    print('user data',user)
     user_id = select(dbuser for dbuser in User if dbuser.id == user.get('id'))
     if len(user_id) < 1:
         User(
