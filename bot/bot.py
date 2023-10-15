@@ -18,10 +18,14 @@ bot.
 import logging
 from dotenv import load_dotenv
 import os 
+from uuid import uuid4
+from html import escape
 
+import requests
 
-from telegram import ForceReply, Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
+from telegram.constants import ParseMode
+from telegram import ForceReply, Update, InlineKeyboardButton, InlineKeyboardMarkup, InputTextMessageContent, InlineQueryResultArticle
+from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters, InlineQueryHandler
 
 load_dotenv()
 # Enable logging
@@ -67,15 +71,26 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     )
 
 
-async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Send a message when the command /help is issued."""
-    await update.message.reply_text("Help!")
+async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Handle the inline query. This is run when you type: @botusername <query>"""
+    query = update.inline_query.query
+    user = update.effective_user
+    if not query:  # empty query should not be handled
+        return
 
+    fetch_results = requests.get(f"{os.getenv('API_URL')}/bot_user_wallets/{str(user.id)}?secret={os.getenv('BOT_SECRET')}")
 
-async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Echo the user message."""
-    await update.message.reply_text(update.message.text)
+    wallet_list = fetch_results.json()
 
+    results = [
+        InlineQueryResultArticle(**{
+            "id": wallet.get('id'),
+            'title': wallet.get('name'),
+            'input_message_content': InputTextMessageContent( f"{os.getenv('WEBAPP_TG_URL')}?startapp={wallet.get('link')}")
+        }) for wallet in wallet_list if query.lower() in wallet.get('name').lower()
+    ]
+    
+    await update.inline_query.answer(results)
 
 def main() -> None:
     """Start the bot."""
@@ -84,10 +99,8 @@ def main() -> None:
 
     # on different commands - answer in Telegram
     application.add_handler(CommandHandler("start", start))
-    application.add_handler(CommandHandler("help", help_command))
 
-    # on non command i.e message - echo the message on Telegram
-    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
+    application.add_handler(InlineQueryHandler(inline_query))
 
     # Run the bot until the user presses Ctrl-C
     application.run_polling(allowed_updates=Update.ALL_TYPES)

@@ -262,6 +262,7 @@ def wallet_verify_link(schema: VerificationLinkSchema, data = Depends(val_jwt)):
     )
 
   except jwt.InvalidTokenError:
+    print(schema)
     raise HTTPException(
         status_code=401,
         detail="Link is invalid",
@@ -274,3 +275,25 @@ def wallet_verify_link(schema: VerificationLinkSchema, data = Depends(val_jwt)):
         status_code=401,
         detail=str(e),
     )
+
+
+@app.get('/bot_user_wallets/{id}')
+def get_user_wallets(id: int, secret: str):
+    if(secret == os.getenv("BOT_SECRET", None)):
+
+
+        result = [ {
+            **wallet,
+            "link":create_access_token(
+                SECRET_KEY,
+                ALGORITHM,
+                ACCESS_TOKEN_EXPIRE_MINUTES,
+                data={ 'id': wallet.get('id') }
+                )
+        } for wallet in get_user_wallets_data(id)]
+        return result
+    else:
+        raise HTTPException(
+            status_code=403,
+            detail="You are not the bot",
+        )

@@ -44,6 +44,7 @@ API_URL=http://<your URL>:8000
 WEBAPP_TG_URL=https://t.me/<bot_name>/<webapp_name>
 WEBAPP_URL="https://<frontend URL>/#/"
 
+BOT_SECRET=<secret bot key>
 ```
 
 
