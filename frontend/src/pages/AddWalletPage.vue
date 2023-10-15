@@ -39,31 +39,9 @@ onMounted(() => {
 </script>
 
 <style scoped lang='scss'>
+@import '../css/mixins.scss';
+
 .add-wallet {
-  &__group {
-    margin-bottom: 14px;
-
-    border-radius: 12px;
-    overflow: hidden;
-
-    :deep(input) {
-      color: $theme-primary-text;
-    }
-
-    :deep(.q-field__label) {
-      opacity: 0.7;
-    }
-
-    :deep(.q-field__control::after) {
-
-      display: none;
-
-    }
-
-    :deep(.q-field__control::before) {
-      border: none;
-    }
-
-  }
+  @include input-group;
 }
 </style>

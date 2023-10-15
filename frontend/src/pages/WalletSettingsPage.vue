@@ -3,9 +3,8 @@
     <div class="row q-ma-sm title">
       Team
     </div>
-    <div v-if="usersLoaded">
-
-      <q-list bordered>
+    <div v-if="usersLoaded" class="column full-width">
+      <q-list bordered separator>
         <q-item clickable v-ripple v-for="user in walletUsers" :key="user.id">
           <q-item-section avatar>
             <q-avatar color="teal" text-color="white" :icon="ionPersonOutline">
@@ -15,7 +14,7 @@
 
           <q-item-section class="wallet-settings__username">@{{ user.username }}</q-item-section>
           <q-item-section side v-if="user.user_type === 'owner'">Admin</q-item-section>
-          <q-item-section side v-if="user.user_type !== 'owner'">Delete</q-item-section>
+          <q-item-section side class="text-negative" v-if="user.user_type !== 'owner'">Delete</q-item-section>
         </q-item>
       </q-list>
     </div>
@@ -32,8 +31,22 @@
       </q-item>
     </div>
 
-    <div>
-      {{ invite_link }} - <a :href="invite_link"> link</a>
+    <div v-if="invite_link" class="column full-width q-ma-sm q-pa-sm">
+      <div class="invite__group row invite__row">
+        <q-field full-width class="col  invite__button overflow-hidden" dense filled square outlined bg-color="secondary"
+          label-color="dark" color="dark" v-model="invite_link" label="Category">
+          <template v-slot:control>
+            <div class="self-center no-outline tg-primary-text invite__input" tabindex="0">
+              {{ invite_link }}
+            </div>
+          </template>
+          <template v-slot:append>
+            <q-icon class="tg-primary-text" :name="ionLinkOutline"></q-icon>
+          </template>
+        </q-field>
+        <q-btn class="tg-secondary invite__button q-ml-sm" square flat :icon="ionArrowRedoSharp"> </q-btn>
+        <q-btn class="tg-secondary invite__button q-ml-sm" square flat :icon="ionQrCodeSharp"> </q-btn>
+      </div>
     </div>
 
     <div class="row q-ma-sm title">
@@ -89,7 +102,7 @@ import { computed, onMounted, ref } from 'vue';
 // import { useCategories } from 'src/stores/category';
 import { IAccount, ICategory } from 'src/types';
 import { deleteCategoryRequest, getAllUsersInWallet, getCategories, generateWalletLink } from 'src/api';
-import { ionPersonOutline } from '@quasar/extras/ionicons-v7';
+import { ionPersonOutline, ionLinkOutline, ionArrowRedoSharp, ionQrCodeSharp } from '@quasar/extras/ionicons-v7';
 
 const webAppStore = useWebApp()
 const router = useRouter()
@@ -153,10 +166,29 @@ function editCategory(category: ICategory) {
 </script>
 
 <style scoped lang='scss'>
+@import '../css/mixins.scss';
+
 .wallet-settings {
   &__username {
     font-size: 17px;
     font-weight: 500;
+  }
+}
+
+.invite {
+  @include input-group;
+
+  &__input {
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  &__row {
+    max-width: 100%;
+  }
+
+  &__button {
+    border-radius: 12px;
   }
 }
 </style>
