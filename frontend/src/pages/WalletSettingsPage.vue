@@ -1,5 +1,10 @@
 <template>
   <q-page class="column overflow-hidden ">
+
+    <div class="row q-ma-sm title">
+      {{ currentWallet.name }}
+    </div>
+
     <div class="row q-ma-sm title">
       Team
     </div>
@@ -33,8 +38,8 @@
 
     <div v-if="invite_link" class="column full-width q-ma-sm q-pa-sm">
       <div class="invite__group row invite__row">
-        <q-field full-width @focus="copy(invite_link)" class="col  invite__button overflow-hidden" dense filled square outlined bg-color="secondary"
-          label-color="dark" color="dark" v-model="invite_link" label="Category">
+        <q-field full-width @focus="copy(invite_link)" class="col  invite__button overflow-hidden" dense filled square
+          outlined bg-color="secondary" label-color="dark" color="dark" v-model="invite_link" label="Category">
           <template v-slot:control>
             <div class="self-center no-outline tg-primary-text invite__input" tabindex="0">
               {{ invite_link }}
@@ -44,7 +49,8 @@
             <q-icon class="tg-primary-text" :name="ionLinkOutline"></q-icon>
           </template>
         </q-field>
-        <q-btn class="tg-secondary invite__button q-ml-sm" square flat :icon="ionArrowRedoSharp"> </q-btn>
+        <q-btn class="tg-secondary invite__button q-ml-sm" @click="webAppStore.shareWallet(currentWallet.name)" square flat
+          :icon="ionArrowRedoSharp"> </q-btn>
         <q-btn class="tg-secondary invite__button q-ml-sm" square flat :icon="ionQrCodeSharp"> </q-btn>
       </div>
     </div>
@@ -100,8 +106,8 @@ import { useRouter, useRoute } from 'vue-router';
 import { useWebApp } from 'src/stores/webapp';
 import { computed, onMounted, ref } from 'vue';
 import copy from 'copy-text-to-clipboard';
-import { IAccount, ICategory } from 'src/types';
-import { deleteCategoryRequest, getAllUsersInWallet, getCategories, generateWalletLink } from 'src/api';
+import { IAccount, ICategory, Wallet } from 'src/types';
+import { deleteCategoryRequest, getAllUsersInWallet, getCategories, generateWalletLink, getWallets } from 'src/api';
 import { ionPersonOutline, ionLinkOutline, ionArrowRedoSharp, ionQrCodeSharp } from '@quasar/extras/ionicons-v7';
 
 const webAppStore = useWebApp()
@@ -123,10 +129,14 @@ const walletId = computed(() => {
 })
 
 const invite_link = ref()
+const currentWallet = ref({ name: '' })
 
 onMounted(() => {
   webAppStore.showMainButton('Add', () => { router.push({ name: 'newCategory', params: { wallet_id: route.params.id as string } }) })
   loadWalletCategories()
+  getWallets().then((response) => {
+    currentWallet.value = response.data.find((el: Wallet) => el.id === walletId.value)
+  })
   getAllUsersInWallet(walletId.value).then((response) => {
     walletUsers.value = response.data
     usersLoaded.value = true

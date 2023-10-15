@@ -12,9 +12,16 @@ declare global {
 
 export const useWebApp = defineStore('webapp', () => {
   const webapp = window.Telegram.WebApp;
+
+  webapp.expand();
+  webapp.ready();
   const router = useRouter();
   const token = ref();
   const walletsStore = useWallets();
+
+  function shareWallet(walletName: string) {
+    webapp.switchInlineQuery(`wallet#${walletName}`, ['users']);
+  }
 
   const inviteToken = webapp.initDataUnsafe.start_param;
 
@@ -114,5 +121,6 @@ export const useWebApp = defineStore('webapp', () => {
     showAlert,
     mainButton,
     disableMainButton,
+    shareWallet,
   };
 });
