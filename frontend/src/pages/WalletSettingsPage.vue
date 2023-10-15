@@ -33,7 +33,7 @@
 
     <div v-if="invite_link" class="column full-width q-ma-sm q-pa-sm">
       <div class="invite__group row invite__row">
-        <q-field full-width class="col  invite__button overflow-hidden" dense filled square outlined bg-color="secondary"
+        <q-field full-width @focus="copy(invite_link)" class="col  invite__button overflow-hidden" dense filled square outlined bg-color="secondary"
           label-color="dark" color="dark" v-model="invite_link" label="Category">
           <template v-slot:control>
             <div class="self-center no-outline tg-primary-text invite__input" tabindex="0">
@@ -99,7 +99,7 @@ import ListItem from 'src/components/ListItem.vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useWebApp } from 'src/stores/webapp';
 import { computed, onMounted, ref } from 'vue';
-// import { useCategories } from 'src/stores/category';
+import copy from 'copy-text-to-clipboard';
 import { IAccount, ICategory } from 'src/types';
 import { deleteCategoryRequest, getAllUsersInWallet, getCategories, generateWalletLink } from 'src/api';
 import { ionPersonOutline, ionLinkOutline, ionArrowRedoSharp, ionQrCodeSharp } from '@quasar/extras/ionicons-v7';
