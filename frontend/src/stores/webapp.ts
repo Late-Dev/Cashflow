@@ -85,7 +85,7 @@ export const useWebApp = defineStore('webapp', () => {
     await walletsStore.loadWallets();
 
     if (inviteToken) {
-      await verifyWalletLink(inviteToken.replaceAll('_', '.'))
+      await verifyWalletLink(inviteToken.replaceAll('__', '.'))
         .then(() => {
           webapp.showAlert('You have been added to the wallet');
         })

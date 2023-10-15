@@ -289,7 +289,7 @@ def get_user_wallets(id: int, secret: str):
                 ALGORITHM,
                 ACCESS_TOKEN_EXPIRE_MINUTES,
                 data={ 'id': wallet.get('id') }
-                ).replace(".", "_")
+                ).replace(".", "__")
         } for wallet in get_user_wallets_data(id)]
         return result
     else:

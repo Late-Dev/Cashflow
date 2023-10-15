@@ -49,10 +49,17 @@
             <q-icon class="tg-primary-text" :name="ionLinkOutline"></q-icon>
           </template>
         </q-field>
-        <q-btn class="tg-secondary invite__button q-ml-sm" @click="webAppStore.shareWallet(currentWallet.name)" square flat
-          :icon="ionArrowRedoSharp"> </q-btn>
-        <q-btn class="tg-secondary invite__button q-ml-sm" square flat :icon="ionQrCodeSharp"> </q-btn>
+        <q-btn class="tg-secondary invite__button q-ml-sm" @click="webAppStore.shareWallet(currentWallet.name)" square
+          flat :icon="ionArrowRedoSharp"> </q-btn>
+        <q-btn class="tg-secondary invite__button q-ml-sm" @click="QRDialog = true" square flat :icon="ionQrCodeSharp">
+        </q-btn>
       </div>
+
+      <q-dialog @show="openQRDialog" v-model="QRDialog">
+        <q-card class="tg-secondary">
+          <div  ref="QRElement" class="q-ma-lg"></div>
+        </q-card>
+      </q-dialog>
     </div>
 
     <div class="row q-ma-sm title">
@@ -109,6 +116,24 @@ import copy from 'copy-text-to-clipboard';
 import { IAccount, ICategory, Wallet } from 'src/types';
 import { deleteCategoryRequest, getAllUsersInWallet, getCategories, generateWalletLink, getWallets } from 'src/api';
 import { ionPersonOutline, ionLinkOutline, ionArrowRedoSharp, ionQrCodeSharp } from '@quasar/extras/ionicons-v7';
+import QrCreator from 'qr-creator';
+
+
+
+const QRElement = ref()
+const QRDialog = ref(false)
+
+function openQRDialog() {
+  QrCreator.render({
+    text: invite_link.value,
+    radius: 0.4, // 0.0 to 0.5
+    ecLevel: 'L', // L, M, Q, H
+    fill: '#007AFF', // foreground color
+    background: null, // color or null for transparent
+    size: 256 // in pixels
+  }, QRElement.value);
+}
+
 
 const webAppStore = useWebApp()
 const router = useRouter()
@@ -142,7 +167,7 @@ onMounted(() => {
     usersLoaded.value = true
   })
   generateWalletLink(walletId.value).then((response) => {
-    invite_link.value = process.env.WEBAPP_TG_URL+'?startapp=' + response.data.replaceAll('.', '_')
+    invite_link.value = process.env.WEBAPP_TG_URL + '?startapp=' + response.data.replaceAll('.', '__')
   })
 })
 

@@ -8,7 +8,6 @@
 import { useWebApp } from 'src/stores/webapp'
 import { onMounted, ref } from 'vue';
 import MainButton from './components/MainButton.vue';
-import { verifyWalletLink } from 'src/api'
 
 const webAppStore = useWebApp()
 const data = ref()
