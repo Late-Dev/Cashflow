@@ -38,15 +38,16 @@ PGADMIN_DEFAULT_PASSWORD=root
 
 TOKEN=<your telegram token>
 SECRET_KEY=<your secret_key>
-```
 
-2. Create ```.env``` file in `/frontend`
-Example
-```
 API_URL=http://<your URL>:8000
+
+WEBAPP_TG_URL=https://t.me/<bot_name>/<webapp_name>
+WEBAPP_URL="https://<frontend URL>/#/"
+
 ```
 
-3. Run ```docker compose --env-file .env up```
+
+2. Run ```docker compose --env-file .env up```
 
 ## Database schema
 

@@ -57,7 +57,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user = update.effective_user
     keyboard = [
         [
-            InlineKeyboardButton("Open your wallet", web_app={'url':'https://cashflow.omegasoft.keenetic.name/#/'}),
+            InlineKeyboardButton("Open your wallet", web_app={'url': os.getenv('WEBAPP_URL')}),
         ],
 
     ]

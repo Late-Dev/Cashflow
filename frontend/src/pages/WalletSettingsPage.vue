@@ -142,7 +142,7 @@ onMounted(() => {
     usersLoaded.value = true
   })
   generateWalletLink(walletId.value).then((response) => {
-    invite_link.value = 'https://t.me/pomo_timer_bot/timer?startapp=' + response.data.replaceAll('.', '_')
+    invite_link.value = process.env.WEBAPP_TG_URL+'?startapp=' + response.data.replaceAll('.', '_')
   })
 })
 

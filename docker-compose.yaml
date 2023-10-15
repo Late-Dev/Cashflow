@@ -50,6 +50,7 @@ services:
     build: ./bot
     environment:
       TOKEN: ${TOKEN}
+      WEBAPP_URL: ${WEBAPP_URL}
 
 networks:
   postgres:

@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang='ts'>
-import { onBeforeMount, onBeforeUnmount, onMounted, ref } from 'vue';
+import {  onMounted, ref } from 'vue';
 import { useWallets } from 'src/stores/wallets';
 import { useWebApp } from 'src/stores/webapp';
 import { useRouter } from 'vue-router';
