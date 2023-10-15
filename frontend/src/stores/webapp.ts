@@ -20,7 +20,7 @@ export const useWebApp = defineStore('webapp', () => {
   const walletsStore = useWallets();
 
   function shareWallet(walletName: string) {
-    webapp.switchInlineQuery(`wallet#${walletName}`, ['users']);
+    webapp.switchInlineQuery(walletName, ['users']);
   }
 
   const inviteToken = webapp.initDataUnsafe.start_param;
