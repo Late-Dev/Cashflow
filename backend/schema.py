@@ -6,11 +6,18 @@ from pydantic import BaseModel
 
 class UserSchema(BaseModel):
     id: int
+    username: Optional[str]
+    first_name: Optional[str]
+    last_name: Optional[str]
+    photo_url: Optional[str] 
 
     class Config:
         schema_extra = {
             "example": {
-                "id": 123
+                "id": 123,
+                "first_name": 'Ivan',
+                "last_name": 'R',
+                "photo_url": 'https://i.imgur.com/5k4z35a.png',
             }
         }
 
@@ -117,3 +124,5 @@ class AuthenticationRequestSchema(BaseModel):
 class AuthenticationResponseSchema(BaseModel):
     jwt_token: str
 
+class VerificationLinkSchema(BaseModel):
+    link: str

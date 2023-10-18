@@ -12,6 +12,12 @@ db = Database()
 
 class User(db.Entity):
     id = PrimaryKey(int, auto=True)
+
+    username = Optional(str)
+    first_name = Optional(str)
+    last_name = Optional(str)
+    photo_url = Optional(str)
+
     user2_wallets = Set('User2Wallet')
     transactions = Set('Transaction')
 
@@ -81,31 +87,32 @@ def get_user_wallets_data(id: int):
         }
         for line in select(line for line in User2Wallet if line.user.id == id)
     ]
-
     if(len(wallets) < 1):
-
-        user_id = select(user for user in User if user.id == id)
-        if len(user_id) < 1:
-            add_user_data({'id': id})
-
-
         add_wallet_data({'user_id': id, 'name': 'Personal wallet', 'currency': "USD"})
-
         wallets = [
-            {
-                **line.wallet.to_dict(), 
-                'user_type': line.user_type
-            }
-            for line in select(line for line in User2Wallet if line.user.id == id)
+        {
+            **line.wallet.to_dict(), 
+            'user_type': line.user_type
+        }
+        for line in select(line for line in User2Wallet if line.user.id == id)
         ]
     return wallets
 
 @db_session
 def add_user_data(user: dict):
-    try:
-        User(id=user['id'])
-    except TransactionIntegrityError as e:
+    user_id = select(dbuser for dbuser in User if dbuser.id == user.get('id'))
+    if len(user_id) < 1:
+        User(
+            id=user.get('id'),
+            username=user.get('username', ''),
+            first_name=user.get('first_name', ''),
+            last_name=user.get('last_name', ''),
+            photo_url=user.get('photo_url', '')
+            )
+        add_wallet_data({'user_id': user.get('id'), 'name': 'Personal wallet', 'currency': "USD"})
+    else:
         print('user exists')
+        
 
 @db_session
 def add_category_data(category: dict):
@@ -189,3 +196,33 @@ def update_transaction_data(id: int, transaction: dict):
     current_transaction.date = datetime.fromisoformat(transaction.get('date', None)) or current_transaction.date
     current_transaction.source = transaction.get('source', None) or current_transaction.source
 
+@db_session
+def get_wallet_users_data(id: int):
+    users_wallet = select(uw for uw in User2Wallet if uw.wallet.id == id)
+    result = [
+        {**user_wal.user.to_dict(), 'user_type': user_wal.user_type } for user_wal in users_wallet
+    ]
+    return result 
+
+@db_session
+def add_user_to_wallet(wallet_id: int,  user_id: int):
+    user_type = 'member'
+    user = User[user_id]
+    wallet = Wallet[wallet_id]
+
+    users_wallet = select(uw for uw in User2Wallet if (uw.wallet.id == wallet_id and uw.user.id == user_id))
+
+    if(len(users_wallet) > 0):
+        raise TransactionIntegrityError('User already in wallet')
+
+    if(not wallet):
+        raise TransactionIntegrityError('Wallet does not exist')
+
+    if(not user):
+        raise TransactionIntegrityError('User does not exist')
+
+    User2Wallet(
+        user=user, 
+        wallet=wallet,
+        user_type=user_type
+    )

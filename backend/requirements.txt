@@ -2,4 +2,4 @@ fastapi==0.103.1
 uvicorn==0.23.2
 pony==0.7.17
 psycopg2==2.9.9
-pyjwt
+pyjwt==2.8.0
