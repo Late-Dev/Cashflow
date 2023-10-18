@@ -12,12 +12,23 @@ With Cashflow, you can:
 
 2. **Build savings** Plan your savings and goals. Watch as your budget grows to achieve your dreams.
 
-3. *In progress* **Create shared wallets** Invite your friends and family to shared wallets for joint financial management. Shared purchases or trips have become easier!
+3. **Create shared wallets** Invite your friends and family to shared wallets for joint financial management. Shared purchases or trips have become easier!
 
 4. **Analyze finances** Cashflow provides convenient reports and analytics to help you better understand where your money is going and how to save.
 <p align="center">
   <img height="600" src="https://github.com/Late-Dev/Cashflow/raw/main/cashflow_demo.gif">
 </p>
+
+
+## Features
+
+- [x] Create unlimited wallets
+- [x] Edit or create categories for wallets
+- [x] Share your vallets via link, inline or QR code
+- [x] Save transactions: both expenses and incomes
+- [ ] Rename existed wallets
+- [ ] Validation of data
+
 ## Requirements
 
 - docker
@@ -38,15 +49,17 @@ PGADMIN_DEFAULT_PASSWORD=root
 
 TOKEN=<your telegram token>
 SECRET_KEY=<your secret_key>
-```
 
-2. Create ```.env``` file in `/frontend`
-Example
-```
 API_URL=http://<your URL>:8000
+
+WEBAPP_TG_URL=https://t.me/<bot_name>/<webapp_name>
+WEBAPP_URL="https://<frontend URL>/#/"
+
+BOT_SECRET=<secret bot key>
 ```
 
-3. Run ```docker compose --env-file .env up```
+
+2. Run ```docker compose --env-file .env up```
 
 ## Database schema
 

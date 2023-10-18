@@ -17,7 +17,8 @@ from schema import (
         WalletSchema,
         AuthenticationRequestSchema,
         AuthenticationResponseSchema,
-        WalletUpdateSchema
+        WalletUpdateSchema,
+        VerificationLinkSchema
 )
 from database import (
     add_category_data,
@@ -33,7 +34,9 @@ from database import (
     get_wallet_transactions_data,
     update_category_data,
     update_transaction_data,
-    update_wallet_data
+    update_wallet_data,
+    get_wallet_users_data,
+    add_user_to_wallet
 )
 
 
@@ -130,15 +133,17 @@ async def healthcheck():
 @app.post("/login")
 async def login(schema: AuthenticationRequestSchema) -> AuthenticationResponseSchema:
     BOT_TOKEN = os.getenv("TOKEN", None)
-    is_valid, user_id = validate_initData(schema.hash_str, schema.initData, BOT_TOKEN)
+    is_valid, user = validate_initData(schema.hash_str, schema.initData, BOT_TOKEN)
 
     if is_valid:
         jwt_token = create_access_token(
                 SECRET_KEY,
                 ALGORITHM,
                 ACCESS_TOKEN_EXPIRE_MINUTES,
-                data={ 'id': user_id }
+                data={ 'id': user.get('id') }
         )
+
+        add_user_data(user)
 
         return {'jwt_token': jwt_token}
     else:
@@ -152,6 +157,11 @@ async def login(schema: AuthenticationRequestSchema) -> AuthenticationResponseSc
 @app.get("/wallet_transactions/{id}")
 def get_wallet_transactions(id: int, data = Depends(val_jwt)):
     result = get_wallet_transactions_data(id)
+    return result
+
+@app.get("/wallet_users/{id}")
+def get_wallet_users(id: int, data = Depends(val_jwt)):
+    result = get_wallet_users_data(id)
     return result
 
 @app.get("/wallet_categories/{id}")
@@ -225,3 +235,65 @@ def update_transaction(id: int, transaction: TransactionUpdateSchema, data = Dep
     transaction = jsonable_encoder(transaction)
     update_transaction_data(id, transaction)
     return 'success'
+
+@app.get("/wallet_generate_link/{id}")
+def wallet_generate_link(id: int, data = Depends(val_jwt)):
+  token = create_access_token(
+                SECRET_KEY,
+                ALGORITHM,
+                ACCESS_TOKEN_EXPIRE_MINUTES,
+                data={ 'id': id }
+        )
+  return token
+
+@app.post("/wallet_verify_link")
+def wallet_verify_link(schema: VerificationLinkSchema, data = Depends(val_jwt)):
+  try:
+    wallet_data = jwt.decode(schema.link, SECRET_KEY, algorithms=[ALGORITHM])
+
+    add_user_to_wallet(wallet_data.get('id'), data.get('id'))
+
+    return 'success'
+  
+  except jwt.ExpiredSignatureError:
+    raise HTTPException(
+        status_code=401,
+        detail="Link is expired",
+    )
+
+  except jwt.InvalidTokenError:
+    print(schema)
+    raise HTTPException(
+        status_code=401,
+        detail="Link is invalid",
+    )
+
+  except Exception as e:
+    print(schema)
+    print(e)
+    raise HTTPException(
+        status_code=401,
+        detail=str(e),
+    )
+
+
+@app.get('/bot_user_wallets/{id}')
+def get_user_wallets(id: int, secret: str):
+    if(secret == os.getenv("BOT_SECRET", None)):
+
+
+        result = [ {
+            **wallet,
+            "link":create_access_token(
+                SECRET_KEY,
+                ALGORITHM,
+                ACCESS_TOKEN_EXPIRE_MINUTES,
+                data={ 'id': wallet.get('id') }
+                ).replace(".", "__")
+        } for wallet in get_user_wallets_data(id)]
+        return result
+    else:
+        raise HTTPException(
+            status_code=403,
+            detail="You are not the bot",
+        )

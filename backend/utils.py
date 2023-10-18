@@ -33,7 +33,7 @@ def validate_initData(hash_str, init_data, token, c_str="WebAppData") -> bool:
     data_check = hmac.new( secret_key, init_data.encode(),
         hashlib.sha256)
 
-    return data_check.hexdigest() == hash_str, userData.get('id')
+    return data_check.hexdigest() == hash_str, userData
 
 
 def create_access_token(

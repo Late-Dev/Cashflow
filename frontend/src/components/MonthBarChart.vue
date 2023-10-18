@@ -11,8 +11,8 @@
 
 <script setup lang='ts'>
 import { Bar } from 'vue-chartjs'
-import { Chart as ChartJS, Title, Tooltip, BarElement, CategoryScale, LinearScale } from 'chart.js'
-import { computed, ref, watch } from 'vue';
+import { Chart as ChartJS, Title, BarElement, CategoryScale, LinearScale } from 'chart.js'
+import { computed } from 'vue';
 
 ChartJS.register(Title, BarElement, CategoryScale, LinearScale)
 
@@ -53,7 +53,7 @@ const chartOptions = {
       }
     }
   },
-  onClick: (_: any, b: any) => {
+  onClick: (_: unknown, b: any) => {
     const clickIndex = b[0].index;
     emit('chooseMonth', clickIndex)
   },

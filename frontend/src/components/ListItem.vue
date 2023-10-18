@@ -35,7 +35,6 @@
 
 <script setup lang='ts'>
 import { ref } from 'vue';
-import EmojiIcon from './EmojiIcon.vue';
 import { ionCreate, ionTrash } from '@quasar/extras/ionicons-v7';
 
 
@@ -49,7 +48,7 @@ interface PropsType {
   icon?: string
 }
 
-const props = defineProps<PropsType>()
+defineProps<PropsType>()
 
 const isSettingsOpened = ref(false)
 
