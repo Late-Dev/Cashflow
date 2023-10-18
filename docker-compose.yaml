@@ -41,7 +41,9 @@ services:
     restart: always
 
   frontend:
-    build: ./frontend
+    build: 
+      context: .
+      dockerfile: ./frontend/Dockerfile
     ports:
       - 80:80
       - 443:443
@@ -55,6 +57,7 @@ services:
       API_URL: ${API_URL}
       BOT_SECRET: ${BOT_SECRET}
       WEBAPP_TG_URL: ${WEBAPP_TG_URL}
+    restart: always
 
 networks:
   postgres:
