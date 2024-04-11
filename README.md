@@ -41,8 +41,10 @@ With Cashflow, you can:
 
 Example
 ```
+POSTGRES_HOST=db
 POSTGRES_USER=admin
 POSTGRES_PASSWORD=admin
+POSTGRES_DB=cashflow
 
 PGADMIN_DEFAULT_EMAIL=admin@admin.com
 PGADMIN_DEFAULT_PASSWORD=root
