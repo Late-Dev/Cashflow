@@ -195,18 +195,18 @@ def update_category_data(id: int, category: dict):
 
 def add_wallet_data(wallet: dict):
     with Session() as session:
-        wallet = Wallet(
+        wallet_object = Wallet(
             name=wallet['name'],
             currency=wallet['currency']
         )
-        session.add(wallet)
+        session.add(wallet_object)
         session.commit()
-        session.refresh(wallet)
+        session.refresh(wallet_object)
 
 
         user2wallet_data_object = User2Wallet(
             user=wallet['user_id'],
-            wallet=wallet.id,
+            wallet=wallet_object.id,
             user_type='owner'
         )
         session.add(user2wallet_data_object)
@@ -215,6 +215,7 @@ def add_wallet_data(wallet: dict):
 
 
         for category in default_categories:
+            category['wallet_id'] = wallet_object.id
             add_category_data(category)
 
 def delete_wallet_data(id: int):
@@ -264,13 +265,13 @@ def update_transaction_data(id: int, transaction: dict):
 
 def get_wallet_users_data(id: int):
     with Session() as session:
-        users_wallet = session.query(User2Wallet).filter(User2Wallet.wallet == id).all()
+        users_wallets = session.query(User2Wallet).filter(User2Wallet.wallet == id).all()
         result = [
             {
-                **user_wal.user_object.to_dict(), 
-                'user_type': user_wal.user_type 
+                **user_wallet.user_object.to_dict(), 
+                'user_type': user_wallet.user_type 
             }
-            for user_wal in users_wallet
+            for user_wallet in users_wallets
         ]
         return result 
 

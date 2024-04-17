@@ -4,7 +4,7 @@ services:
 
   backend:
     build: ./backend
-    command: sh run_server.sh
+    command: bash run_server.sh
     ports:
       - 8000:8000
     environment:
