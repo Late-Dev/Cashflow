@@ -3,3 +3,5 @@ uvicorn==0.23.2
 pony==0.7.17
 psycopg2==2.9.9
 pyjwt==2.8.0
+sqlalchemy==2.0.23
+alembic==1.13.1

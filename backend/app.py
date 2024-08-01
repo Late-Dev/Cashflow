@@ -25,7 +25,6 @@ from database import (
     add_transaction_data,
     add_user_data,
     add_wallet_data,
-    db,
     delete_category_data,
     delete_transaction_data,
     delete_wallet_data,
@@ -68,15 +67,6 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 app = FastAPI()
-
-db.bind(
-    provider='postgres',
-    user=os.environ['POSTGRES_USER'],
-    password=os.environ['POSTGRES_PASSWORD'],
-    host='db',
-    database='cashflow'
-)
-db.generate_mapping(create_tables=True)
 
 origins = [
     "http://localhost",
@@ -152,7 +142,6 @@ async def login(schema: AuthenticationRequestSchema) -> AuthenticationResponseSc
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Basic"},
         )
-        return None
 
 @app.get("/wallet_transactions/{id}")
 def get_wallet_transactions(id: int, data = Depends(val_jwt)):
@@ -278,7 +267,7 @@ def wallet_verify_link(schema: VerificationLinkSchema, data = Depends(val_jwt)):
 
 
 @app.get('/bot_user_wallets/{id}')
-def get_user_wallets(id: int, secret: str):
+def get_bot_user_wallets(id: int, secret: str):
     if(secret == os.getenv("BOT_SECRET", None)):
 
 

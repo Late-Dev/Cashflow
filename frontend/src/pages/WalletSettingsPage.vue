@@ -6,7 +6,7 @@
     </div>
 
     <div class="row q-ma-sm title">
-      Team
+      Members
     </div>
     <div v-if="usersLoaded" class="column full-width">
       <q-list bordered separator>
