@@ -41,8 +41,10 @@ With Cashflow, you can:
 
 Example
 ```
+POSTGRES_HOST=db
 POSTGRES_USER=admin
 POSTGRES_PASSWORD=admin
+POSTGRES_DB=cashflow
 
 PGADMIN_DEFAULT_EMAIL=admin@admin.com
 PGADMIN_DEFAULT_PASSWORD=root
@@ -76,3 +78,9 @@ BOT_SECRET=<secret bot key>
 ### frontend
 ```https://<your URL>:80/```
 should have SSL certificate. This ip should be added to your bot via https://t.me/BotFather 
+
+
+## How to do migration
+
+1. Сhange the data schema 
+2. Run in backend container ```alembic revision --autogenerate -m "YOUR MESSAGE"```
