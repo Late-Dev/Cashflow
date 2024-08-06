@@ -30,13 +30,14 @@ With Cashflow, you can:
 - [ ] Validation of data
 - [ ] Multi-language support
 - [ ] Data import and export
-- [ ] Migrations and data save
+- [x] Migrations and data save
 - [ ] One-time link for wallet invitation
 - [ ] Invitation link generation permission
 - [ ] In-wallet users rename
 - [ ] Default wallet
 - [ ] Currencies and auto exchange
 - [ ] Bot functionality with quickly transactions record
+- [ ] Regular incomes and expenses
 
 ## Requirements
 
