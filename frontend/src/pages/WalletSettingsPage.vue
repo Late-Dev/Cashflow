@@ -5,6 +5,13 @@
       {{ currentWallet.name }}
     </div>
 
+    <div class="wallet-settings__rename q-ma-sm">
+      <q-input dense filled square outlined bg-color="secondary" label-color="dark" color="dark"
+        v-model="walletName" label="Wallet name" />
+      <q-btn class="tg-secondary q-mt-sm" :disable="!walletName || walletName === currentWallet.name"
+        @click="renameWallet" label="Rename wallet" no-caps unelevated />
+    </div>
+
     <div class="row q-ma-sm title">
       Members
     </div>
@@ -111,6 +118,7 @@
 import ListItem from 'src/components/ListItem.vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useWebApp } from 'src/stores/webapp';
+import { useWallets } from 'src/stores/wallets';
 import { computed, onMounted, ref } from 'vue';
 import copy from 'copy-text-to-clipboard';
 import { IAccount, ICategory, Wallet } from 'src/types';
@@ -136,6 +144,7 @@ function openQRDialog() {
 
 
 const webAppStore = useWebApp()
+const walletStore = useWallets()
 const router = useRouter()
 // const categorieStore = useCategories()
 const route = useRoute()
@@ -155,12 +164,14 @@ const walletId = computed(() => {
 
 const invite_link = ref()
 const currentWallet = ref({ name: '' })
+const walletName = ref('')
 
 onMounted(() => {
   webAppStore.showMainButton('Add', () => { router.push({ name: 'newCategory', params: { wallet_id: route.params.id as string } }) })
   loadWalletCategories()
   getWallets().then((response) => {
     currentWallet.value = response.data.find((el: Wallet) => el.id === walletId.value)
+    walletName.value = currentWallet.value?.name || ''
   })
   getAllUsersInWallet(walletId.value).then((response) => {
     walletUsers.value = response.data
@@ -196,6 +207,12 @@ function deleteCategory(id: number) {
 
 function editCategory(category: ICategory) {
   router.push({ name: 'editCategory', params: { category_id: category.id, wallet_id: route.params.id } })
+}
+
+async function renameWallet() {
+  await walletStore.renameWallet(walletId.value, walletName.value)
+  currentWallet.value.name = walletName.value
+  webAppStore.showAlert('Wallet renamed')
 }
 
 </script>

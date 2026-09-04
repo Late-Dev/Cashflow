@@ -1,6 +1,6 @@
 import hmac
 import hashlib
-from urllib.parse import unquote
+from urllib.parse import parse_qsl
 from datetime import datetime, timedelta
 import json
 import jwt
@@ -18,22 +18,30 @@ def validate_initData(hash_str, init_data, token, c_str="WebAppData") -> bool:
     c_str - constant string (default = "WebAppData")
     """
 
-    init_data = sorted([ chunk.split("=")
-          for chunk in unquote(init_data).split("&")
-            if chunk[:len("hash=")]!="hash="],
-        key=lambda x: x[0])
-    user = [item for item in init_data if item[0] == 'user']
+    if not token or not init_data or not hash_str:
+        return False, {}
 
-    userData = json.loads(user[0][1])
+    parsed = parse_qsl(init_data, keep_blank_values=True)
+    received_hash = hash_str
+    fields = []
+    userData = {}
 
-    init_data = "\n".join([f"{rec[0]}={rec[1]}" for rec in init_data])
+    for key, value in parsed:
+        if key == "hash":
+            received_hash = value
+            continue
+        if key == "user":
+            userData = json.loads(value)
+        fields.append((key, value))
 
-    secret_key = hmac.new(c_str.encode(), token.encode(),
-        hashlib.sha256 ).digest()
-    data_check = hmac.new( secret_key, init_data.encode(),
-        hashlib.sha256)
+    data_check_string = "\n".join(
+        f"{key}={value}" for key, value in sorted(fields, key=lambda item: item[0])
+    )
 
-    return data_check.hexdigest() == hash_str, userData
+    secret_key = hmac.new(c_str.encode(), token.encode(), hashlib.sha256).digest()
+    data_check = hmac.new(secret_key, data_check_string.encode(), hashlib.sha256)
+
+    return hmac.compare_digest(data_check.hexdigest(), received_hash), userData
 
 
 def create_access_token(
@@ -52,4 +60,3 @@ def create_access_token(
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
-

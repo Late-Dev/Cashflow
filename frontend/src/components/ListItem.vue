@@ -1,6 +1,6 @@
 <template>
   <q-item @click="emit('open', item.id)" clickable dense class="row items-center transaction-bar"
-    :class="{ 'transaction-bar--settings': isSettingsOpened }" v-touch-swipe.mouse.horizontal="handleSwipe">
+    :class="{ 'transaction-bar--settings': isSettingsOpened, 'transaction-bar--actions-visible': showActions }" v-touch-swipe.mouse.horizontal="handleSwipe">
     <q-avatar :color="typeof color === 'string' ? color : ''" :style="{ background: `hsl(${color}, 64%, 61%)` }"
       class="q-mr-sm">
       <slot name="icon">
@@ -23,7 +23,7 @@
         <slot name="right"></slot>
       </div>
     </div>
-    <div class="transaction-bar__options">
+    <div class="transaction-bar__options" :class="{ 'transaction-bar__options--visible': showActions }">
       <q-btn flat @click.stop="emit('edit', item)" class="transaction-bar__edit"> <q-icon size="md"
           :name="ionCreate"></q-icon>
         edit</q-btn>
@@ -45,7 +45,8 @@ interface PropsType {
     id: number
   },
   color?: string | number,
-  icon?: string
+  icon?: string,
+  showActions?: boolean
 }
 
 defineProps<PropsType>()
@@ -103,6 +104,14 @@ function handleSwipe({ ...newInfo }) {
     width: 120px;
 
     display: flex;
+  }
+
+  &__options--visible {
+    right: 0;
+  }
+
+  &--actions-visible &__info {
+    padding-right: 128px;
   }
 
   &__delete,

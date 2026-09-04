@@ -5,8 +5,6 @@ services:
   backend:
     build: ./backend
     command: bash run_server.sh
-    ports:
-      - 8000:8000
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -37,7 +35,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     ports:
-      - "5050:80"
+      - "3003:80"
     networks:
       - postgres
     restart: always
@@ -47,8 +45,11 @@ services:
       context: .
       dockerfile: ./frontend/Dockerfile
     ports:
-      - 80:80
-      - 443:443
+      - "3002:80"
+    depends_on:
+      - backend
+    networks:
+      - postgres
     restart: always
 
   bot:
@@ -56,9 +57,11 @@ services:
     environment:
       TOKEN: ${TOKEN}
       WEBAPP_URL: ${WEBAPP_URL}
-      API_URL: ${API_URL}
+      API_URL: ${BOT_API_URL}
       BOT_SECRET: ${BOT_SECRET}
       WEBAPP_TG_URL: ${WEBAPP_TG_URL}
+    networks:
+      - postgres
     restart: always
 
 networks:

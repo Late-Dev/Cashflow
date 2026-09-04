@@ -5,7 +5,7 @@
     </div>
     <div style="padding-bottom: 60px;">
 
-      <list-item color="secondary" @delete="deleteWallet" @open="openWallet" @edit="editWallet" :item="wallet"
+      <list-item color="secondary" show-actions @delete="deleteWallet" @open="openWallet" @edit="editWallet" :item="wallet"
         v-for="wallet in walletStore.walletList" :key="wallet.id">
         <template #icon>
           <q-icon :name="ionWalletOutline"></q-icon>
@@ -44,8 +44,8 @@ onMounted(() => {
 
 
 function deleteWallet(id: number) {
-  webAppStore.confirm(() => {
-    walletStore.deleteWallet(id)
+  webAppStore.confirm(async () => {
+    await walletStore.deleteWallet(id)
   })
 }
 

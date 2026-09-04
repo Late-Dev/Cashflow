@@ -30,6 +30,10 @@ export function deleteWalletRequest(id: number) {
   return axios.delete(`/wallet/${id}`);
 }
 
+export function editWalletRequest(id: number, name: string) {
+  return axios.patch(`/wallet/${id}`, { name });
+}
+
 export function getTransactions(wallet_id: number): Promise<
   AxiosResponse<{
     income: ITransaction[];

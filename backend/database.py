@@ -140,7 +140,7 @@ def get_user_wallets_data(id: int):
             add_wallet_data({'user_id': id, 'name': 'Personal wallet', 'currency': "USD"})
             wallets = [
                 {
-                    **line.wallet.to_dict(), 
+                    **line.wallet_object.to_dict(), 
                     'user_type': line.user_type
                 }
                 for line in session.query(User2Wallet).filter(User2Wallet.user == id)
@@ -220,6 +220,9 @@ def add_wallet_data(wallet: dict):
 
 def delete_wallet_data(id: int):
     with Session() as session:
+        session.query(Transaction).filter_by(wallet=id).delete()
+        session.query(Category).filter_by(wallet=id).delete()
+        session.query(User2Wallet).filter_by(wallet=id).delete()
         session.query(Wallet).filter_by(id=id).delete()
         session.commit()
 

@@ -77,12 +77,18 @@ export const useWebApp = defineStore('webapp', () => {
       webapp.showAlert('no hash!');
       return;
     }
-    await login(webapp.initDataUnsafe.hash, webapp.initData).then(
-      (response) => {
-        token.value = response.data.jwt_token;
-      }
-    );
-    await walletsStore.loadWallets();
+    try {
+      await login(webapp.initDataUnsafe.hash, webapp.initData).then(
+        (response) => {
+          token.value = response.data.jwt_token;
+        }
+      );
+      await walletsStore.loadWallets();
+    } catch (error) {
+      console.error(error);
+      webapp.showAlert('Backend/auth error. Please try reopening the app.');
+      return;
+    }
 
     if (inviteToken) {
       await verifyWalletLink(inviteToken.replaceAll('__', '.'))
