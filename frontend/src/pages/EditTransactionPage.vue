@@ -10,7 +10,8 @@
 
           <q-input dense filled square outlined bg-color="secondary" label-color="dark" color="dark"
             v-model.number="transactionStore.editTransactionData.value" label="The amount" />
-          <q-select dense filled square outlined behavior="dialog" bg-color="secondary" label-color="dark" color="dark"
+          <q-select class="currency-select" popup-content-class="currency-select-popup" dense filled square outlined
+            behavior="dialog" bg-color="secondary" label-color="dark" color="dark"
             v-model="transactionStore.editTransactionData.currency" :options="currencyOptions" emit-value map-options
             label="Currency" />
         </div>

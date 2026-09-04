@@ -5,7 +5,7 @@
     <div class="col transaction-bar__info">
       <div>
         <div class="transaction-bar__name">
-          {{ category?.name }}
+          {{ transaction.description || category?.name }}
         </div>
         <div class="transaction-bar__source">
           {{ transaction.source }}

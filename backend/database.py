@@ -136,7 +136,11 @@ def get_wallet_transactions_data(id: int):
     with Session() as session:
         wallet = session.query(Wallet).filter_by(id=id).first()
         display_currency = wallet.default_currency if wallet else DEFAULT_CURRENCY
-        all_transactions = session.query(Transaction).filter_by(wallet=id)
+        all_transactions = (
+            session.query(Transaction)
+            .filter_by(wallet=id)
+            .order_by(Transaction.date.desc(), Transaction.id.desc())
+        )
         transaction_types = [
             transaction_type[0]
             for transaction_type in session.query(Category.transaction_type).filter(Category.wallet == id).distinct()

@@ -8,8 +8,9 @@
     <div class="wallet-settings__rename q-ma-sm">
       <q-input dense filled square outlined bg-color="secondary" label-color="dark" color="dark"
         v-model="walletName" label="Wallet name" />
-      <q-select dense filled square outlined behavior="dialog" bg-color="secondary" label-color="dark" color="dark"
-        v-model="walletCurrency" :options="currencyOptions" emit-value map-options label="Default currency" />
+      <q-select class="currency-select" popup-content-class="currency-select-popup" dense filled square outlined
+        behavior="dialog" bg-color="secondary" label-color="dark" color="dark" v-model="walletCurrency"
+        :options="currencyOptions" emit-value map-options label="Default currency" />
       <q-btn class="tg-secondary q-mt-sm" :disable="!walletName"
         @click="saveWallet" label="Save wallet" no-caps unelevated />
       <q-btn class="tg-secondary q-mt-sm q-ml-sm" :disable="currentWallet.is_default"

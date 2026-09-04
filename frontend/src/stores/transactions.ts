@@ -44,14 +44,22 @@ export const useTransaction = defineStore('transaction', () => {
     incomeTransactionsList.value = undefined;
     outcomeTransactionsList.value = undefined;
     await getTransactions(walletsStore.currentWallet.id).then((response) => {
-      incomeTransactionsList.value = response.data.income;
-      outcomeTransactionsList.value = response.data.outcome;
+      incomeTransactionsList.value = sortTransactions(response.data.income || []);
+      outcomeTransactionsList.value = sortTransactions(response.data.outcome || []);
 
       loaded.value = true;
 
       selectedMonth.value = new Date(
-        transactionsList.value?.at(-1)?.date as string
+        transactionsList.value?.[0]?.date || new Date()
       ).getMonth();
+    });
+  }
+
+  function sortTransactions(transactions: ITransaction[]) {
+    return [...transactions].sort((a, b) => {
+      const dateDiff = new Date(b.date).getTime() - new Date(a.date).getTime();
+      if (dateDiff !== 0) return dateDiff;
+      return (b.id || 0) - (a.id || 0);
     });
   }
 
@@ -87,7 +95,7 @@ export const useTransaction = defineStore('transaction', () => {
 
   const selectedMonth = ref();
   const monthTransactionsList = computed(() => {
-    return transactionsList.value?.filter(
+    return sortTransactions(transactionsList.value || []).filter(
       (el) => new Date(el.date).getMonth() === selectedMonth.value
     );
   });

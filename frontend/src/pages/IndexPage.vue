@@ -57,7 +57,7 @@
     <div class="column q-mt-md" v-if="transactionStore.loaded">
       <div class="transactions__item q-mt-md" v-for="(transaction, index) in transactionStore.monthTransactionsList"
         :key="transaction.id">
-        <div v-if="isFirstToday(index)" class="row transactions__date">{{ (new
+        <div v-if="isFirstDayInList(index)" class="row transactions__date">{{ (new
           Date(transaction.date)).toLocaleDateString('en-US', { month: 'long', day: 'numeric' }) }}</div>
         <TransactionBar :transaction="transaction" @delete="deleteTransaction" @edit="editTransaction"
           @open="router.push({ name: 'explore', params: { id: $event } })" />
@@ -198,15 +198,16 @@ function handleSwipe({ ...newInfo }) {
   }
 }
 
-function isFirstToday(index: number) {
+function isFirstDayInList(index: number) {
   if (index === 0) {
     return true
   }
 
-  if (transactionStore.transactionsList && transactionStore.transactionsList[index] && transactionStore.transactionsList[index - 1]) {
-    const prevDate = new Date(transactionStore.transactionsList[index - 1].date)
-    const currentDate = new Date(transactionStore.transactionsList[index].date)
-    if (prevDate.getDate() !== currentDate.getDate()) {
+  const transactions = transactionStore.monthTransactionsList
+  if (transactions && transactions[index] && transactions[index - 1]) {
+    const prevDate = new Date(transactions[index - 1].date)
+    const currentDate = new Date(transactions[index].date)
+    if (prevDate.toDateString() !== currentDate.toDateString()) {
       return true
     }
   }

@@ -77,3 +77,54 @@ button:active {
   padding: 2em;
   border-radius: 1em;
 }
+
+.q-field__native,
+.q-field__input,
+.q-field__prefix,
+.q-field__suffix,
+.q-select__dropdown-icon {
+  color: var(--tg-theme-text-color, #000) !important;
+}
+
+.q-field__label {
+  color: var(--tg-theme-hint-color, #9E9E9E) !important;
+}
+
+.q-field--filled .q-field__control,
+.q-field--outlined .q-field__control {
+  background-color: var(--tg-theme-secondary-bg-color, #F3F2F8) !important;
+  color: var(--tg-theme-text-color, #000) !important;
+}
+
+.q-menu,
+.q-dialog .q-card,
+.q-dialog .q-list {
+  background-color: var(--tg-theme-secondary-bg-color, #F3F2F8) !important;
+  color: var(--tg-theme-text-color, #000) !important;
+}
+
+.currency-select-popup,
+.q-dialog__inner > div,
+.q-dialog__inner .q-card,
+.q-dialog__inner .q-list,
+.q-dialog__inner .q-virtual-scroll__content,
+.q-dialog__inner .q-virtual-scroll__padding {
+  background-color: var(--tg-theme-bg-color, #fff) !important;
+  color: var(--tg-theme-text-color, #000) !important;
+}
+
+.q-menu .q-item,
+.q-dialog .q-item,
+.q-menu .q-item__label,
+.q-dialog .q-item__label,
+.currency-select-popup .q-item,
+.currency-select-popup .q-item__label,
+.q-dialog__inner .q-item,
+.q-dialog__inner .q-item__label {
+  color: var(--tg-theme-text-color, #000) !important;
+}
+
+.q-item--active,
+.q-item.q-router-link--active {
+  color: var(--tg-theme-link-color, #007AFF) !important;
+}
