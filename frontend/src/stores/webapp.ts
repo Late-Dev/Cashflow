@@ -69,6 +69,10 @@ export const useWebApp = defineStore('webapp', () => {
     mainButton.value.disabled = true;
   };
 
+  const enableMainButton = () => {
+    mainButton.value.disabled = false;
+  };
+
   const hideMainButton = () => {
     mainButton.value.isVisible = false;
   };
@@ -127,6 +131,7 @@ export const useWebApp = defineStore('webapp', () => {
     showAlert,
     mainButton,
     disableMainButton,
+    enableMainButton,
     shareWallet,
   };
 });

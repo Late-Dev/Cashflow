@@ -2,12 +2,15 @@ import os
 import requests
 from datetime import date, datetime
 from decimal import Decimal
+import logging
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, DeclarativeBase, relationship
 from sqlalchemy import Column, Date, ForeignKey, Integer, String, Numeric, DateTime
 
 from default_categories import default_categories
+
+logger = logging.getLogger(__name__)
 
 
 postgres_user = os.environ["POSTGRES_USER"]
@@ -200,8 +203,16 @@ def get_currency_rate_data(currency: str, rate_date: date | None = None) -> Deci
                 day=rate_date.day,
             )
 
-        response = requests.get(url, timeout=10)
-        response.raise_for_status()
+        try:
+            response = requests.get(url, timeout=10)
+            response.raise_for_status()
+        except requests.HTTPError:
+            if rate_date != date.today():
+                logger.warning("Could not load historical currency rates for %s, falling back to latest rates", rate_date)
+                response = requests.get(EXCHANGE_RATE_API_URL.format(api_key=EXCHANGE_RATE_API_KEY), timeout=10)
+                response.raise_for_status()
+            else:
+                raise
         conversion_rates = response.json().get('conversion_rates', {})
 
         existing_codes = {

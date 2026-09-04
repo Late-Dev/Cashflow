@@ -10,7 +10,7 @@
 
           <q-input dense filled square outlined bg-color="secondary" label-color="dark" color="dark"
             v-model.number="transactionStore.editTransactionData.value" label="The amount" />
-          <q-select dense filled square outlined bg-color="secondary" label-color="dark" color="dark"
+          <q-select dense filled square outlined behavior="dialog" bg-color="secondary" label-color="dark" color="dark"
             v-model="transactionStore.editTransactionData.currency" :options="currencyOptions" emit-value map-options
             label="Currency" />
         </div>
@@ -62,6 +62,7 @@ import { useTransaction } from 'src/stores/transactions';
 import { ionChevronForward } from '@quasar/extras/ionicons-v7';
 import { ICategory } from 'src/types';
 import { useWallets } from 'src/stores/wallets';
+import { logClientError } from 'src/api';
 
 const transactionStore = useTransaction()
 const walletStore = useWallets()
@@ -80,13 +81,27 @@ async function onSubmit() {
 
   if (!transactionStore.editTransactionData.category) {
     webAppStore.showAlert('Category is required')
+    webAppStore.enableMainButton()
     return
   }
 
-  await transactionStore.editTransaction().then(() => {
+  try {
+    await transactionStore.editTransaction()
     router.go(-1)
-  })
-  webAppStore.disableCloseConfirm()
+    webAppStore.disableCloseConfirm()
+  } catch (error) {
+    console.error(error)
+    const axiosError = error as { response?: { data?: unknown; status?: number } }
+    await logClientError('Could not edit transaction', {
+      page: 'EditTransactionPage',
+      error: String(error),
+      response: axiosError.response ? { status: axiosError.response.status, data: axiosError.response.data } : undefined,
+      payload: transactionStore.editTransactionData,
+    })
+    webAppStore.showAlert('Could not save transaction. Please try again.')
+  } finally {
+    webAppStore.enableMainButton()
+  }
 }
 const webAppStore = useWebApp()
 

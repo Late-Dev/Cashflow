@@ -8,7 +8,7 @@
     <div class="wallet-settings__rename q-ma-sm">
       <q-input dense filled square outlined bg-color="secondary" label-color="dark" color="dark"
         v-model="walletName" label="Wallet name" />
-      <q-select dense filled square outlined bg-color="secondary" label-color="dark" color="dark"
+      <q-select dense filled square outlined behavior="dialog" bg-color="secondary" label-color="dark" color="dark"
         v-model="walletCurrency" :options="currencyOptions" emit-value map-options label="Default currency" />
       <q-btn class="tg-secondary q-mt-sm" :disable="!walletName"
         @click="saveWallet" label="Save wallet" no-caps unelevated />
@@ -126,7 +126,7 @@ import { useWallets } from 'src/stores/wallets';
 import { computed, onMounted, ref } from 'vue';
 import copy from 'copy-text-to-clipboard';
 import { IAccount, ICategory, Wallet } from 'src/types';
-import { deleteCategoryRequest, getAllUsersInWallet, getCategories, generateWalletLink, getWallets } from 'src/api';
+import { deleteCategoryRequest, getAllUsersInWallet, getCategories, generateWalletLink, getWallets, logClientError } from 'src/api';
 import { ionPersonOutline, ionLinkOutline, ionArrowRedoSharp, ionQrCodeSharp } from '@quasar/extras/ionicons-v7';
 import QrCreator from 'qr-creator';
 
@@ -224,10 +224,24 @@ const currencyOptions = computed(() => {
 })
 
 async function saveWallet() {
-  await walletStore.updateWallet(walletId.value, walletName.value, walletCurrency.value)
-  currentWallet.value.name = walletName.value
-  currentWallet.value.default_currency = walletCurrency.value
-  webAppStore.showAlert('Wallet saved')
+  try {
+    await walletStore.updateWallet(walletId.value, walletName.value, walletCurrency.value)
+    currentWallet.value.name = walletName.value
+    currentWallet.value.default_currency = walletCurrency.value
+    webAppStore.showAlert('Wallet saved')
+  } catch (error) {
+    console.error(error)
+    const axiosError = error as { response?: { data?: unknown; status?: number } }
+    await logClientError('Could not save wallet settings', {
+      page: 'WalletSettingsPage',
+      walletId: walletId.value,
+      walletName: walletName.value,
+      walletCurrency: walletCurrency.value,
+      error: String(error),
+      response: axiosError.response ? { status: axiosError.response.status, data: axiosError.response.data } : undefined,
+    })
+    webAppStore.showAlert('Could not save wallet settings. Please try again.')
+  }
 }
 
 async function setDefaultWallet() {

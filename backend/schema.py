@@ -135,6 +135,12 @@ class BotTransactionSchema(BaseModel):
     currency: Optional[str] = None
 
 
+class ClientLogSchema(BaseModel):
+    level: str = "error"
+    message: str
+    context: Optional[dict] = None
+
+
 class AuthenticationRequestSchema(BaseModel):
     hash_str: str
     initData: str

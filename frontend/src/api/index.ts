@@ -30,6 +30,14 @@ export function getCurrencies() {
   return axios.get('/currencies');
 }
 
+export function logClientError(message: string, context?: unknown) {
+  return axios.post('/client_log', {
+    level: 'error',
+    message,
+    context,
+  }).catch(() => undefined);
+}
+
 export function deleteWalletRequest(id: number) {
   return axios.delete(`/wallet/${id}`);
 }

@@ -1,4 +1,5 @@
 import os
+import logging
 
 import jwt
 from fastapi import FastAPI, HTTPException, Depends
@@ -20,7 +21,8 @@ from schema import (
         WalletUpdateSchema,
         VerificationLinkSchema,
         DefaultWalletSchema,
-        BotTransactionSchema
+        BotTransactionSchema,
+        ClientLogSchema
 )
 from database import (
     add_category_data,
@@ -73,6 +75,7 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 app = FastAPI()
+logger = logging.getLogger("cashflow.client")
 
 origins = [
     "http://localhost",
@@ -173,6 +176,12 @@ def get_user_wallets(data = Depends(val_jwt)):
 @app.get("/currencies")
 def get_currencies(data = Depends(val_jwt)):
     return get_currencies_data()
+
+@app.post("/client_log")
+def client_log(log: ClientLogSchema, data = Depends(val_jwt)):
+    payload = jsonable_encoder(log)
+    logger.error("frontend %s: %s | user=%s | context=%s", payload.get('level'), payload.get('message'), data.get('id'), payload.get('context'))
+    return 'success'
 
 @app.post("/user")
 def add_user(user: UserSchema):
