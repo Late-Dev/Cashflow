@@ -129,7 +129,6 @@ class CurrencyRate(Base):
 
 EXCHANGE_RATE_API_KEY = os.getenv("EXCHANGE_RATE_API_KEY")
 EXCHANGE_RATE_API_URL = "https://v6.exchangerate-api.com/v6/{api_key}/latest/USD"
-EXCHANGE_RATE_API_HISTORY_URL = "https://v6.exchangerate-api.com/v6/{api_key}/history/USD/{year}/{month}/{day}"
 DEFAULT_CURRENCY = "USD"
 
 
@@ -182,63 +181,51 @@ def get_currency_rate_data(currency: str, rate_date: date | None = None) -> Deci
         return Decimal("1")
 
     with Session() as session:
-        existing_rate = (
-            session.query(CurrencyRate)
-            .filter(CurrencyRate.currency == currency, CurrencyRate.date == rate_date)
-            .first()
-        )
+        def find_rate(target_date: date):
+            return (
+                session.query(CurrencyRate)
+                .filter(CurrencyRate.currency == currency, CurrencyRate.date == target_date)
+                .first()
+            )
+
+        existing_rate = find_rate(rate_date)
         if existing_rate:
             return existing_rate.usd_to_currency
+
+        today = date.today()
+        today_rate = find_rate(today)
+        if today_rate:
+            return today_rate.usd_to_currency
+
+        any_today_rate = (
+            session.query(CurrencyRate)
+            .filter(CurrencyRate.date == today)
+            .first()
+        )
+        if any_today_rate:
+            raise ValueError(f'Currency rate for {currency} is not available in today cache')
 
         if not EXCHANGE_RATE_API_KEY:
             raise ValueError('EXCHANGE_RATE_API_KEY is not configured')
 
-        if rate_date == date.today():
-            url = EXCHANGE_RATE_API_URL.format(api_key=EXCHANGE_RATE_API_KEY)
-        else:
-            url = EXCHANGE_RATE_API_HISTORY_URL.format(
-                api_key=EXCHANGE_RATE_API_KEY,
-                year=rate_date.year,
-                month=rate_date.month,
-                day=rate_date.day,
-            )
-
-        try:
-            response = requests.get(url, timeout=10)
-            response.raise_for_status()
-        except requests.HTTPError:
-            if rate_date != date.today():
-                logger.warning("Could not load historical currency rates for %s, falling back to latest rates", rate_date)
-                response = requests.get(EXCHANGE_RATE_API_URL.format(api_key=EXCHANGE_RATE_API_KEY), timeout=10)
-                response.raise_for_status()
-            else:
-                raise
+        logger.info("Loading today's currency rates from ExchangeRate API")
+        response = requests.get(EXCHANGE_RATE_API_URL.format(api_key=EXCHANGE_RATE_API_KEY), timeout=10)
+        response.raise_for_status()
         conversion_rates = response.json().get('conversion_rates', {})
 
-        existing_codes = {
-            code for code, in session.query(CurrencyRate.currency)
-            .filter(CurrencyRate.date == rate_date)
-            .all()
-        }
         supported_codes = [code for code, in session.query(Currency.code).all()]
         for code in supported_codes:
-            if code in existing_codes:
-                continue
             rate = conversion_rates.get(code)
             if rate is None:
                 continue
             session.add(CurrencyRate(
                 currency=code,
-                date=rate_date,
+                date=today,
                 usd_to_currency=Decimal(str(rate)),
             ))
         session.commit()
 
-        refreshed_rate = (
-            session.query(CurrencyRate)
-            .filter(CurrencyRate.currency == currency, CurrencyRate.date == rate_date)
-            .first()
-        )
+        refreshed_rate = find_rate(today)
         if refreshed_rate:
             return refreshed_rate.usd_to_currency
 
