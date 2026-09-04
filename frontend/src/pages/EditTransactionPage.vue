@@ -9,17 +9,17 @@
         <div class="new-transaction__group">
 
           <q-input dense filled square outlined bg-color="secondary" label-color="dark" color="dark"
-            v-model.number="transactionStore.editTransactionData.value" label="The amount" />
+            v-model.number="transactionStore.editTransactionData.value" :label="t('transaction.amount')" />
           <q-select class="currency-select" popup-content-class="currency-select-popup" dense filled square outlined
             behavior="dialog" bg-color="secondary" label-color="dark" color="dark"
             v-model="transactionStore.editTransactionData.currency" :options="currencyOptions" emit-value map-options
-            label="Currency" />
+            :label="t('transaction.currency')" />
         </div>
 
         <div class="new-transaction__group">
           <q-field @focus="router.push({ name: 'select', params: { type: 'category' }, query: { mode: 'edit' } })" dense
             filled square outlined bg-color="secondary" label-color="dark" color="dark"
-            v-model="transactionStore.editTransactionData.category" label="Category">
+            v-model="transactionStore.editTransactionData.category" :label="t('transaction.category')">
             <template v-slot:control>
               <div class="self-center full-width no-outline tg-primary-text " tabindex="0">
                 {{ (transactionStore.editTransactionData.category as ICategory)?.name }}
@@ -27,17 +27,17 @@
             </template>
             <template v-slot:append>
               <div class="text-body2 flex flex-center tg-primary-text">
-                All <q-icon :name="ionChevronForward" class="cursor-pointer" />
+                {{ t('common.all') }} <q-icon :name="ionChevronForward" class="cursor-pointer" />
               </div>
             </template>
           </q-field>
           <q-input dense filled square outlined bg-color="secondary" label-color="dark" color="dark"
-            v-model="transactionStore.editTransactionData.source" label="Source" />
+            v-model="transactionStore.editTransactionData.source" :label="t('transaction.source')" />
           <q-input dense filled square outlined bg-color="secondary" label-color="dark" color="dark"
-            v-model="transactionStore.editTransactionData.description" label="Comment" />
+            v-model="transactionStore.editTransactionData.description" :label="t('transaction.comment')" />
         </div>
         <div class="new-transaction__group" @click="chosingDate = true">
-          <q-field dense filled square borderless bg-color="secondary" label-color="dark" color="dark" label="Date"
+          <q-field dense filled square borderless bg-color="secondary" label-color="dark" color="dark" :label="t('transaction.date')"
             v-model="transactionStore.editTransactionData.date">
             <template v-slot:control>
               <div class="self-center full-width no-outline tg-primary-text" tabindex="0">{{ (new
@@ -64,10 +64,12 @@ import { ionChevronForward } from '@quasar/extras/ionicons-v7';
 import { ICategory } from 'src/types';
 import { useWallets } from 'src/stores/wallets';
 import { logClientError } from 'src/api';
+import { useI18n } from 'vue-i18n';
 
 const transactionStore = useTransaction()
 const walletStore = useWallets()
 const router = useRouter()
+const { t } = useI18n()
 const formElement = ref()
 
 const chosingDate = ref(false)
@@ -81,7 +83,7 @@ async function onSubmit() {
   webAppStore.disableMainButton()
 
   if (!transactionStore.editTransactionData.category) {
-    webAppStore.showAlert('Category is required')
+    webAppStore.showAlert(t('transaction.categoryRequired'))
     webAppStore.enableMainButton()
     return
   }
@@ -99,7 +101,7 @@ async function onSubmit() {
       response: axiosError.response ? { status: axiosError.response.status, data: axiosError.response.data } : undefined,
       payload: transactionStore.editTransactionData,
     })
-    webAppStore.showAlert('Could not save transaction. Please try again.')
+    webAppStore.showAlert(t('transaction.saveError'))
   } finally {
     webAppStore.enableMainButton()
   }
@@ -108,7 +110,7 @@ const webAppStore = useWebApp()
 
 onMounted(() => {
   walletStore.loadCurrencies()
-  webAppStore.showMainButton('Save', formElement.value.submit)
+  webAppStore.showMainButton(t('common.save'), formElement.value.submit)
   webAppStore.enableCloseConfirm()
 })
 

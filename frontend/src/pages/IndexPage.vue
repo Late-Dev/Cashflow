@@ -6,13 +6,12 @@
     <div class="row justify-between q-ma-sm">
       <div class="column">
         <div class="row text-bold total" v-if="transactionStore.loaded">
-          {{ transactionStore.monthTransactionsList?.length ? formatWalletValue(monthSum) : 'no data' }}
+          {{ transactionStore.monthTransactionsList?.length ? formatWalletValue(monthSum) : t('common.noData') }}
         </div>
         <q-skeleton v-else type="rect" width="100px" />
         <div class="row hint month" v-if="transactionStore.loaded">
           <div v-if="transactionStore.selectedMonth !== undefined">
-            {{ transactionStore.currentMode === 'outcome' ? 'Spent' : 'Earned'
-            }} in {{ getMonthName(transactionStore.selectedMonth) }}
+            {{ t(transactionStore.currentMode === 'outcome' ? 'index.monthSummary.spent' : 'index.monthSummary.earned', { month: getMonthName(transactionStore.selectedMonth) }) }}
           </div>
         </div>
         <q-skeleton v-else type="text" width="80px" />
@@ -31,7 +30,7 @@
           :month="getMonthName(transactionStore.selectedMonth)">
         </CategoryChart>
         <h5 style="width: 180px; text-align: center;" v-else>
-          Add your first transaction
+          {{ t('index.addFirstTransaction') }}
         </h5>
       </div>
       <q-skeleton v-else type="circle" width="180px" height="180px" />
@@ -50,15 +49,15 @@
     </div>
     <div class="row justify-center  q-mt-md">
       <q-btn :disable="!transactionStore.loaded" @click="router.push({ name: 'new' })" :icon="ionAdd" :align="`center`"
-        no-caps unelevated class="link-button button__new">New {{ transactionStore.currentMode === 'outcome' ? 'expense' :
-          'income'
+        no-caps unelevated class="link-button button__new">{{ transactionStore.currentMode === 'outcome' ? t('index.newExpense') :
+          t('index.newIncome')
         }}</q-btn>
     </div>
     <div class="column q-mt-md" v-if="transactionStore.loaded">
       <div class="transactions__item q-mt-md" v-for="(transaction, index) in transactionStore.monthTransactionsList"
         :key="transaction.id">
         <div v-if="isFirstDayInList(index)" class="row transactions__date">{{ (new
-          Date(transaction.date)).toLocaleDateString('en-US', { month: 'long', day: 'numeric' }) }}</div>
+          Date(transaction.date)).toLocaleDateString(locale.value, { month: 'long', day: 'numeric' }) }}</div>
         <TransactionBar :transaction="transaction" @delete="deleteTransaction" @edit="editTransaction"
           @open="router.push({ name: 'explore', params: { id: $event } })" />
       </div>
@@ -125,11 +124,13 @@ import MonthBarChart from 'src/components/MonthBarChart.vue';
 import { useWebApp } from 'src/stores/webapp';
 import { ITransaction } from 'src/types';
 import { useWallets } from 'src/stores/wallets';
+import { useI18n } from 'vue-i18n';
 
 const webAppStore = useWebApp()
 const transactionStore = useTransaction()
 const walletStore = useWallets()
 const router = useRouter()
+const { t, locale } = useI18n()
 
 const barchart = ref(false)
 
@@ -137,7 +138,7 @@ function getMonthName(monthNumber: number) {
   const date = new Date();
   date.setMonth(monthNumber);
 
-  return date.toLocaleString('en-US', { month: 'long' });
+  return date.toLocaleString(locale.value, { month: 'long' });
 }
 
 const monthSum = computed(() => {

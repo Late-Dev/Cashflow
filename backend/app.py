@@ -22,7 +22,8 @@ from schema import (
         VerificationLinkSchema,
         DefaultWalletSchema,
         BotTransactionSchema,
-        ClientLogSchema
+        ClientLogSchema,
+        LanguageSchema
 )
 from database import (
     add_category_data,
@@ -43,7 +44,9 @@ from database import (
     get_default_wallet_data,
     set_default_wallet_data,
     get_wallet_expense_categories_data,
-    get_currencies_data
+    get_currencies_data,
+    get_user_language_data,
+    set_user_language_data
 )
 
 
@@ -164,7 +167,7 @@ def get_wallet_users(id: int, data = Depends(val_jwt)):
 
 @app.get("/wallet_categories/{id}")
 def get_wallet_categories(id: int, data = Depends(val_jwt)):
-    result = get_wallet_categories_data(id)
+    result = get_wallet_categories_data(id, get_user_language_data(data.get('id')))
     return result
 
 @app.get("/user_wallets")
@@ -182,6 +185,24 @@ def client_log(log: ClientLogSchema, data = Depends(val_jwt)):
     payload = jsonable_encoder(log)
     logger.error("frontend %s: %s | user=%s | context=%s", payload.get('level'), payload.get('message'), data.get('id'), payload.get('context'))
     return 'success'
+
+@app.post("/language")
+def set_language(schema: LanguageSchema, data = Depends(val_jwt)):
+    try:
+        return set_user_language_data(data.get('id'), schema.language)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+@app.post('/bot_user_language/{id}')
+def set_bot_user_language(id: int, schema: LanguageSchema, secret: str):
+    if(secret == os.getenv("BOT_SECRET", None)):
+        add_user_data({'id': id, 'language': schema.language})
+        return set_user_language_data(id, schema.language)
+    else:
+        raise HTTPException(
+            status_code=403,
+            detail="You are not the bot",
+        )
 
 @app.post("/user")
 def add_user(user: UserSchema):
@@ -319,7 +340,7 @@ def get_bot_default_wallet_expense_categories(id: int, secret: str):
         wallet = get_default_wallet_data(id)
         return {
             'wallet': wallet,
-            'categories': get_wallet_expense_categories_data(wallet.get('id'))
+            'categories': get_wallet_expense_categories_data(wallet.get('id'), get_user_language_data(id))
         }
     else:
         raise HTTPException(

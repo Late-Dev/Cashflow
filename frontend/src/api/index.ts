@@ -38,6 +38,10 @@ export function logClientError(message: string, context?: unknown) {
   }).catch(() => undefined);
 }
 
+export function setLanguageRequest(language: string) {
+  return axios.post('/language', { language });
+}
+
 export function deleteWalletRequest(id: number) {
   return axios.delete(`/wallet/${id}`);
 }

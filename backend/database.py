@@ -6,9 +6,10 @@ import logging
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, DeclarativeBase, relationship
-from sqlalchemy import Column, Date, ForeignKey, Integer, String, Numeric, DateTime
+from sqlalchemy import Boolean, Column, Date, ForeignKey, Integer, String, Numeric, DateTime
 
 from default_categories import default_categories
+from category_translations import normalize_language, translate_category_name
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +44,7 @@ class User(Base):
     last_name = Column(String, nullable=True)
     photo_url = Column(String, nullable=True)
     default_wallet = Column(Integer, ForeignKey("wallet.id"), nullable=True)
+    language = Column(String(8), nullable=True)
 
     user2_wallets = relationship("User2Wallet", back_populates="user_object")
     transactions = relationship("Transaction", back_populates="user_object")
@@ -69,6 +71,8 @@ class Category(Base):
     icon = Column(String, nullable=True)
     color = Column(Integer, nullable=True)
     transaction_type = Column(String, nullable=True)
+    default_key = Column(String, nullable=True)
+    is_default = Column(Boolean, nullable=False, default=False)
 
     wallet = Column(Integer, ForeignKey("wallet.id"))
     wallet_object = relationship("Wallet", back_populates="categories")
@@ -166,10 +170,39 @@ def get_wallet_transactions_data(id: int):
         }
     return result
 
-def get_wallet_categories_data(id: int):
+def translate_category_data(category_data: dict, language: str | None):
+    if category_data.get('is_default') and category_data.get('default_key'):
+        category_data['name'] = translate_category_name(
+            category_data.get('default_key'),
+            language,
+            category_data.get('name')
+        )
+    return category_data
+
+
+def get_user_language_data(user_id: int | None):
+    if not user_id:
+        return 'en'
+    with Session() as session:
+        user = session.query(User).filter(User.id == user_id).first()
+        return normalize_language(user.language if user else None)
+
+
+def set_user_language_data(user_id: int, language: str):
+    language = normalize_language(language)
+    with Session() as session:
+        user = session.query(User).filter(User.id == user_id).first()
+        if user is None:
+            raise ValueError('User not found')
+        user.language = language
+        session.commit()
+    return {'language': language}
+
+
+def get_wallet_categories_data(id: int, language: str | None = None):
     with Session() as session:
         categories = [
-            category.to_dict() 
+            translate_category_data(category.to_dict(), language)
             for category in session.query(Category).filter(Category.wallet == id)
         ]
     return categories
@@ -313,10 +346,10 @@ def set_default_wallet_data(user_id: int, wallet_id: int):
         session.commit()
         return user_wallet.wallet_object.to_dict()
 
-def get_wallet_expense_categories_data(wallet_id: int):
+def get_wallet_expense_categories_data(wallet_id: int, language: str | None = None):
     with Session() as session:
         return [
-            category.to_dict()
+            translate_category_data(category.to_dict(), language)
             for category in session.query(Category)
             .filter(Category.wallet == wallet_id, Category.transaction_type == 'outcome')
             .order_by(Category.id.asc())
@@ -331,7 +364,8 @@ def add_user_data(user: dict):
                 username=user.get('username', ''),
                 first_name=user.get('first_name', ''),
                 last_name=user.get('last_name', ''),
-                photo_url=user.get('photo_url', '')
+                photo_url=user.get('photo_url', ''),
+                language=normalize_language(user.get('language_code') or user.get('language')),
                 )
             session.add(user_data_object)
             session.commit()
@@ -339,6 +373,10 @@ def add_user_data(user: dict):
 
             add_wallet_data({'user_id': user.get('id'), 'name': 'Personal wallet', 'currency': "USD"})
         else:
+            if user.get('language_code') or user.get('language'):
+                existing_user = session.query(User).filter(User.id == user.get('id')).first()
+                existing_user.language = normalize_language(user.get('language_code') or user.get('language'))
+                session.commit()
             print('user exists')
 
 def add_category_data(category: dict):
@@ -349,6 +387,8 @@ def add_category_data(category: dict):
             transaction_type=category['transaction_type'],
             icon=category['icon'],
             color=category['color'],
+            default_key=category.get('default_key'),
+            is_default=bool(category.get('default_key')),
         )
         session.add(category_data_object)
         session.commit()
@@ -365,6 +405,8 @@ def update_category_data(id: int, category: dict):
         category_data_object.name = category.get('name', None) or category_data_object.name
         category_data_object.icon = category.get('icon', None) or category_data_object.icon
         category_data_object.color = category.get('color', None) or category_data_object.color
+        category_data_object.default_key = None
+        category_data_object.is_default = False
         session.commit()
         session.refresh(category_data_object)
 
@@ -396,8 +438,8 @@ def add_wallet_data(wallet: dict):
 
 
         for category in default_categories:
-            category['wallet_id'] = wallet_object.id
-            add_category_data(category)
+            category_data = {**category, 'wallet_id': wallet_object.id}
+            add_category_data(category_data)
 
 def delete_wallet_data(id: int):
     with Session() as session:

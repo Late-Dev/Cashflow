@@ -17,9 +17,9 @@
     </div>
     <div class="transaction-bar__options">
       <q-btn flat @click.stop="emit('edit', transaction)" class="transaction-bar__edit"> <q-icon size="md" :name="ionCreate"></q-icon>
-        edit</q-btn>
+        {{ t('common.edit') }}</q-btn>
       <q-btn flat @click.stop="emit('delete', transaction.id)" class="transaction-bar__delete"> <q-icon size="md"
-          :name="ionTrash"></q-icon>delete</q-btn>
+          :name="ionTrash"></q-icon>{{ t('common.delete') }}</q-btn>
     </div>
   </q-item>
 </template>
@@ -30,8 +30,10 @@ import EmojiIcon from './EmojiIcon.vue';
 import { ionCreate, ionTrash } from '@quasar/extras/ionicons-v7';
 import { ITransaction } from 'src/types';
 import { useCategories } from 'src/stores/category';
+import { useI18n } from 'vue-i18n';
 
 const categorieStore = useCategories()
+const { t } = useI18n()
 
 const emit = defineEmits(['open', 'edit', 'delete'])
 

@@ -7,18 +7,18 @@
 
     <div class="wallet-settings__rename q-ma-sm">
       <q-input dense filled square outlined bg-color="secondary" label-color="dark" color="dark"
-        v-model="walletName" label="Wallet name" />
+        v-model="walletName" :label="t('wallet.walletName')" />
       <q-select class="currency-select" popup-content-class="currency-select-popup" dense filled square outlined
         behavior="dialog" bg-color="secondary" label-color="dark" color="dark" v-model="walletCurrency"
-        :options="currencyOptions" emit-value map-options label="Default currency" />
+        :options="currencyOptions" emit-value map-options :label="t('wallet.defaultCurrency')" />
       <q-btn class="tg-secondary q-mt-sm" :disable="!walletName"
-        @click="saveWallet" label="Save wallet" no-caps unelevated />
+        @click="saveWallet" :label="t('wallet.saveWallet')" no-caps unelevated />
       <q-btn class="tg-secondary q-mt-sm q-ml-sm" :disable="currentWallet.is_default"
-        @click="setDefaultWallet" :label="currentWallet.is_default ? 'Default wallet' : 'Make default wallet'" no-caps unelevated />
+        @click="setDefaultWallet" :label="currentWallet.is_default ? t('wallet.defaultWallet') : t('wallet.makeDefaultWallet')" no-caps unelevated />
     </div>
 
     <div class="row q-ma-sm title">
-      Members
+      {{ t('wallet.members') }}
     </div>
     <div v-if="usersLoaded" class="column full-width">
       <q-list bordered separator>
@@ -30,8 +30,8 @@
           </q-item-section>
 
           <q-item-section class="wallet-settings__username">@{{ user.username }}</q-item-section>
-          <q-item-section side v-if="user.user_type === 'owner'">Admin</q-item-section>
-          <q-item-section side class="text-negative" v-if="user.user_type !== 'owner'">Delete</q-item-section>
+          <q-item-section side v-if="user.user_type === 'owner'">{{ t('common.admin') }}</q-item-section>
+          <q-item-section side class="text-negative" v-if="user.user_type !== 'owner'">{{ t('common.delete') }}</q-item-section>
         </q-item>
       </q-list>
     </div>
@@ -51,7 +51,7 @@
     <div v-if="invite_link" class="column full-width q-ma-sm q-pa-sm">
       <div class="invite__group row invite__row">
         <q-field full-width @focus="copy(invite_link)" class="col  invite__button overflow-hidden" dense filled square
-          outlined bg-color="secondary" label-color="dark" color="dark" v-model="invite_link" label="Category">
+          outlined bg-color="secondary" label-color="dark" color="dark" v-model="invite_link" :label="t('wallet.invite')">
           <template v-slot:control>
             <div class="self-center no-outline tg-primary-text invite__input" tabindex="0">
               {{ invite_link }}
@@ -75,12 +75,12 @@
     </div>
 
     <div class="row q-ma-sm title">
-      Categories
+      {{ t('wallet.categories') }}
     </div>
     <div v-if="loaded" style="padding-bottom: 60px;">
       <p class="q-ma-sm">
 
-        Income catagories:
+        {{ t('wallet.incomeCategories') }}
       </p>
       <list-item :color="category.color" @delete="deleteCategory" @edit="editCategory" :item="category"
         v-for="category in incomeWalletCategories" :key="category.id">
@@ -92,7 +92,7 @@
       </list-item>
       <p class="q-ma-sm">
 
-        Expenses:
+        {{ t('wallet.expenses') }}
       </p>
       <list-item :color="category.color" @delete="deleteCategory" @edit="editCategory" :item="category"
         v-for="category in outcomeWalletCategories" :key="category.id">
@@ -130,6 +130,7 @@ import { IAccount, ICategory, Wallet } from 'src/types';
 import { deleteCategoryRequest, getAllUsersInWallet, getCategories, generateWalletLink, getWallets, logClientError } from 'src/api';
 import { ionPersonOutline, ionLinkOutline, ionArrowRedoSharp, ionQrCodeSharp } from '@quasar/extras/ionicons-v7';
 import QrCreator from 'qr-creator';
+import { useI18n } from 'vue-i18n';
 
 
 
@@ -151,6 +152,7 @@ function openQRDialog() {
 const webAppStore = useWebApp()
 const walletStore = useWallets()
 const router = useRouter()
+const { t } = useI18n()
 // const categorieStore = useCategories()
 const route = useRoute()
 const walletCategories = ref<ICategory[]>()
@@ -173,7 +175,7 @@ const walletName = ref('')
 const walletCurrency = ref('USD')
 
 onMounted(() => {
-  webAppStore.showMainButton('Add', () => { router.push({ name: 'newCategory', params: { wallet_id: route.params.id as string } }) })
+  webAppStore.showMainButton(t('common.add'), () => { router.push({ name: 'newCategory', params: { wallet_id: route.params.id as string } }) })
   walletStore.loadCurrencies()
   loadWalletCategories()
   getWallets().then((response) => {
@@ -229,7 +231,7 @@ async function saveWallet() {
     await walletStore.updateWallet(walletId.value, walletName.value, walletCurrency.value)
     currentWallet.value.name = walletName.value
     currentWallet.value.default_currency = walletCurrency.value
-    webAppStore.showAlert('Wallet saved')
+    webAppStore.showAlert(t('wallet.walletSaved'))
   } catch (error) {
     console.error(error)
     const axiosError = error as { response?: { data?: unknown; status?: number } }
@@ -241,14 +243,14 @@ async function saveWallet() {
       error: String(error),
       response: axiosError.response ? { status: axiosError.response.status, data: axiosError.response.data } : undefined,
     })
-    webAppStore.showAlert('Could not save wallet settings. Please try again.')
+    webAppStore.showAlert(t('wallet.saveWalletError'))
   }
 }
 
 async function setDefaultWallet() {
   await walletStore.setDefaultWallet(walletId.value)
   currentWallet.value.is_default = true
-  webAppStore.showAlert('Default wallet updated')
+  webAppStore.showAlert(t('wallet.defaultWalletUpdated'))
 }
 
 </script>

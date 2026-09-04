@@ -26,9 +26,9 @@
     <div class="transaction-bar__options" :class="{ 'transaction-bar__options--visible': showActions }">
       <q-btn flat @click.stop="emit('edit', item)" class="transaction-bar__edit"> <q-icon size="md"
           :name="ionCreate"></q-icon>
-        edit</q-btn>
+        {{ t('common.edit') }}</q-btn>
       <q-btn flat @click.stop="emit('delete', item.id)" class="transaction-bar__delete"> <q-icon size="md"
-          :name="ionTrash"></q-icon>delete</q-btn>
+          :name="ionTrash"></q-icon>{{ t('common.delete') }}</q-btn>
     </div>
   </q-item>
 </template>
@@ -36,9 +36,11 @@
 <script setup lang='ts'>
 import { ref } from 'vue';
 import { ionCreate, ionTrash } from '@quasar/extras/ionicons-v7';
+import { useI18n } from 'vue-i18n';
 
 
 const emit = defineEmits(['open', 'edit', 'delete'])
+const { t } = useI18n()
 
 interface PropsType {
   item: {

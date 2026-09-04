@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia';
-import { login, verifyWalletLink } from 'src/api';
+import { login, setLanguageRequest, verifyWalletLink } from 'src/api';
 import { TelegramWebApps } from 'telegram-webapps-types-new';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useWallets } from './wallets';
+import { i18n, normalizeLocale, MessageLanguages } from 'src/boot/i18n';
 declare global {
   interface Window {
     Telegram: TelegramWebApps.SDK;
@@ -17,6 +18,7 @@ export const useWebApp = defineStore('webapp', () => {
   webapp.ready();
   const router = useRouter();
   const token = ref();
+  const language = ref<MessageLanguages>('en-US');
   const walletsStore = useWallets();
 
   function shareWallet(walletName: string) {
@@ -77,6 +79,8 @@ export const useWebApp = defineStore('webapp', () => {
     mainButton.value.isVisible = false;
   };
   async function auth() {
+    const detectedLanguage = normalizeLocale(webapp.initDataUnsafe.user?.language_code);
+    setLanguage(detectedLanguage, false);
     if (!webapp.initDataUnsafe.hash) {
       webapp.showAlert('no hash!');
       return;
@@ -88,6 +92,7 @@ export const useWebApp = defineStore('webapp', () => {
         }
       );
       await walletsStore.loadWallets();
+      await setLanguageRequest(language.value);
     } catch (error) {
       console.error(error);
       webapp.showAlert('Backend/auth error. Please try reopening the app.');
@@ -117,6 +122,19 @@ export const useWebApp = defineStore('webapp', () => {
     webapp.showAlert(text);
   }
 
+  async function setLanguage(newLanguage: MessageLanguages, persist = true) {
+    language.value = newLanguage;
+    i18n.global.locale.value = newLanguage;
+    if (persist && token.value) {
+      await setLanguageRequest(newLanguage);
+      await walletsStore.loadWallets();
+      const { useCategories } = await import('./category');
+      const { useTransaction } = await import('./transactions');
+      await useCategories().loadCategories();
+      await useTransaction().loadTransactions();
+    }
+  }
+
   return {
     webapp,
     showBack,
@@ -125,6 +143,8 @@ export const useWebApp = defineStore('webapp', () => {
     hideMainButton,
     auth,
     token,
+    language,
+    setLanguage,
     confirm,
     enableCloseConfirm,
     disableCloseConfirm,

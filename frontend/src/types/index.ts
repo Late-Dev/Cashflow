@@ -22,6 +22,7 @@ export interface IAccount {
   first_name: string;
   last_name: string;
   language_code: string;
+  language?: string;
   photo_url: string;
 }
 
@@ -31,6 +32,8 @@ export interface ICategory {
   icon: string;
   color: number;
   transaction_type: 'income' | 'outcome';
+  default_key?: string;
+  is_default?: boolean;
 }
 
 export interface Wallet {

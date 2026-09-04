@@ -8,37 +8,37 @@
       </div>
     </div>
     <div class="row transaction__title">
-      The amount
+      {{ t('transaction.amount') }}
     </div>
     <div class="row transaction__value">
       {{ category?.transaction_type === 'outcome' ? '-' : '+' }}{{ transationInfo?.value }} {{ transationInfo?.currency }}
     </div>
     <div class="row transaction__title" v-if="transationInfo?.display_currency && transationInfo?.display_currency !== transationInfo?.currency">
-      In wallet currency
+      {{ t('transaction.inWalletCurrency') }}
     </div>
     <div class="row transaction__value" v-if="transationInfo?.display_currency && transationInfo?.display_currency !== transationInfo?.currency">
       {{ category?.transaction_type === 'outcome' ? '-' : '+' }}{{ Number(transationInfo?.display_value || 0).toFixed(2) }} {{ transationInfo?.display_currency }}
     </div>
     <div class="row transaction__title" v-if="transationInfo?.usd_to_currency_rate">
-      USD rate at purchase
+      {{ t('transaction.usdRateAtPurchase') }}
     </div>
     <div class="row transaction__value" v-if="transationInfo?.usd_to_currency_rate">
       1 USD = {{ transationInfo?.usd_to_currency_rate }} {{ transationInfo?.currency }}
     </div>
     <div class="row transaction__title" v-if="transationInfo?.source">
-      Source
+      {{ t('transaction.source') }}
     </div>
     <div class="row transaction__value" v-if="transationInfo?.source">
       {{ transationInfo?.source }}
     </div>
     <div class="row transaction__title" v-if="transationInfo?.description">
-      Comment
+      {{ t('transaction.comment') }}
     </div>
     <div class="row transaction__value" v-if="transationInfo?.description">
       {{ transationInfo?.description }}
     </div>
     <div class="row transaction__title">
-      Date
+      {{ t('transaction.date') }}
     </div>
     <div class="row transaction__value">
       {{ (new Date(transationInfo?.date as string)).toLocaleDateString() }}
@@ -57,8 +57,10 @@ import { useRoute } from 'vue-router';
 import { useTransaction } from 'src/stores/transactions';
 import { computed } from 'vue';
 import { useCategories } from 'src/stores/category';
+import { useI18n } from 'vue-i18n';
 
 const categorieStore = useCategories()
+const { t } = useI18n()
 
 const transactionStore = useTransaction()
 const route = useRoute()

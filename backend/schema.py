@@ -10,6 +10,7 @@ class UserSchema(BaseModel):
     first_name: Optional[str]
     last_name: Optional[str]
     photo_url: Optional[str] 
+    language_code: Optional[str] = None
 
     class Config:
         schema_extra = {
@@ -139,6 +140,10 @@ class ClientLogSchema(BaseModel):
     level: str = "error"
     message: str
     context: Optional[dict] = None
+
+
+class LanguageSchema(BaseModel):
+    language: str
 
 
 class AuthenticationRequestSchema(BaseModel):

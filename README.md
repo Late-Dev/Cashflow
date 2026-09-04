@@ -38,7 +38,7 @@ With Cashflow, you can:
 - [x] Support common currencies, including USD, EUR, RUB and KGS
 - [x] Migrations and data save
 - [ ] Validation of data
-- [ ] Multi-language support
+- [x] Multi-language support
 - [ ] Data import and export
 - [ ] One-time link for wallet invitation
 - [ ] Invitation link generation permission
