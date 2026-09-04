@@ -26,12 +26,16 @@ export function getWallets() {
   return axios.get('/user_wallets');
 }
 
+export function getCurrencies() {
+  return axios.get('/currencies');
+}
+
 export function deleteWalletRequest(id: number) {
   return axios.delete(`/wallet/${id}`);
 }
 
-export function editWalletRequest(id: number, name: string) {
-  return axios.patch(`/wallet/${id}`, { name });
+export function editWalletRequest(id: number, name?: string, defaultCurrency?: string) {
+  return axios.patch(`/wallet/${id}`, { name, default_currency: defaultCurrency });
 }
 
 export function setDefaultWalletRequest(id: number) {
@@ -109,6 +113,7 @@ export function addTransaction(payload: ITransaction) {
     source: payload.source,
     category_id: (payload.category as ICategory)?.id,
     wallet_id: payload.wallet,
+    currency: payload.currency,
   });
 }
 
@@ -119,6 +124,7 @@ export function editTransactionRequest(payload: ITransaction) {
     date: new Date(payload.date).toISOString(),
     source: payload.source,
     category_id: (payload.category as ICategory)?.id,
+    currency: payload.currency,
   });
 }
 

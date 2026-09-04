@@ -1,6 +1,11 @@
 export interface ITransaction {
   id: number;
   value: number;
+  currency?: string;
+  usd_to_currency_rate?: number;
+  usd_value?: number;
+  display_value?: number;
+  display_currency?: string;
   description?: string;
   date: string;
   category?: ICategory | number;
@@ -32,6 +37,13 @@ export interface Wallet {
   id: number;
   name: string;
   currency: string;
+  default_currency: string;
   user_type: '';
   is_default?: boolean;
+}
+
+export interface Currency {
+  code: string;
+  name: string;
+  symbol: string;
 }

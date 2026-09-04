@@ -8,8 +8,10 @@
     <div class="wallet-settings__rename q-ma-sm">
       <q-input dense filled square outlined bg-color="secondary" label-color="dark" color="dark"
         v-model="walletName" label="Wallet name" />
-      <q-btn class="tg-secondary q-mt-sm" :disable="!walletName || walletName === currentWallet.name"
-        @click="renameWallet" label="Rename wallet" no-caps unelevated />
+      <q-select dense filled square outlined bg-color="secondary" label-color="dark" color="dark"
+        v-model="walletCurrency" :options="currencyOptions" emit-value map-options label="Default currency" />
+      <q-btn class="tg-secondary q-mt-sm" :disable="!walletName"
+        @click="saveWallet" label="Save wallet" no-caps unelevated />
       <q-btn class="tg-secondary q-mt-sm q-ml-sm" :disable="currentWallet.is_default"
         @click="setDefaultWallet" :label="currentWallet.is_default ? 'Default wallet' : 'Make default wallet'" no-caps unelevated />
     </div>
@@ -167,13 +169,16 @@ const walletId = computed(() => {
 const invite_link = ref()
 const currentWallet = ref<Partial<Wallet>>({ name: '' })
 const walletName = ref('')
+const walletCurrency = ref('USD')
 
 onMounted(() => {
   webAppStore.showMainButton('Add', () => { router.push({ name: 'newCategory', params: { wallet_id: route.params.id as string } }) })
+  walletStore.loadCurrencies()
   loadWalletCategories()
   getWallets().then((response) => {
     currentWallet.value = response.data.find((el: Wallet) => el.id === walletId.value)
     walletName.value = currentWallet.value?.name || ''
+    walletCurrency.value = currentWallet.value?.default_currency || 'USD'
   })
   getAllUsersInWallet(walletId.value).then((response) => {
     walletUsers.value = response.data
@@ -211,10 +216,18 @@ function editCategory(category: ICategory) {
   router.push({ name: 'editCategory', params: { category_id: category.id, wallet_id: route.params.id } })
 }
 
-async function renameWallet() {
-  await walletStore.renameWallet(walletId.value, walletName.value)
+const currencyOptions = computed(() => {
+  return walletStore.currencies.map((currency) => ({
+    label: `${currency.code} — ${currency.name}`,
+    value: currency.code,
+  }))
+})
+
+async function saveWallet() {
+  await walletStore.updateWallet(walletId.value, walletName.value, walletCurrency.value)
   currentWallet.value.name = walletName.value
-  webAppStore.showAlert('Wallet renamed')
+  currentWallet.value.default_currency = walletCurrency.value
+  webAppStore.showAlert('Wallet saved')
 }
 
 async function setDefaultWallet() {

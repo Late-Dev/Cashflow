@@ -11,8 +11,8 @@
           {{ transaction.source }}
         </div>
       </div>
-      <div class="transaction-bar__value">{{ category?.transaction_type === 'outcome' ? '-' : '+' }}{{ transaction.value
-      }} $
+      <div class="transaction-bar__value">{{ category?.transaction_type === 'outcome' ? '-' : '+' }}{{ displayValue }} {{ transaction.display_currency || transaction.currency || '$'
+      }}
       </div>
     </div>
     <div class="transaction-bar__options">
@@ -54,6 +54,10 @@ function handleSwipe({ ...newInfo }) {
 
 const category = computed(() => {
   return categorieStore.categoriesList?.find((el) => el.id === props.transaction.category as number)
+})
+
+const displayValue = computed(() => {
+  return Number(props.transaction.display_value ?? props.transaction.value ?? 0).toFixed(2)
 })
 
 </script>

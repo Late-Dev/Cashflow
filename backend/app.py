@@ -40,7 +40,8 @@ from database import (
     add_user_to_wallet,
     get_default_wallet_data,
     set_default_wallet_data,
-    get_wallet_expense_categories_data
+    get_wallet_expense_categories_data,
+    get_currencies_data
 )
 
 
@@ -168,6 +169,10 @@ def get_user_wallets(data = Depends(val_jwt)):
     id = data.get('id')
     result = get_user_wallets_data(id)
     return result
+
+@app.get("/currencies")
+def get_currencies(data = Depends(val_jwt)):
+    return get_currencies_data()
 
 @app.post("/user")
 def add_user(user: UserSchema):

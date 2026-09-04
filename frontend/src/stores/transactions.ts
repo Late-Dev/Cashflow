@@ -20,6 +20,7 @@ export const useTransaction = defineStore('transaction', () => {
 
   const newTransacitonData = ref<Omit<ITransaction, 'id' | 'user' | 'type'>>({
     value: 0,
+    currency: 'USD',
     description: '',
     category: undefined,
     source: '',
@@ -30,6 +31,7 @@ export const useTransaction = defineStore('transaction', () => {
     id: 0,
     type: 'income',
     value: 0,
+    currency: 'USD',
     description: '',
     category: undefined,
     source: '',
@@ -56,11 +58,13 @@ export const useTransaction = defineStore('transaction', () => {
   async function newTransaciton() {
     await addTransaction({
       ...newTransacitonData.value,
+      currency: newTransacitonData.value.currency || walletsStore.currentWallet?.default_currency || 'USD',
       type: currentMode.value,
       wallet: walletsStore.currentWallet?.id,
     }).then(() => {
       newTransacitonData.value = {
         value: 0,
+        currency: walletsStore.currentWallet?.default_currency || 'USD',
         description: '',
         category: undefined,
         source: '',
@@ -90,6 +94,11 @@ export const useTransaction = defineStore('transaction', () => {
 
   watch(currentMode, () => {
     newTransacitonData.value.category = undefined;
+    newTransacitonData.value.currency = walletsStore.currentWallet?.default_currency || 'USD';
+  });
+
+  watch(() => walletsStore.currentWallet?.default_currency, (currency) => {
+    newTransacitonData.value.currency = currency || 'USD';
   });
 
   async function delTransaction(id: number) {
@@ -104,6 +113,7 @@ export const useTransaction = defineStore('transaction', () => {
       id: 0,
       type: 'income',
       value: 0,
+      currency: walletsStore.currentWallet?.default_currency || 'USD',
       description: '',
       category: undefined,
       source: '',

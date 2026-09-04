@@ -10,15 +10,9 @@
 
           <q-input dense filled square outlined bg-color="secondary" label-color="dark" color="dark"
             v-model.number="transactionStore.newTransacitonData.value" label="The amount" />
-          <!-- <q-field @focus="router.push({ name: 'select', params: { type: 'currency' } })" dense filled square outlined
-            bg-color="secondary" label-color="dark" color="dark" v-model="currency" label="Currency">
-
-            <template v-slot:append>
-              <div class="text-body2 flex flex-center">
-                All <q-icon :name="ionChevronForward" class="cursor-pointer" />
-              </div>
-            </template>
-          </q-field> -->
+          <q-select dense filled square outlined bg-color="secondary" label-color="dark" color="dark"
+            v-model="transactionStore.newTransacitonData.currency" :options="currencyOptions" emit-value map-options
+            label="Currency" />
         </div>
 
         <div class="new-transaction__group">
@@ -61,18 +55,25 @@
 
 <script setup lang='ts'>
 import ModeToggle from 'src/components/ModeToggle.vue';
-import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useWebApp } from 'src/stores/webapp';
 import { useRouter } from 'vue-router';
 import { useTransaction } from 'src/stores/transactions';
 import { ionChevronForward } from '@quasar/extras/ionicons-v7';
 import { ICategory } from 'src/types';
+import { useWallets } from 'src/stores/wallets';
 
 const transactionStore = useTransaction()
+const walletStore = useWallets()
 const router = useRouter()
 const formElement = ref()
 
 const chosingDate = ref(false)
+
+const currencyOptions = computed(() => walletStore.currencies.map((currency) => ({
+  label: `${currency.code} — ${currency.name}`,
+  value: currency.code,
+})))
 
 async function onSubmit() {
   webAppStore.disableMainButton()
@@ -89,6 +90,8 @@ async function onSubmit() {
 const webAppStore = useWebApp()
 
 onMounted(() => {
+  walletStore.loadCurrencies()
+  transactionStore.newTransacitonData.currency = walletStore.currentWallet?.default_currency || 'USD'
   webAppStore.showMainButton('Save', formElement.value.submit)
   webAppStore.enableCloseConfirm()
 })

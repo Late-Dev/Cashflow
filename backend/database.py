@@ -1,9 +1,11 @@
 import os
-from datetime import datetime
+import requests
+from datetime import date, datetime
+from decimal import Decimal
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, DeclarativeBase, relationship
-from sqlalchemy import Column, ForeignKey, Integer, String, Numeric, DateTime
+from sqlalchemy import Column, Date, ForeignKey, Integer, String, Numeric, DateTime
 
 from default_categories import default_categories
 
@@ -49,6 +51,7 @@ class Wallet(Base):
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     name = Column(String, nullable=False)
     currency = Column(String, nullable=False)
+    default_currency = Column(String(3), ForeignKey("currency.code"), nullable=False, default="USD")
 
     user2_wallets = relationship("User2Wallet", back_populates="wallet_object")
     transactions = relationship("Transaction", back_populates="wallet_object")
@@ -78,6 +81,8 @@ class Transaction(Base):
     value = Column(Numeric(12, 2), nullable=False)
     date = Column(DateTime, nullable=False)
     source = Column(String, nullable=True)
+    currency = Column(String(3), ForeignKey("currency.code"), nullable=False, default="USD")
+    usd_to_currency_rate = Column(Numeric(18, 8), nullable=False, default=1)
 
     category = Column(Integer, ForeignKey("category.id"))
     category_object = relationship("Category", back_populates="transactions")
@@ -102,17 +107,52 @@ class User2Wallet(Base):
     wallet_object = relationship("Wallet", back_populates="user2_wallets")
 
 
+class Currency(Base):
+    __tablename__ = "currency"
+
+    code = Column(String(3), primary_key=True)
+    name = Column(String, nullable=False)
+    symbol = Column(String, nullable=False)
+
+
+class CurrencyRate(Base):
+    __tablename__ = "currency_rate"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    currency = Column(String(3), ForeignKey("currency.code"), nullable=False)
+    date = Column(Date, nullable=False)
+    usd_to_currency = Column(Numeric(18, 8), nullable=False)
+
+
+EXCHANGE_RATE_API_KEY = os.getenv("EXCHANGE_RATE_API_KEY")
+EXCHANGE_RATE_API_URL = "https://v6.exchangerate-api.com/v6/{api_key}/latest/USD"
+EXCHANGE_RATE_API_HISTORY_URL = "https://v6.exchangerate-api.com/v6/{api_key}/history/USD/{year}/{month}/{day}"
+DEFAULT_CURRENCY = "USD"
+
+
 def get_wallet_transactions_data(id: int):
     with Session() as session:
+        wallet = session.query(Wallet).filter_by(id=id).first()
+        display_currency = wallet.default_currency if wallet else DEFAULT_CURRENCY
         all_transactions = session.query(Transaction).filter_by(wallet=id)
         transaction_types = [
             transaction_type[0]
             for transaction_type in session.query(Category.transaction_type).filter(Category.wallet == id).distinct()
         ]
 
+        def format_transaction(transaction: Transaction):
+            transaction_data = transaction.to_dict()
+            usd_value = Decimal(transaction.value) / Decimal(transaction.usd_to_currency_rate)
+            display_rate = get_currency_rate_data(display_currency, transaction.date.date())
+            display_value = usd_value * Decimal(display_rate)
+            transaction_data['usd_value'] = round(usd_value, 2)
+            transaction_data['display_value'] = round(display_value, 2)
+            transaction_data['display_currency'] = display_currency
+            return transaction_data
+
         result = {
             transaction_type: [
-                transaction.to_dict()
+                format_transaction(transaction)
                 for transaction in all_transactions 
                 if transaction.category_object.transaction_type == transaction_type
             ] 
@@ -127,6 +167,71 @@ def get_wallet_categories_data(id: int):
             for category in session.query(Category).filter(Category.wallet == id)
         ]
     return categories
+
+def get_currencies_data():
+    with Session() as session:
+        return [currency.to_dict() for currency in session.query(Currency).order_by(Currency.code.asc())]
+
+def get_currency_rate_data(currency: str, rate_date: date | None = None) -> Decimal:
+    currency = (currency or DEFAULT_CURRENCY).upper()
+    rate_date = rate_date or date.today()
+    if currency == DEFAULT_CURRENCY:
+        return Decimal("1")
+
+    with Session() as session:
+        existing_rate = (
+            session.query(CurrencyRate)
+            .filter(CurrencyRate.currency == currency, CurrencyRate.date == rate_date)
+            .first()
+        )
+        if existing_rate:
+            return existing_rate.usd_to_currency
+
+        if not EXCHANGE_RATE_API_KEY:
+            raise ValueError('EXCHANGE_RATE_API_KEY is not configured')
+
+        if rate_date == date.today():
+            url = EXCHANGE_RATE_API_URL.format(api_key=EXCHANGE_RATE_API_KEY)
+        else:
+            url = EXCHANGE_RATE_API_HISTORY_URL.format(
+                api_key=EXCHANGE_RATE_API_KEY,
+                year=rate_date.year,
+                month=rate_date.month,
+                day=rate_date.day,
+            )
+
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        conversion_rates = response.json().get('conversion_rates', {})
+
+        existing_codes = {
+            code for code, in session.query(CurrencyRate.currency)
+            .filter(CurrencyRate.date == rate_date)
+            .all()
+        }
+        supported_codes = [code for code, in session.query(Currency.code).all()]
+        for code in supported_codes:
+            if code in existing_codes:
+                continue
+            rate = conversion_rates.get(code)
+            if rate is None:
+                continue
+            session.add(CurrencyRate(
+                currency=code,
+                date=rate_date,
+                usd_to_currency=Decimal(str(rate)),
+            ))
+        session.commit()
+
+        refreshed_rate = (
+            session.query(CurrencyRate)
+            .filter(CurrencyRate.currency == currency, CurrencyRate.date == rate_date)
+            .first()
+        )
+        if refreshed_rate:
+            return refreshed_rate.usd_to_currency
+
+    raise ValueError(f'Currency rate for {currency} is not available')
 
 def get_user_wallets_data(id: int):
     with Session() as session:
@@ -265,7 +370,8 @@ def add_wallet_data(wallet: dict):
     with Session() as session:
         wallet_object = Wallet(
             name=wallet['name'],
-            currency=wallet['currency']
+            currency=wallet['currency'],
+            default_currency=wallet.get('default_currency') or wallet.get('currency') or DEFAULT_CURRENCY,
         )
         session.add(wallet_object)
         session.commit()
@@ -304,12 +410,20 @@ def update_wallet_data(id: int, wallet: dict):
     with Session() as session:
         wallet_data_object = session.query(Wallet).filter_by(id=id).first()
         wallet_data_object.name = wallet.get('name', None) or wallet_data_object.name
+        wallet_data_object.default_currency = wallet.get('default_currency', None) or wallet_data_object.default_currency
+        wallet_data_object.currency = wallet_data_object.default_currency
         session.commit()
         session.refresh(wallet_data_object)
 
 def add_transaction_data(transaction: dict):
     with Session() as session:
         date = datetime.fromisoformat(transaction['date'])
+        currency = transaction.get('currency')
+        if not currency and transaction.get('wallet_id'):
+            wallet = session.query(Wallet).filter_by(id=transaction['wallet_id']).first()
+            currency = wallet.default_currency if wallet else DEFAULT_CURRENCY
+        currency = (currency or DEFAULT_CURRENCY).upper()
+        usd_to_currency_rate = transaction.get('usd_to_currency_rate') or get_currency_rate_data(currency, date.date())
         transaction_data_object = Transaction(
             category=transaction['category_id'],
             description=transaction['description'],
@@ -317,7 +431,9 @@ def add_transaction_data(transaction: dict):
             wallet=transaction['wallet_id'],
             source=transaction['source'],
             date=date,
-            user=transaction['user_id']
+            user=transaction['user_id'],
+            currency=currency,
+            usd_to_currency_rate=usd_to_currency_rate,
         )
         session.add(transaction_data_object)
         session.commit()
@@ -335,8 +451,12 @@ def update_transaction_data(id: int, transaction: dict):
             transaction_data_object.category = transaction['category_id']
         transaction_data_object.description = transaction.get('description', None) or transaction_data_object.description
         transaction_data_object.value = transaction.get('value', None) or transaction_data_object.value
-        transaction_data_object.date = datetime.fromisoformat(transaction.get('date', None)) or transaction_data_object.date
+        transaction_date = datetime.fromisoformat(transaction.get('date', None)) if transaction.get('date', None) else transaction_data_object.date
+        transaction_data_object.date = transaction_date
         transaction_data_object.source = transaction.get('source', None) or transaction_data_object.source
+        if transaction.get('currency') or transaction.get('date'):
+            transaction_data_object.currency = (transaction.get('currency') or transaction_data_object.currency).upper()
+            transaction_data_object.usd_to_currency_rate = get_currency_rate_data(transaction_data_object.currency, transaction_date.date())
         session.commit()
         session.refresh(transaction_data_object)
 

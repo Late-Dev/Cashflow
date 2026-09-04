@@ -11,7 +11,19 @@
       The amount
     </div>
     <div class="row transaction__value">
-      {{ category?.transaction_type === 'outcome' ? '-' : '+' }}{{ transationInfo?.value }}
+      {{ category?.transaction_type === 'outcome' ? '-' : '+' }}{{ transationInfo?.value }} {{ transationInfo?.currency }}
+    </div>
+    <div class="row transaction__title" v-if="transationInfo?.display_currency && transationInfo?.display_currency !== transationInfo?.currency">
+      In wallet currency
+    </div>
+    <div class="row transaction__value" v-if="transationInfo?.display_currency && transationInfo?.display_currency !== transationInfo?.currency">
+      {{ category?.transaction_type === 'outcome' ? '-' : '+' }}{{ Number(transationInfo?.display_value || 0).toFixed(2) }} {{ transationInfo?.display_currency }}
+    </div>
+    <div class="row transaction__title" v-if="transationInfo?.usd_to_currency_rate">
+      USD rate at purchase
+    </div>
+    <div class="row transaction__value" v-if="transationInfo?.usd_to_currency_rate">
+      1 USD = {{ transationInfo?.usd_to_currency_rate }} {{ transationInfo?.currency }}
     </div>
     <div class="row transaction__title" v-if="transationInfo?.source">
       Source

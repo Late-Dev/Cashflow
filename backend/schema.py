@@ -23,7 +23,8 @@ class UserSchema(BaseModel):
 
 class WalletSchema(BaseModel):
     name: str
-    currency: str
+    currency: str = "USD"
+    default_currency: str = "USD"
 
     class Config:
         schema_extra = {
@@ -58,6 +59,7 @@ class TransactionSchema(BaseModel):
     source: Optional[str]
     category_id: int
     wallet_id: int
+    currency: Optional[str] = None
 
     class Config:
         schema_extra = {
@@ -77,6 +79,7 @@ class TransactionUpdateSchema(BaseModel):
     date: Optional[datetime] = None
     source: Optional[str] = None
     category_id: Optional[int] = None
+    currency: Optional[str] = None
 
     class Config:
         schema_extra = {
@@ -106,7 +109,8 @@ class CategoryUpdateSchema(BaseModel):
 
 
 class WalletUpdateSchema(BaseModel):
-    name: str
+    name: Optional[str] = None
+    default_currency: Optional[str] = None
 
     class Config:
         schema_extra = {
@@ -128,6 +132,7 @@ class BotTransactionSchema(BaseModel):
     source: Optional[str] = None
     category_id: int
     wallet_id: int
+    currency: Optional[str] = None
 
 
 class AuthenticationRequestSchema(BaseModel):

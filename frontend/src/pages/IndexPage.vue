@@ -6,7 +6,7 @@
     <div class="row justify-between q-ma-sm">
       <div class="column">
         <div class="row text-bold total" v-if="transactionStore.loaded">
-          {{ transactionStore.monthTransactionsList?.length ? monthSum + ' $' : 'no data' }}
+          {{ transactionStore.monthTransactionsList?.length ? formatWalletValue(monthSum) : 'no data' }}
         </div>
         <q-skeleton v-else type="rect" width="100px" />
         <div class="row hint month" v-if="transactionStore.loaded">
@@ -124,9 +124,11 @@ import { useCategories } from 'src/stores/category';
 import MonthBarChart from 'src/components/MonthBarChart.vue';
 import { useWebApp } from 'src/stores/webapp';
 import { ITransaction } from 'src/types';
+import { useWallets } from 'src/stores/wallets';
 
 const webAppStore = useWebApp()
 const transactionStore = useTransaction()
+const walletStore = useWallets()
 const router = useRouter()
 
 const barchart = ref(false)
@@ -139,17 +141,25 @@ function getMonthName(monthNumber: number) {
 }
 
 const monthSum = computed(() => {
-  return transactionStore.monthTransactionsList?.reduce((accumulator, val) => accumulator + val.value, 0)
+  return transactionStore.monthTransactionsList?.reduce((accumulator, val) => accumulator + transactionValue(val), 0) || 0
 })
+
+function transactionValue(transaction: ITransaction) {
+  return Number(transaction.display_value ?? transaction.value ?? 0)
+}
+
+function formatWalletValue(value: number) {
+  return `${value.toFixed(2)} ${walletStore.currentWallet?.default_currency || '$'}`
+}
 
 const aggregatedTransactions = computed(() => {
   return transactionStore.monthTransactionsList?.reduce((accumulator, val) => {
 
     const category = accumulator.find(el => el.category === val.category)
     if (accumulator.length && category) {
-      category.value += val.value
+      category.value += transactionValue(val)
     } else if (val.category) {
-      accumulator.push({ category: val.category as number, value: val.value })
+      accumulator.push({ category: val.category as number, value: transactionValue(val) })
 
     }
     return accumulator
@@ -170,7 +180,7 @@ const monthChartData = computed(() => {
   const monthArray = new Array(12).fill(0);
   transactionStore.transactionsList?.forEach((element) => {
     const index = new Date(element.date).getMonth()
-    monthArray[index] += element.value
+    monthArray[index] += transactionValue(element)
   })
   return monthArray
 })

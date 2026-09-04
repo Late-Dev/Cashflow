@@ -13,6 +13,7 @@ services:
       TOKEN: ${TOKEN}
       SECRET_KEY: ${SECRET_KEY}
       BOT_SECRET: ${BOT_SECRET}
+      EXCHANGE_RATE_API_KEY: ${EXCHANGE_RATE_API_KEY}
     networks:
       - postgres
     depends_on:
