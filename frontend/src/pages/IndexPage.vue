@@ -11,7 +11,7 @@
         <q-skeleton v-else type="rect" width="100px" />
         <div class="row hint month" v-if="transactionStore.loaded">
           <div v-if="transactionStore.selectedMonth !== undefined">
-            {{ t(transactionStore.currentMode === 'outcome' ? 'index.monthSummary.spent' : 'index.monthSummary.earned', { month: getMonthName(transactionStore.selectedMonth) }) }}
+            {{ getMonthSummaryLabel(transactionStore.selectedMonth) }}
           </div>
         </div>
         <q-skeleton v-else type="text" width="80px" />
@@ -139,6 +139,11 @@ function getMonthName(monthNumber: number) {
   date.setMonth(monthNumber);
 
   return date.toLocaleString(locale.value, { month: 'long' });
+}
+
+function getMonthSummaryLabel(monthNumber: number) {
+  const key = transactionStore.currentMode === 'outcome' ? 'index.monthSummary.spent' : 'index.monthSummary.earned';
+  return t(key).replace('{month}', getMonthName(monthNumber));
 }
 
 const monthSum = computed(() => {
