@@ -34,6 +34,10 @@ export function editWalletRequest(id: number, name: string) {
   return axios.patch(`/wallet/${id}`, { name });
 }
 
+export function setDefaultWalletRequest(id: number) {
+  return axios.post('/default_wallet', { wallet_id: id });
+}
+
 export function getTransactions(wallet_id: number): Promise<
   AxiosResponse<{
     income: ITransaction[];

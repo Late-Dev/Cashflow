@@ -37,6 +37,7 @@ class User(Base):
     first_name = Column(String, nullable=True)
     last_name = Column(String, nullable=True)
     photo_url = Column(String, nullable=True)
+    default_wallet = Column(Integer, ForeignKey("wallet.id"), nullable=True)
 
     user2_wallets = relationship("User2Wallet", back_populates="user_object")
     transactions = relationship("Transaction", back_populates="user_object")
@@ -129,23 +130,90 @@ def get_wallet_categories_data(id: int):
 
 def get_user_wallets_data(id: int):
     with Session() as session:
+        user = session.query(User).filter(User.id == id).first()
         wallets = [
             {
                 **line.wallet_object.to_dict(), 
-                'user_type': line.user_type
+                'user_type': line.user_type,
+                'is_default': user.default_wallet == line.wallet if user and user.default_wallet else False
             }
             for line in session.query(User2Wallet).filter(User2Wallet.user == id)
         ]
         if(len(wallets) < 1):
             add_wallet_data({'user_id': id, 'name': 'Personal wallet', 'currency': "USD"})
+            user = session.query(User).filter(User.id == id).first()
             wallets = [
                 {
                     **line.wallet_object.to_dict(), 
-                    'user_type': line.user_type
+                    'user_type': line.user_type,
+                    'is_default': user.default_wallet == line.wallet if user and user.default_wallet else False
                 }
                 for line in session.query(User2Wallet).filter(User2Wallet.user == id)
             ]
     return wallets
+
+def get_default_wallet_data(user_id: int):
+    with Session() as session:
+        user = session.query(User).filter(User.id == user_id).first()
+        if user is None:
+            add_user_data({'id': user_id})
+            user = session.query(User).filter(User.id == user_id).first()
+
+        user_wallet = None
+        if user.default_wallet:
+            user_wallet = (
+                session.query(User2Wallet)
+                .filter(User2Wallet.user == user_id, User2Wallet.wallet == user.default_wallet)
+                .first()
+            )
+
+        if user_wallet is None:
+            user_wallet = (
+                session.query(User2Wallet)
+                .filter(User2Wallet.user == user_id)
+                .order_by(User2Wallet.id.asc())
+                .first()
+            )
+            if user_wallet is None:
+                add_wallet_data({'user_id': user_id, 'name': 'Personal wallet', 'currency': "USD"})
+                user_wallet = (
+                    session.query(User2Wallet)
+                    .filter(User2Wallet.user == user_id)
+                    .order_by(User2Wallet.id.asc())
+                    .first()
+                )
+            user.default_wallet = user_wallet.wallet
+            session.commit()
+
+        return {
+            **user_wallet.wallet_object.to_dict(),
+            'user_type': user_wallet.user_type,
+            'is_default': True,
+        }
+
+def set_default_wallet_data(user_id: int, wallet_id: int):
+    with Session() as session:
+        user_wallet = (
+            session.query(User2Wallet)
+            .filter(User2Wallet.user == user_id, User2Wallet.wallet == wallet_id)
+            .first()
+        )
+        if user_wallet is None:
+            raise ValueError('Wallet not found for user')
+
+        user = session.query(User).filter(User.id == user_id).first()
+        user.default_wallet = wallet_id
+        session.commit()
+        return user_wallet.wallet_object.to_dict()
+
+def get_wallet_expense_categories_data(wallet_id: int):
+    with Session() as session:
+        return [
+            category.to_dict()
+            for category in session.query(Category)
+            .filter(Category.wallet == wallet_id, Category.transaction_type == 'outcome')
+            .order_by(Category.id.asc())
+        ]
 
 def add_user_data(user: dict):
     with Session() as session:
@@ -213,6 +281,11 @@ def add_wallet_data(wallet: dict):
         session.commit()
         session.refresh(user2wallet_data_object)
 
+        user = session.query(User).filter(User.id == wallet['user_id']).first()
+        if user is not None and user.default_wallet is None:
+            user.default_wallet = wallet_object.id
+            session.commit()
+
 
         for category in default_categories:
             category['wallet_id'] = wallet_object.id
@@ -220,6 +293,7 @@ def add_wallet_data(wallet: dict):
 
 def delete_wallet_data(id: int):
     with Session() as session:
+        session.query(User).filter(User.default_wallet == id).update({User.default_wallet: None})
         session.query(Transaction).filter_by(wallet=id).delete()
         session.query(Category).filter_by(wallet=id).delete()
         session.query(User2Wallet).filter_by(wallet=id).delete()

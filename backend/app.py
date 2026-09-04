@@ -18,7 +18,9 @@ from schema import (
         AuthenticationRequestSchema,
         AuthenticationResponseSchema,
         WalletUpdateSchema,
-        VerificationLinkSchema
+        VerificationLinkSchema,
+        DefaultWalletSchema,
+        BotTransactionSchema
 )
 from database import (
     add_category_data,
@@ -35,7 +37,10 @@ from database import (
     update_transaction_data,
     update_wallet_data,
     get_wallet_users_data,
-    add_user_to_wallet
+    add_user_to_wallet,
+    get_default_wallet_data,
+    set_default_wallet_data,
+    get_wallet_expense_categories_data
 )
 
 
@@ -189,6 +194,13 @@ def update_wallet(id: int, wallet: WalletUpdateSchema, data = Depends(val_jwt)):
     update_wallet_data(id, wallet)
     return 'success'
 
+@app.post("/default_wallet")
+def set_default_wallet(schema: DefaultWalletSchema, data = Depends(val_jwt)):
+    try:
+        return set_default_wallet_data(data.get('id'), schema.wallet_id)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
 @app.post("/category")
 def add_category(category: CategorySchema, data = Depends(val_jwt)):
     category = jsonable_encoder(category)
@@ -281,6 +293,31 @@ def get_bot_user_wallets(id: int, secret: str):
                 ).replace(".", "__")
         } for wallet in get_user_wallets_data(id)]
         return result
+    else:
+        raise HTTPException(
+            status_code=403,
+            detail="You are not the bot",
+        )
+
+@app.get('/bot_default_wallet/{id}/expense_categories')
+def get_bot_default_wallet_expense_categories(id: int, secret: str):
+    if(secret == os.getenv("BOT_SECRET", None)):
+        wallet = get_default_wallet_data(id)
+        return {
+            'wallet': wallet,
+            'categories': get_wallet_expense_categories_data(wallet.get('id'))
+        }
+    else:
+        raise HTTPException(
+            status_code=403,
+            detail="You are not the bot",
+        )
+
+@app.post('/bot_transaction')
+def add_bot_transaction(transaction: BotTransactionSchema, secret: str):
+    if(secret == os.getenv("BOT_SECRET", None)):
+        add_transaction_data(jsonable_encoder(transaction))
+        return 'success'
     else:
         raise HTTPException(
             status_code=403,

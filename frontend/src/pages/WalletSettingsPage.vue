@@ -10,6 +10,8 @@
         v-model="walletName" label="Wallet name" />
       <q-btn class="tg-secondary q-mt-sm" :disable="!walletName || walletName === currentWallet.name"
         @click="renameWallet" label="Rename wallet" no-caps unelevated />
+      <q-btn class="tg-secondary q-mt-sm q-ml-sm" :disable="currentWallet.is_default"
+        @click="setDefaultWallet" :label="currentWallet.is_default ? 'Default wallet' : 'Make default wallet'" no-caps unelevated />
     </div>
 
     <div class="row q-ma-sm title">
@@ -163,7 +165,7 @@ const walletId = computed(() => {
 })
 
 const invite_link = ref()
-const currentWallet = ref({ name: '' })
+const currentWallet = ref<Partial<Wallet>>({ name: '' })
 const walletName = ref('')
 
 onMounted(() => {
@@ -213,6 +215,12 @@ async function renameWallet() {
   await walletStore.renameWallet(walletId.value, walletName.value)
   currentWallet.value.name = walletName.value
   webAppStore.showAlert('Wallet renamed')
+}
+
+async function setDefaultWallet() {
+  await walletStore.setDefaultWallet(walletId.value)
+  currentWallet.value.is_default = true
+  webAppStore.showAlert('Default wallet updated')
 }
 
 </script>

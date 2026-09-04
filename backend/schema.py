@@ -116,6 +116,20 @@ class WalletUpdateSchema(BaseModel):
         }
 
 
+class DefaultWalletSchema(BaseModel):
+    wallet_id: int
+
+
+class BotTransactionSchema(BaseModel):
+    user_id: int
+    description: str
+    value: Decimal
+    date: datetime
+    source: Optional[str] = None
+    category_id: int
+    wallet_id: int
+
+
 class AuthenticationRequestSchema(BaseModel):
     hash_str: str
     initData: str

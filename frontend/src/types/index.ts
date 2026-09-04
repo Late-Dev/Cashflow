@@ -33,4 +33,5 @@ export interface Wallet {
   name: string;
   currency: string;
   user_type: '';
+  is_default?: boolean;
 }
